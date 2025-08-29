@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AdjtApplication<adjt>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.postech.adjt.AdjtApplication",
+            "projectName": "adjt",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
