@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 @Table(schema = "public", name = "usuario")
 public class Usuario extends BaseModel {
 
-    @Column(name = "nome", nullable = false, length = 100)
+    @Column(name = "nome", nullable = false, length = 50)
     private String nome;
 
     @Column(name = "e_mail", nullable = false, length = 100)

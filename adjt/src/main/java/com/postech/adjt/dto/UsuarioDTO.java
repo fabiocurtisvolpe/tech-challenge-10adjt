@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
 public class UsuarioDTO extends BaseDTO {
 
     @NotBlank(message = "O nome não pode estar em branco")
-    @Size(max = 100, message = "O nome deve ter até 100 caracteres")
+    @Size(max = 50, message = "O nome deve ter até 50 caracteres")
     private String nome;
 
     @NotBlank(message = "O e-mail não pode estar em branco")
