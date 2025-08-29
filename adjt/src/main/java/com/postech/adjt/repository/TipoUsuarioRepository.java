@@ -15,6 +15,6 @@ public interface TipoUsuarioRepository extends JpaRepository<TipoUsuario, Intege
 
     Optional<TipoUsuario> findByNome(String nome);
     
-    boolean exexistsByNome(String nome);
+    boolean existsByNome(String nome);
     List<Usuario> findByUsuariosId(Integer id);
 }
