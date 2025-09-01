@@ -8,6 +8,7 @@ public class BaseDTO implements Serializable {
     private Integer id;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAlteracao;
+    private Boolean ativo;
 
     public Integer getId() {
         return id;
@@ -26,5 +27,11 @@ public class BaseDTO implements Serializable {
     }
     public void setDataAlteracao(LocalDateTime dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
+    }
+    public Boolean getAtivo() {
+        return ativo;
+    }
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }

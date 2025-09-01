@@ -28,6 +28,9 @@ public class BaseModel implements Serializable {
     @Column(name = "dt_alteracao")
     private LocalDateTime dataAlteracao;
 
+    @Column(name = "ativo")
+    private Boolean ativo;
+
     public Integer getId() {
         return id;
     }
@@ -50,5 +53,13 @@ public class BaseModel implements Serializable {
 
     public void setDataAlteracao(LocalDateTime dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }
