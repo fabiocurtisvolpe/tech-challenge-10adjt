@@ -1,7 +1,11 @@
 package com.postech.adjt.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +48,7 @@ public class TipoUsuarioService {
             TipoUsuario tipoUsuario = this.repository.save(entidade.get());
             return this.mapper.toTipoUsuarioDTO(tipoUsuario);
         }
-        
+
         throw new NotificacaoException("Não foi possível executar a operação.");
     }
 
@@ -55,8 +59,37 @@ public class TipoUsuarioService {
         if (entidade.isPresent()) {
             return this.mapper.toTipoUsuarioDTO(entidade.get());
         }
-        
+
         throw new NotificacaoException("Tipo de Usuário não encontrado.");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public List<TipoUsuarioDTO> listar() {
+
+        List<TipoUsuarioDTO> list = new ArrayList<>();
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "nome");
+        List<TipoUsuario> tipoUsuarios = this.repository.findAll(sort);
+
+        if (!tipoUsuarios.isEmpty()) {
+            return tipoUsuarios.stream().map(this.mapper::toTipoUsuarioDTO).collect(Collectors.toList());
+        }
+
+        return list;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public TipoUsuarioDTO ativarInativar(Integer id) {
+
+        Optional<TipoUsuario> entidade = this.repository.findById(id);
+        if (entidade.isPresent()) {
+            boolean ativo = entidade.get().getAtivo();
+            entidade.get().setAtivo(!ativo);
+            TipoUsuario tipoUsuario = this.repository.save(entidade.get());
+            return this.mapper.toTipoUsuarioDTO(tipoUsuario);
+        }
+
+        throw new NotificacaoException("Não foi possível executar a operação.");
     }
 
     private void validarCriarAtualizar(TipoUsuarioDTO dto) {
