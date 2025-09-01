@@ -6,11 +6,10 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
-import com.postech.adjt.model.TipoUsuario;
 
 public class SpecificationGenerico {
 
-    public static Specification<TipoUsuario> comFiltro(FiltroGenericoDTO filtro) {
+    public static <T> Specification<T> comFiltro(FiltroGenericoDTO filtro) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
