@@ -5,6 +5,7 @@ import com.postech.adjt.service.TipoUsuarioService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,11 @@ public class TipoUsuarioController {
     @PutMapping("/{id}")
     public TipoUsuarioDTO atualizar(@PathVariable Integer id, @RequestBody TipoUsuarioDTO dto) {
         return this.service.atualizar(id, dto);
+    }
+
+    @GetMapping("/{id}")
+    public TipoUsuarioDTO buscar(@PathVariable Integer id) {
+        return this.service.buscar(id);
     }
 
 }

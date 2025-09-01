@@ -48,6 +48,17 @@ public class TipoUsuarioService {
         throw new NotificacaoException("Não foi possível executar a operação.");
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public TipoUsuarioDTO buscar(Integer id) {
+
+        Optional<TipoUsuario> entidade = this.repository.findById(id);
+        if (entidade.isPresent()) {
+            return this.mapper.toTipoUsuarioDTO(entidade.get());
+        }
+        
+        throw new NotificacaoException("Tipo de Usuário não encontrado.");
+    }
+
     private void validarCriarAtualizar(TipoUsuarioDTO dto) {
         Optional<TipoUsuario> tipoUsuario = this.repository.findByNome(dto.getNome());
         if ((tipoUsuario.isPresent()) && ((dto.getId() == null) || (dto.getId() != tipoUsuario.get().getId()))) {
