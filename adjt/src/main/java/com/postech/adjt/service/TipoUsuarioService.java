@@ -5,15 +5,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.exception.NotificacaoException;
 import com.postech.adjt.mapper.TipoUsuarioMapper;
 import com.postech.adjt.model.TipoUsuario;
 import com.postech.adjt.repository.TipoUsuarioRepository;
+import com.postech.adjt.specification.SpecificationGenerico;
 
 @Service
 public class TipoUsuarioService {
@@ -76,6 +83,20 @@ public class TipoUsuarioService {
         }
 
         return list;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Page<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "nome");
+        Pageable pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho(), sort);
+        Specification<TipoUsuario> spec = SpecificationGenerico.comFiltro(filtro);
+
+        Page<TipoUsuario> paginaTipoUsuario = this.repository.findAll(spec, pageable);
+
+        return paginaTipoUsuario.map(this.mapper::toTipoUsuarioDTO);
+
+        
     }
 
     @Transactional(rollbackFor = Exception.class)

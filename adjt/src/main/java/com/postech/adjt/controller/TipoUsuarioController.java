@@ -1,5 +1,6 @@
 package com.postech.adjt.controller;
 
+import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.service.TipoUsuarioService;
 
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,11 @@ public class TipoUsuarioController {
     @GetMapping("/listar")
     public List<TipoUsuarioDTO> listar() {
         return this.service.listar();
+    }
+
+    @PostMapping("/paginado")
+    public Page<TipoUsuarioDTO> paginado(@RequestBody FiltroGenericoDTO filtro) {
+        return this.service.listarPaginado(filtro);
     }
 
     @DeleteMapping("/{id}")
