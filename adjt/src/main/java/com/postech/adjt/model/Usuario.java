@@ -82,4 +82,9 @@ public class Usuario extends BaseModel {
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
     }
+
+    public void adicionarEndereco(Endereco endereco) {
+        endereco.setUsuario(this);
+        this.enderecos.add(endereco);
+    }
 }

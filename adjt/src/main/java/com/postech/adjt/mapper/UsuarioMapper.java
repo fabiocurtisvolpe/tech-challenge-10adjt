@@ -70,19 +70,10 @@ public class UsuarioMapper {
         TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toTipoUsuario(dto.getTipoUsuario());
         entidade.setTipoUsuario(tipoUsuario);
 
-        if (!dto.getEnderecos().isEmpty()) {
-            List<Endereco> listEndereco = new ArrayList<>();
-            dto.getEnderecos().forEach(endereco -> {
-                listEndereco.add(this.toEndereco(endereco));
-            });
-
-            entidade.setEnderecos(listEndereco);
-        }
-
         return entidade;
     }
 
-    private EnderecoDTO toEnderecoDTO(Endereco entidade) {
+    public EnderecoDTO toEnderecoDTO(Endereco entidade) {
         EnderecoDTO dto = new EnderecoDTO();
         dto.setId(entidade.getId());
         dto.setDataCriacao(entidade.getDataAlteracao());

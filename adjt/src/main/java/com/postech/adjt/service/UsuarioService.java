@@ -43,6 +43,17 @@ public class UsuarioService {
         this.validarCriarAtualizar(dto);
 
         Usuario usuario = this.repository.save(this.mapper.toUsuario(dto));
+
+        if (!dto.getEnderecos().isEmpty()) {
+
+            dto.getEnderecos().forEach(endereco -> {
+                usuario.adicionarEndereco(this.mapper.toEndereco(endereco));
+            });
+
+            Usuario usuarioEndereco = this.repository.save(usuario);
+            return this.mapper.toUsuarioDTO(usuarioEndereco);
+        }
+
         return this.mapper.toUsuarioDTO(usuario);
     }
 
@@ -62,16 +73,16 @@ public class UsuarioService {
             entidade.get().setTipoUsuario(tipoUsuario);
 
             if (!dto.getEnderecos().isEmpty()) {
-                List<Endereco> listEndereco = new ArrayList<>();
+
                 dto.getEnderecos().forEach(endereco -> {
-                    listEndereco.add(this.mapper.toEndereco(endereco));
+                    entidade.get().adicionarEndereco(this.mapper.toEndereco(endereco));
                 });
 
-                entidade.get().setEnderecos(listEndereco);
+                Usuario usuarioEndereco = this.repository.save(entidade.get());
+                return this.mapper.toUsuarioDTO(usuarioEndereco);
             }
 
-            Usuario usuario = this.repository.save(entidade.get());
-            return this.mapper.toUsuarioDTO(usuario);
+            return this.mapper.toUsuarioDTO(entidade.get());
         }
 
         throw new NotificacaoException("Não foi possível executar a operação.");
