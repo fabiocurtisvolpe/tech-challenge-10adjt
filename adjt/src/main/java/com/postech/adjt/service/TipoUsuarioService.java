@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
@@ -95,8 +94,6 @@ public class TipoUsuarioService {
         Page<TipoUsuario> paginaTipoUsuario = this.repository.findAll(spec, pageable);
 
         return paginaTipoUsuario.map(this.mapper::toTipoUsuarioDTO);
-
-        
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -119,5 +116,4 @@ public class TipoUsuarioService {
             throw new NotificacaoException("Tipo de Usuário já cadastrado.");
         }
     }
-
 }

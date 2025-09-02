@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public class EnderecoDTO extends BaseDTO {
 
     @NotBlank(message = "O logradouro não pode estar em branco")
-    @Size(min = 5, max = 200, message = "O logradouro deve ter entre 5 e 200 caracteres")
+    @Size(max = 200, message = "O logradouro deve ter entre 5 e 200 caracteres")
     private String logradouro;
 
     @Size(max = 5, message = "O número tem que ter até 5 caracteres")
