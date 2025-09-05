@@ -21,17 +21,55 @@ import com.postech.adjt.model.TipoUsuario;
 import com.postech.adjt.repository.TipoUsuarioRepository;
 import com.postech.adjt.specification.SpecificationGenerico;
 
+/**
+ * Serviço responsável pela gestão de tipos de usuário no sistema.
+ * 
+ * <p>
+ * Realiza operações de criação, atualização, busca, listagem e
+ * ativação/inativação
+ * de registros de {@link TipoUsuario}, além de aplicar filtros dinâmicos com
+ * paginação.
+ * </p>
+ * 
+ * <p>
+ * Utiliza mapeamento entre entidade e DTO via {@link TipoUsuarioMapper} e
+ * valida duplicidade de nomes antes de persistir os dados.
+ * </p>
+ * 
+ * @author Fabio
+ * @since 2025-09-05
+ */
 @Service
 public class TipoUsuarioService {
 
+    /**
+     * Repositório JPA para acesso aos dados de tipos de usuário.
+     */
     protected final TipoUsuarioRepository repository;
-    private final TipoUsuarioMapper mapper;
 
+    /**
+     * Mapper para conversão entre {@link TipoUsuario} e {@link TipoUsuarioDTO}.
+     */
+    protected final TipoUsuarioMapper mapper;
+
+    /**
+     * Construtor com injeção de dependências.
+     *
+     * @param repository Repositório de tipos de usuário.
+     * @param mapper     Mapper de tipos de usuário.
+     */
     public TipoUsuarioService(TipoUsuarioRepository repository, TipoUsuarioMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
 
+    /**
+     * Cria um novo tipo de usuário no sistema.
+     *
+     * @param dto DTO com os dados do tipo de usuário.
+     * @return DTO do tipo de usuário criado.
+     * @throws NotificacaoException se o nome já estiver cadastrado.
+     */
     @Transactional(rollbackFor = Exception.class)
     public TipoUsuarioDTO criar(TipoUsuarioDTO dto) {
 
@@ -41,6 +79,15 @@ public class TipoUsuarioService {
         return this.mapper.toTipoUsuarioDTO(tipoUsuario);
     }
 
+    /**
+     * Atualiza os dados de um tipo de usuário existente.
+     *
+     * @param id  ID do tipo de usuário.
+     * @param dto DTO com os novos dados.
+     * @return DTO atualizado.
+     * @throws NotificacaoException se o tipo de usuário não for encontrado ou nome
+     *                              duplicado.
+     */
     @Transactional(rollbackFor = Exception.class)
     public TipoUsuarioDTO atualizar(Integer id, TipoUsuarioDTO dto) {
 
@@ -58,6 +105,13 @@ public class TipoUsuarioService {
         throw new NotificacaoException("Não foi possível executar a operação.");
     }
 
+    /**
+     * Busca um tipo de usuário pelo ID.
+     *
+     * @param id Identificador do tipo de usuário.
+     * @return DTO do tipo de usuário encontrado.
+     * @throws NotificacaoException se o tipo de usuário não for encontrado.
+     */
     @Transactional(rollbackFor = Exception.class)
     public TipoUsuarioDTO buscar(Integer id) {
 
@@ -69,6 +123,11 @@ public class TipoUsuarioService {
         throw new NotificacaoException("Tipo de Usuário não encontrado.");
     }
 
+    /**
+     * Lista todos os tipos de usuário ordenados por nome.
+     *
+     * @return Lista de DTOs de tipos de usuário.
+     */
     @Transactional(rollbackFor = Exception.class)
     public List<TipoUsuarioDTO> listar() {
 
@@ -84,6 +143,12 @@ public class TipoUsuarioService {
         return list;
     }
 
+    /**
+     * Lista tipos de usuário com paginação e filtros dinâmicos.
+     *
+     * @param filtro DTO contendo os parâmetros de filtro e paginação.
+     * @return Página de DTOs de tipos de usuário.
+     */
     @Transactional(rollbackFor = Exception.class)
     public Page<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
 
@@ -96,6 +161,13 @@ public class TipoUsuarioService {
         return paginaTipoUsuario.map(this.mapper::toTipoUsuarioDTO);
     }
 
+    /**
+     * Alterna o estado de ativação de um tipo de usuário.
+     *
+     * @param id ID do tipo de usuário.
+     * @return DTO com estado atualizado.
+     * @throws NotificacaoException se o tipo de usuário não for encontrado.
+     */
     @Transactional(rollbackFor = Exception.class)
     public TipoUsuarioDTO ativarInativar(Integer id) {
 
@@ -110,6 +182,12 @@ public class TipoUsuarioService {
         throw new NotificacaoException("Não foi possível executar a operação.");
     }
 
+    /**
+     * Valida se o nome do tipo de usuário já está cadastrado.
+     *
+     * @param dto DTO do tipo de usuário.
+     * @throws NotificacaoException se o nome já estiver em uso.
+     */
     private void validarCriarAtualizar(TipoUsuarioDTO dto) {
         Optional<TipoUsuario> tipoUsuario = this.repository.findByNome(dto.getNome());
         if ((tipoUsuario.isPresent()) && ((dto.getId() == null) || (dto.getId() != tipoUsuario.get().getId()))) {
