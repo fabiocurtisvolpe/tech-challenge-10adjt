@@ -93,7 +93,7 @@ public class UsuarioService {
      * @throws NotificacaoException se o login já estiver cadastrado.
      */
     @Transactional(rollbackFor = Exception.class)
-    UsuarioDTO criar(UsuarioDTO dto) {
+    public UsuarioDTO criar(UsuarioDTO dto) {
 
         this.validarCriarAtualizar(dto);
 
@@ -125,7 +125,7 @@ public class UsuarioService {
      *                              duplicado.
      */
     @Transactional(rollbackFor = Exception.class)
-    UsuarioDTO atualizar(Integer id, UsuarioDTO dto) {
+    public UsuarioDTO atualizar(Integer id, UsuarioDTO dto) {
 
         this.validarCriarAtualizar(dto);
 
@@ -165,7 +165,7 @@ public class UsuarioService {
      * @throws NotificacaoException se o usuário não for encontrado.
      */
     @Transactional(rollbackFor = Exception.class)
-    UsuarioDTO buscar(Integer id) {
+    public UsuarioDTO buscar(Integer id) {
 
         Optional<Usuario> entidade = this.repository.findById(id);
         if (entidade.isPresent()) {
@@ -181,7 +181,7 @@ public class UsuarioService {
      * @return Lista de DTOs de usuários.
      */
     @Transactional(rollbackFor = Exception.class)
-    List<UsuarioDTO> listar() {
+    public List<UsuarioDTO> listar() {
 
         List<UsuarioDTO> list = new ArrayList<>();
 
@@ -202,7 +202,7 @@ public class UsuarioService {
      * @return Página de DTOs de usuários.
      */
     @Transactional(rollbackFor = Exception.class)
-    Page<UsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
+    public Page<UsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
 
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
         Pageable pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho(), sort);
@@ -221,7 +221,7 @@ public class UsuarioService {
      * @throws NotificacaoException se o usuário não for encontrado.
      */
     @Transactional(rollbackFor = Exception.class)
-    UsuarioDTO ativarInativar(Integer id) {
+    public UsuarioDTO ativarInativar(Integer id) {
 
         Optional<Usuario> entidade = this.repository.findById(id);
         if (entidade.isPresent()) {
