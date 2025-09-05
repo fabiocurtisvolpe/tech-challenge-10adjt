@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,17 +31,23 @@ public class UsuarioService {
     private final UsuarioRepository repository;
     private final UsuarioMapper mapper;
     private final TipoUsuarioMapper tipoUsuarioMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository repository, UsuarioMapper mapper, TipoUsuarioMapper tipoUsuarioMapper) {
+    public UsuarioService(UsuarioRepository repository, UsuarioMapper mapper, TipoUsuarioMapper tipoUsuarioMapper,
+            PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.mapper = mapper;
         this.tipoUsuarioMapper = tipoUsuarioMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public UsuarioDTO criar(UsuarioDTO dto) {
 
         this.validarCriarAtualizar(dto);
+
+        String senhaCodificada = passwordEncoder.encode(dto.getSenha());
+        dto.setSenha(senhaCodificada);
 
         Usuario usuario = this.repository.save(this.mapper.toUsuario(dto));
 
@@ -67,7 +74,9 @@ public class UsuarioService {
             entidade.get().setNome(dto.getNome());
             entidade.get().setEmail(dto.getEmail());
             entidade.get().setLogin(dto.getLogin());
-            entidade.get().setSenha(dto.getSenha());
+
+            String senhaCodificada = passwordEncoder.encode(dto.getSenha());
+            entidade.get().setSenha(senhaCodificada);
 
             TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toTipoUsuario(dto.getTipoUsuario());
             entidade.get().setTipoUsuario(tipoUsuario);

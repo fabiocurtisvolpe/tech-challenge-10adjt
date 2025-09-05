@@ -27,7 +27,7 @@ public class UsuarioController {
         this.service = service;
     }
 
-    @PostMapping
+    @PostMapping("/criar")
     public UsuarioDTO criar(@RequestBody UsuarioDTO dto) {
         return this.service.criar(dto);
     }
