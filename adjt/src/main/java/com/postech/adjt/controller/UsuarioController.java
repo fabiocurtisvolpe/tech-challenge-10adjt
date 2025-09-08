@@ -136,7 +136,7 @@ public class UsuarioController {
      * @param id ID do usuário.
      * @return DTO com o estado atualizado.
      */
-    @Operation(summary = "Usuario", description = "Realiza a exclusão lógica de um usuário através do id")
+    @Operation(summary = "Usuario", description = "Realiza a exclusão lógica de um usuario através do id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),

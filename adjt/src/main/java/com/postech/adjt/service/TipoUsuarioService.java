@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
+import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
 import com.postech.adjt.mapper.TipoUsuarioMapper;
 import com.postech.adjt.model.TipoUsuario;
@@ -191,7 +192,7 @@ public class TipoUsuarioService {
     private void validarCriarAtualizar(TipoUsuarioDTO dto) {
         Optional<TipoUsuario> tipoUsuario = this.repository.findByNome(dto.getNome());
         if ((tipoUsuario.isPresent()) && ((dto.getId() == null) || (dto.getId() != tipoUsuario.get().getId()))) {
-            throw new NotificacaoException("Tipo de Usuário já cadastrado.");
+            throw new DuplicateEntityException("Tipo de Usuário já cadastrado.");
         }
     }
 }
