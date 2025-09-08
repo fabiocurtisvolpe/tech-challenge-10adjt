@@ -50,21 +50,21 @@ public class AppUserDetailsService implements UserDetailsService {
      *
      * <p>
      * Busca o usuário no banco de dados e, se encontrado, retorna uma instância
-     * de {@link User} com login, senha e lista de autoridades (vazia por padrão).
+     * de {@link User} com e-mail, senha e lista de autoridades (vazia por padrão).
      * </p>
      *
-     * @param login Nome de usuário informado no processo de autenticação.
+     * @param login E-mail de usuário informado no processo de autenticação.
      * @return Detalhes do usuário para autenticação.
      * @throws UsernameNotFoundException Se o usuário não for encontrado.
      */
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Usuario usuario = usuarioRepository.findByLogin(login)
+        Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         return new User(
-                usuario.getLogin(),
+                usuario.getEmail(),
                 usuario.getSenha(),
                 Collections.emptyList());
     }

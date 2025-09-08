@@ -2,7 +2,15 @@ package com.postech.adjt.controller;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.UsuarioDTO;
+import com.postech.adjt.model.Usuario;
 import com.postech.adjt.service.UsuarioService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,8 +65,15 @@ public class UsuarioController {
      * @param dto DTO contendo os dados do usuário.
      * @return DTO do usuário criado.
      */
+    @Operation(summary = "Usuario", description = "Realiza o cadastro de um novo usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
     @PostMapping("/criar")
-    public UsuarioDTO criar(@RequestBody UsuarioDTO dto) {
+    public UsuarioDTO criar(@RequestBody @Valid UsuarioDTO dto) {
         return this.service.criar(dto);
     }
 
@@ -69,8 +84,15 @@ public class UsuarioController {
      * @param dto DTO com os novos dados.
      * @return DTO atualizado.
      */
+    @Operation(summary = "Usuario", description = "Realiza atualização de um usuário através do id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
     @PutMapping("/{id}")
-    public UsuarioDTO atualizar(@PathVariable Integer id, @RequestBody UsuarioDTO dto) {
+    public UsuarioDTO atualizar(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioDTO dto) {
         return this.service.atualizar(id, dto);
     }
 
@@ -80,19 +102,15 @@ public class UsuarioController {
      * @param id Identificador do usuário.
      * @return DTO do usuário encontrado.
      */
+    @Operation(summary = "Usuario", description = "Realiza busca de um usuário através do id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
     @GetMapping("/{id}")
-    public UsuarioDTO buscar(@PathVariable Integer id) {
+    public UsuarioDTO buscar(@PathVariable @Valid Integer id) {
         return this.service.buscar(id);
-    }
-
-    /**
-     * Endpoint para listar todos os usuários.
-     *
-     * @return Lista de DTOs de usuários.
-     */
-    @GetMapping("/listar")
-    public List<UsuarioDTO> listar() {
-        return this.service.listar();
     }
 
     /**
@@ -101,8 +119,14 @@ public class UsuarioController {
      * @param filtro DTO contendo os parâmetros de filtro e paginação.
      * @return Página de DTOs de usuários.
      */
+    @Operation(summary = "Usuario", description = "Realiza busca paginada de usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
     @PostMapping("/paginado")
-    public Page<UsuarioDTO> paginado(@RequestBody FiltroGenericoDTO filtro) {
+    public Page<UsuarioDTO> paginado(@RequestBody @Valid FiltroGenericoDTO filtro) {
         return this.service.listarPaginado(filtro);
     }
 
@@ -112,8 +136,14 @@ public class UsuarioController {
      * @param id ID do usuário.
      * @return DTO com o estado atualizado.
      */
+    @Operation(summary = "Usuario", description = "Realiza a exclusão lógica de um usuário através do id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
     @DeleteMapping("/{id}")
-    public UsuarioDTO ativarInativar(@PathVariable Integer id) {
+    public UsuarioDTO ativarInativar(@PathVariable @Valid Integer id) {
         return this.service.ativarInativar(id);
     }
 }

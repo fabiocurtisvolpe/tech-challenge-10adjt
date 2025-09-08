@@ -1,5 +1,6 @@
 package com.postech.adjt.jwt.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.postech.adjt.controller.exception.CustomAccessDeniedHandler;
+import com.postech.adjt.controller.exception.CustomAuthenticationEntryPoint;
 import com.postech.adjt.jwt.filter.JwtAuthenticationFilter;
 import com.postech.adjt.jwt.service.AppUserDetailsService;
 
@@ -41,13 +44,20 @@ public class SecurityConfig {
      */
     private final AppUserDetailsService appUserDetailsService;
 
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+
     /**
      * Construtor com injeção do serviço de usuários.
      *
      * @param appUserDetailsService Serviço de autenticação de usuários.
      */
-    public SecurityConfig(AppUserDetailsService appUserDetailsService) {
+    public SecurityConfig(AppUserDetailsService appUserDetailsService, CustomAccessDeniedHandler accessDeniedHandler,
+            CustomAuthenticationEntryPoint authenticationEntryPoint) {
         this.appUserDetailsService = appUserDetailsService;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     /**
@@ -75,6 +85,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login/**", "/api/usuario/criar").permitAll()
                         .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

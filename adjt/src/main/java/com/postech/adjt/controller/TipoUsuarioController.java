@@ -2,7 +2,15 @@ package com.postech.adjt.controller;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
+import com.postech.adjt.jwt.model.AuthResponse;
+import com.postech.adjt.model.Usuario;
 import com.postech.adjt.service.TipoUsuarioService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,6 +66,12 @@ public class TipoUsuarioController {
      * @param dto DTO contendo os dados do tipo de usuário.
      * @return DTO do tipo de usuário criado.
      */
+    @Operation(summary = "Usuario", description = "Realiza o cadastro de um novo usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
     @PostMapping
     public TipoUsuarioDTO criar(@RequestBody TipoUsuarioDTO dto) {
         return this.service.criar(dto);

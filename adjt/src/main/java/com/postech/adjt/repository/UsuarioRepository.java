@@ -40,14 +40,14 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>, JpaS
     Optional<Usuario> findByNome(String nome);
 
     /**
-     * Busca um {@link Usuario} pelo login.
+     * Busca um {@link Usuario} pelo e-mail.
      *
      * <p>
      * Esse método é utilizado principalmente no processo de autenticação.
      * </p>
      *
-     * @param login Login do usuário.
+     * @param email E-mail do usuário.
      * @return {@link Optional} contendo o usuário, se encontrado.
      */
-    Optional<Usuario> findByLogin(String login);
+    Optional<Usuario> findByEmail(String email);
 }

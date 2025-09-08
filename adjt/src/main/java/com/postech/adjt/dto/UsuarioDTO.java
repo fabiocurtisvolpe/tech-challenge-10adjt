@@ -19,10 +19,6 @@ public class UsuarioDTO extends BaseDTO {
     @Size(max = 50, message = "O e-mail deve ter até 50 caracteres")
     private String email;
 
-    @NotBlank(message = "O login não pode estar em branco")
-    @Size(max = 50, message = "O login deve ter até 50 caracteres")
-    private String login;
-
     @NotBlank(message = "A senha não pode estar em branco")
     @Size(max = 50, message = "A senha deve ter até 50 caracteres")
     private String senha;
@@ -48,14 +44,6 @@ public class UsuarioDTO extends BaseDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getSenha() {

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.UsuarioDTO;
+import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
 import com.postech.adjt.mapper.TipoUsuarioMapper;
 import com.postech.adjt.mapper.UsuarioMapper;
@@ -133,7 +134,6 @@ public class UsuarioService {
         if (entidade.isPresent()) {
             entidade.get().setNome(dto.getNome());
             entidade.get().setEmail(dto.getEmail());
-            entidade.get().setLogin(dto.getLogin());
 
             String senhaCodificada = passwordEncoder.encode(dto.getSenha());
             entidade.get().setSenha(senhaCodificada);
@@ -235,15 +235,15 @@ public class UsuarioService {
     }
 
     /**
-     * Valida se o login do usuário já está cadastrado.
+     * Valida se o e-mail do usuário já está cadastrado.
      *
      * @param dto DTO do usuário.
-     * @throws NotificacaoException se o login já estiver em uso.
+     * @throws DuplicateEntityException se o e-mail já estiver em uso.
      */
     private void validarCriarAtualizar(UsuarioDTO dto) {
-        Optional<Usuario> usuario = this.repository.findByLogin(dto.getLogin());
+        Optional<Usuario> usuario = this.repository.findByEmail(dto.getEmail());
         if ((usuario.isPresent()) && ((dto.getId() == null) || (dto.getId() != usuario.get().getId()))) {
-            throw new NotificacaoException("Usuário já cadastrado.");
+            throw new DuplicateEntityException("Usuário já cadastrado.");
         }
     }
 }

@@ -22,9 +22,6 @@ public class Usuario extends BaseModel {
     @Column(name = "e_mail", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "login", nullable = false, length = 50)
-    private String login;
-
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
 
@@ -49,14 +46,6 @@ public class Usuario extends BaseModel {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getSenha() {

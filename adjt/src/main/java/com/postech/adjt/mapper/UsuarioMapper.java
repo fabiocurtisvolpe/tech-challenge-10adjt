@@ -69,7 +69,6 @@ public class UsuarioMapper {
         dto.setAtivo(entidade.getAtivo());
         dto.setNome(entidade.getNome());
         dto.setEmail(entidade.getEmail());
-        dto.setLogin(entidade.getLogin());
         dto.setSenha(entidade.getSenha());
 
         TipoUsuarioDTO tipoUsuarioDTO = this.tipoUsuarioMapper.toTipoUsuarioDTO(entidade.getTipoUsuario());
@@ -110,7 +109,6 @@ public class UsuarioMapper {
         entidade.setAtivo(dto.getAtivo());
         entidade.setNome(dto.getNome());
         entidade.setEmail(dto.getEmail());
-        entidade.setLogin(dto.getLogin());
         entidade.setSenha(dto.getSenha());
 
         TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toTipoUsuario(dto.getTipoUsuario());
