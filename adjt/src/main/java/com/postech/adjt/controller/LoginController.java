@@ -13,6 +13,15 @@ import com.postech.adjt.jwt.model.AuthResponse;
 import com.postech.adjt.jwt.service.AppUserDetailsService;
 import com.postech.adjt.jwt.service.JwtService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 /**
  * Controlador responsável pela autenticação de usuários via JWT.
  * 
@@ -31,6 +40,8 @@ import com.postech.adjt.jwt.service.JwtService;
  * @author Fabio
  * @since 2025-09-05
  */
+
+@Tag(name = "Login", description = "API de gerenciamento de login")
 @RestController
 @RequestMapping("/api/login")
 public class LoginController {
@@ -75,10 +86,18 @@ public class LoginController {
      * @param request Objeto contendo login e senha.
      * @return {@link AuthResponse} contendo o token JWT.
      */
+    @Operation(summary = "Login", description = "Realiza login do usuário e retorna token JWT para autenticação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login realizado com sucesso", content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
     @PostMapping
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    public AuthResponse login(
+            @Parameter(description = "Credenciais de login", required = true) @RequestBody @Valid AuthRequest request) {
         authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.login(), request.senha()));
+                new UsernamePasswordAuthenticationToken(request.login(), request.sehha()));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.login());
         String token = jwtService.generateToken(userDetails);

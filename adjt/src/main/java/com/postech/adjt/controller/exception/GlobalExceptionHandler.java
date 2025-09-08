@@ -1,10 +1,12 @@
-package com.postech.adjt.controller.advise;
+package com.postech.adjt.controller.exception;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +14,14 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.postech.adjt.exception.NotificacaoException;
+
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.FieldError;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * Manipulador global de exceções para a aplicação.
@@ -99,5 +109,93 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         body.put("path", request.getDescription(false).replace("uri=", ""));
 
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Sobrescreve o método padrão para tratar erros de validação com @Valid
+     * Retorna mensagens personalizadas de validação
+     */
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Erro de validação",
+                "Os dados fornecidos são inválidos",
+                HttpStatus.BAD_REQUEST.value(),
+                errors);
+
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    /**
+     * Sobrescreve o método padrão para tratar mensagens não legíveis (JSON
+     * malformado)
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        String message = ex.getMessage();
+        if (message != null && message.contains("Required request body is missing")) {
+            errors.put("body", "Corpo da requisição é obrigatório");
+        } else {
+            errors.put("json", "JSON inválido ou malformado");
+        }
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Erro na requisição",
+                "O corpo da requisição está inválido",
+                HttpStatus.BAD_REQUEST.value(),
+                errors);
+
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    /**
+     * Para validação de constraints em parâmetros (não coberto pelo
+     * ResponseEntityExceptionHandler)
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+            ConstraintViolationException ex) {
+
+        Map<String, String> errors = ex.getConstraintViolations().stream()
+                .collect(Collectors.toMap(
+                        violation -> violation.getPropertyPath().toString(),
+                        ConstraintViolation::getMessage));
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Erro de validação",
+                "Os parâmetros fornecidos são inválidos",
+                HttpStatus.BAD_REQUEST.value(),
+                errors);
+
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    /**
+     * Record para resposta de erro padronizada
+     */
+    public record ErrorResponse(
+            String title,
+            String detail,
+            int status,
+            Map<String, String> errors) {
     }
 }
