@@ -13,15 +13,50 @@ import com.postech.adjt.model.Endereco;
 import com.postech.adjt.model.TipoUsuario;
 import com.postech.adjt.model.Usuario;
 
+/**
+ * Componente responsável por mapear objetos entre as entidades do modelo
+ * e os DTOs utilizados na camada de apresentação.
+ *
+ * <p>
+ * Realiza conversões bidirecionais entre {@link Usuario} e {@link UsuarioDTO},
+ * bem como entre {@link Endereco} e {@link EnderecoDTO}.
+ * </p>
+ *
+ * <p>
+ * Utiliza {@link TipoUsuarioMapper} para mapear o tipo de usuário associado.
+ * </p>
+ *
+ * @author Fabio
+ * @since 2025-09-08
+ */
 @Component
 public class UsuarioMapper {
 
+    /**
+     * Mapper responsável pela conversão entre {@link TipoUsuario} e
+     * {@link TipoUsuarioDTO}.
+     */
     private final TipoUsuarioMapper tipoUsuarioMapper;
 
+    /**
+     * Construtor que injeta o mapper de tipo de usuário.
+     *
+     * @param tipoUsuarioMapper Mapper para {@link TipoUsuario}.
+     */
     public UsuarioMapper(TipoUsuarioMapper tipoUsuarioMapper) {
         this.tipoUsuarioMapper = tipoUsuarioMapper;
     }
 
+    /**
+     * Converte uma entidade {@link Usuario} em um objeto {@link UsuarioDTO}.
+     *
+     * <p>
+     * Inclui dados básicos, tipo de usuário e lista de endereços (se houver).
+     * </p>
+     *
+     * @param entidade Entidade {@link Usuario} a ser convertida.
+     * @return Objeto {@link UsuarioDTO} correspondente.
+     */
     public UsuarioDTO toUsuarioDTO(Usuario entidade) {
         if (Objects.isNull(entidade)) {
             return null;
@@ -52,6 +87,17 @@ public class UsuarioMapper {
         return dto;
     }
 
+    /**
+     * Converte um objeto {@link UsuarioDTO} em uma entidade {@link Usuario}.
+     *
+     * <p>
+     * Inclui dados básicos e tipo de usuário. Endereços não são mapeados neste
+     * método.
+     * </p>
+     *
+     * @param dto Objeto {@link UsuarioDTO} a ser convertido.
+     * @return Entidade {@link Usuario} correspondente.
+     */
     public Usuario toUsuario(UsuarioDTO dto) {
         if (Objects.isNull(dto)) {
             return null;
@@ -73,6 +119,12 @@ public class UsuarioMapper {
         return entidade;
     }
 
+    /**
+     * Converte uma entidade {@link Endereco} em um objeto {@link EnderecoDTO}.
+     *
+     * @param entidade Entidade {@link Endereco} a ser convertida.
+     * @return Objeto {@link EnderecoDTO} correspondente.
+     */
     public EnderecoDTO toEnderecoDTO(Endereco entidade) {
         EnderecoDTO dto = new EnderecoDTO();
         dto.setId(entidade.getId());
@@ -92,6 +144,12 @@ public class UsuarioMapper {
         return dto;
     }
 
+    /**
+     * Converte um objeto {@link EnderecoDTO} em uma entidade {@link Endereco}.
+     *
+     * @param dto Objeto {@link EnderecoDTO} a ser convertido.
+     * @return Entidade {@link Endereco} correspondente.
+     */
     public Endereco toEndereco(EnderecoDTO dto) {
         Endereco entidade = new Endereco();
         entidade.setId(dto.getId());
