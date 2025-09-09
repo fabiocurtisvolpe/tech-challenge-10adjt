@@ -1,6 +1,8 @@
 package com.postech.adjt.jwt.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,6 +42,12 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final List<String> SWAGGER_PATHS = Arrays.asList(
+            "/swagger-ui/",
+            "/v3/api-docs",
+            "/swagger-resources/",
+            "/webjars/");
 
     /**
      * Serviço responsável por operações com JWT, como extração de usuário e
@@ -83,6 +91,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+
+        // Pular autenticação JWT para endpoints do Swagger
+        if (SWAGGER_PATHS.stream().anyMatch(path::startsWith)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
