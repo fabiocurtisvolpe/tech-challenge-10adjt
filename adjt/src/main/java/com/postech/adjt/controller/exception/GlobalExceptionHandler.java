@@ -19,10 +19,12 @@ import com.postech.adjt.exception.NotificacaoException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 
+import jakarta.annotation.Nonnull;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
@@ -122,10 +124,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
+            @NonNull MethodArgumentNotValidException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
 
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -149,10 +151,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
+            @NonNull HttpMessageNotReadableException ex,
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
 
         Map<String, String> errors = new HashMap<>();
 
