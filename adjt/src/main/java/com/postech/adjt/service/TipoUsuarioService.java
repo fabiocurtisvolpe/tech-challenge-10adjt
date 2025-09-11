@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
+import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
@@ -151,15 +152,16 @@ public class TipoUsuarioService {
      * @return Página de DTOs de tipos de usuário.
      */
     @Transactional(rollbackFor = Exception.class)
-    public Page<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
+    public ResultadoPaginacaoDTO<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
 
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
         Pageable pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho(), sort);
         Specification<TipoUsuario> spec = SpecificationGenerico.comFiltro(filtro);
 
         Page<TipoUsuario> paginaTipoUsuario = this.repository.findAll(spec, pageable);
+        Page<TipoUsuarioDTO> paginaDTO = paginaTipoUsuario.map(this.mapper::toTipoUsuarioDTO);
 
-        return paginaTipoUsuario.map(this.mapper::toTipoUsuarioDTO);
+        return new ResultadoPaginacaoDTO<>(paginaDTO.getContent(), (int) paginaDTO.getTotalElements());
     }
 
     /**

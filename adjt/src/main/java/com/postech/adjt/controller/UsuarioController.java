@@ -1,6 +1,7 @@
 package com.postech.adjt.controller;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
+import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.UsuarioDTO;
 import com.postech.adjt.model.Usuario;
 import com.postech.adjt.service.UsuarioService;
@@ -126,7 +127,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PostMapping("/paginado")
-    public Page<UsuarioDTO> paginado(@RequestBody @Valid FiltroGenericoDTO filtro) {
+    public ResultadoPaginacaoDTO<UsuarioDTO> paginado(@RequestBody @Valid FiltroGenericoDTO filtro) {
         return this.service.listarPaginado(filtro);
     }
 

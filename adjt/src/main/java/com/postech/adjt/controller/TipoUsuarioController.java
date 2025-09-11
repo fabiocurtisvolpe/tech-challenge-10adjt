@@ -1,6 +1,7 @@
 package com.postech.adjt.controller;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
+import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.jwt.model.AuthResponse;
 import com.postech.adjt.model.TipoUsuario;
@@ -107,7 +108,7 @@ public class TipoUsuarioController {
      */
     @Operation(summary = "TipoUsuario", description = "Realiza busca de um tipo de usuario pelo id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = TipoUsuario.class))),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
@@ -124,12 +125,12 @@ public class TipoUsuarioController {
      */
     @Operation(summary = "TipoUsuario", description = "Realiza busca paginada de tipo de usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = TipoUsuario.class))),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PostMapping("/paginado")
-    public Page<TipoUsuarioDTO> paginado(@RequestBody FiltroGenericoDTO filtro) {
+    public ResultadoPaginacaoDTO<TipoUsuarioDTO> paginado(@RequestBody FiltroGenericoDTO filtro) {
         return this.service.listarPaginado(filtro);
     }
 
@@ -141,7 +142,7 @@ public class TipoUsuarioController {
      */
     @Operation(summary = "TipoUsuario", description = "Realiza a exclusão lógica de um tipo de usuario através do id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = TipoUsuario.class))),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
