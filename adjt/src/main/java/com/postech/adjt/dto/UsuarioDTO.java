@@ -19,7 +19,6 @@ public class UsuarioDTO extends BaseDTO {
     @Size(max = 50, message = "O e-mail deve ter até 50 caracteres")
     private String email;
 
-    @NotBlank(message = "A senha não pode estar em branco")
     @Size(max = 50, message = "A senha deve ter até 50 caracteres")
     private String senha;
 

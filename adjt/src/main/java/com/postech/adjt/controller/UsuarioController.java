@@ -87,7 +87,7 @@ public class UsuarioController {
      */
     @Operation(summary = "Usuario", description = "Realiza atualização de um usuário através do id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
             @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
@@ -95,6 +95,24 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public UsuarioDTO atualizar(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioDTO dto) {
         return this.service.atualizar(id, dto);
+    }
+
+    /**
+     * Endpoint para atualização dos dados de um usuário existente.
+     *
+     * @param id        ID do usuário a ser atualizado.
+     * @param senhaNova Senha novo do usuário.
+     * @return DTO atualizado.
+     */
+    @Operation(summary = "Usuario", description = "Realiza a atualização/modificação da senha de um usuário através do id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Atualização realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+    })
+    @PutMapping("/alterar-senha/{id}")
+    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid String senhaNova) {
+        return this.service.atualizarSenha(id, senhaNova);
     }
 
     /**

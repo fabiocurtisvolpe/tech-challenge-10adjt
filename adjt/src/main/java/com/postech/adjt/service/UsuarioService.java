@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
-import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.dto.UsuarioDTO;
 import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
+import com.postech.adjt.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.mapper.TipoUsuarioMapper;
 import com.postech.adjt.mapper.UsuarioMapper;
 import com.postech.adjt.model.TipoUsuario;
@@ -93,29 +93,36 @@ public class UsuarioService {
      *
      * @param dto DTO com os dados do usuário.
      * @return DTO do usuário criado.
-     * @throws NotificacaoException se o login já estiver cadastrado.
+     * @throws DuplicateEntityException se o login já estiver cadastrado.
+     * @throws NotificacaoException     outro erro.
      */
     @Transactional(rollbackFor = Exception.class)
     public UsuarioDTO criar(UsuarioDTO dto) {
 
-        this.validarCriarAtualizar(dto);
+        try {
 
-        String senhaCodificada = passwordEncoder.encode(dto.getSenha());
-        dto.setSenha(senhaCodificada);
+            String senhaCodificada = passwordEncoder.encode(dto.getSenha());
+            dto.setSenha(senhaCodificada);
 
-        Usuario usuario = this.repository.save(this.mapper.toUsuario(dto));
+            Usuario usuario = this.repository.save(this.mapper.toUsuario(dto));
 
-        if (!dto.getEnderecos().isEmpty()) {
+            if (!dto.getEnderecos().isEmpty()) {
 
-            dto.getEnderecos().forEach(endereco -> {
-                usuario.adicionarEndereco(this.mapper.toEndereco(endereco));
-            });
+                dto.getEnderecos().forEach(endereco -> {
+                    usuario.adicionarEndereco(this.mapper.toEndereco(endereco));
+                });
 
-            Usuario usuarioEndereco = this.repository.save(usuario);
-            return this.mapper.toUsuarioDTO(usuarioEndereco);
+                Usuario usuarioEndereco = this.repository.save(usuario);
+                return this.mapper.toUsuarioDTO(usuarioEndereco);
+            }
+
+            return this.mapper.toUsuarioDTO(usuario);
+
+        } catch (DuplicateEntityException e) {
+            throw new DuplicateEntityException("Usuário com login '" + dto.getEmail() + "' já cadastrado.");
+        } catch (Exception e) {
+            throw new NotificacaoException("Não foi possível executar a operação.");
         }
-
-        return this.mapper.toUsuarioDTO(usuario);
     }
 
     /**
@@ -124,36 +131,64 @@ public class UsuarioService {
      * @param id  ID do usuário a ser atualizado.
      * @param dto DTO com os novos dados.
      * @return DTO atualizado.
-     * @throws NotificacaoException se o usuário não for encontrado ou login
-     *                              duplicado.
+     * @throws DuplicateEntityException se o login já estiver cadastrado.
+     * @throws NotificacaoException     outro erro.
      */
     @Transactional(rollbackFor = Exception.class)
     public UsuarioDTO atualizar(Integer id, UsuarioDTO dto) {
 
-        this.validarCriarAtualizar(dto);
+        try {
+            String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
+            Optional<Usuario> entidade = this.repository.findById(id);
 
-        Optional<Usuario> entidade = this.repository.findById(id);
-        if (entidade.isPresent()) {
-            entidade.get().setNome(dto.getNome());
-            entidade.get().setEmail(dto.getEmail());
+            if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
+                entidade.get().setNome(dto.getNome());
+                entidade.get().setEmail(dto.getEmail());
 
-            String senhaCodificada = passwordEncoder.encode(dto.getSenha());
-            entidade.get().setSenha(senhaCodificada);
+                TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toTipoUsuario(dto.getTipoUsuario());
+                entidade.get().setTipoUsuario(tipoUsuario);
 
-            TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toTipoUsuario(dto.getTipoUsuario());
-            entidade.get().setTipoUsuario(tipoUsuario);
+                if (!dto.getEnderecos().isEmpty()) {
 
-            if (!dto.getEnderecos().isEmpty()) {
+                    entidade.get().getEnderecos().clear();
+                    dto.getEnderecos().forEach(endereco -> {
+                        entidade.get().adicionarEndereco(this.mapper.toEndereco(endereco));
+                    });
+                }
 
-                dto.getEnderecos().forEach(endereco -> {
-                    entidade.get().adicionarEndereco(this.mapper.toEndereco(endereco));
-                });
-
-                Usuario usuarioEndereco = this.repository.save(entidade.get());
-                return this.mapper.toUsuarioDTO(usuarioEndereco);
+                Usuario usuario = this.repository.save(entidade.get());
+                return this.mapper.toUsuarioDTO(usuario);
             }
 
-            return this.mapper.toUsuarioDTO(entidade.get());
+            return null;
+
+        } catch (DuplicateEntityException e) {
+            throw new DuplicateEntityException("Usuário com login '" + dto.getEmail() + "' já cadastrado.");
+        } catch (Exception e) {
+            throw new NotificacaoException("Não foi possível executar a operação.");
+        }
+    }
+
+    /**
+     * Atualiza a senha do usuário existente.
+     *
+     * @param id        ID do usuário a ser atualizado.
+     * @param novaSenha a nova senha do usuário.
+     * @return boolean - true para ok.
+     * @throws NotificacaoException qualquer outro erro.
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean atualizarSenha(Integer id, String senhaNova) {
+
+        String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
+        Optional<Usuario> entidade = this.repository.findById(id);
+
+        if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
+
+            String senhaCodificada = passwordEncoder.encode(senhaNova);
+            entidade.get().setSenha(senhaCodificada);
+            this.repository.save(entidade.get());
+            return true;
         }
 
         throw new NotificacaoException("Não foi possível executar a operação.");
@@ -221,13 +256,14 @@ public class UsuarioService {
      *
      * @param id ID do usuário.
      * @return DTO do usuário com estado atualizado.
-     * @throws NotificacaoException se o usuário não for encontrado.
+     * @throws NotificacaoException qualquer erro.
      */
     @Transactional(rollbackFor = Exception.class)
     public UsuarioDTO ativarInativar(Integer id) {
 
+        String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
         Optional<Usuario> entidade = this.repository.findById(id);
-        if (entidade.isPresent()) {
+        if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
             boolean ativo = entidade.get().getAtivo();
             entidade.get().setAtivo(!ativo);
             Usuario usuario = this.repository.save(entidade.get());
@@ -235,18 +271,5 @@ public class UsuarioService {
         }
 
         throw new NotificacaoException("Não foi possível executar a operação.");
-    }
-
-    /**
-     * Valida se o e-mail do usuário já está cadastrado.
-     *
-     * @param dto DTO do usuário.
-     * @throws DuplicateEntityException se o e-mail já estiver em uso.
-     */
-    private void validarCriarAtualizar(UsuarioDTO dto) {
-        Optional<Usuario> usuario = this.repository.findByEmail(dto.getEmail());
-        if ((usuario.isPresent()) && ((dto.getId() == null) || (dto.getId() != usuario.get().getId()))) {
-            throw new DuplicateEntityException("Usuário já cadastrado.");
-        }
     }
 }

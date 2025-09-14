@@ -69,7 +69,6 @@ public class UsuarioMapper {
         dto.setAtivo(entidade.getAtivo());
         dto.setNome(entidade.getNome());
         dto.setEmail(entidade.getEmail());
-        dto.setSenha(entidade.getSenha());
 
         TipoUsuarioDTO tipoUsuarioDTO = this.tipoUsuarioMapper.toTipoUsuarioDTO(entidade.getTipoUsuario());
         dto.setTipoUsuario(tipoUsuarioDTO);
