@@ -56,6 +56,9 @@ public class UsuarioService {
      */
     private final UsuarioRepository repository;
 
+    /**
+     * Serviço para operações relacionadas a tipos de usuário.
+     */
     private final TipoUsuarioService tipoUsuarioService;
 
     /**
@@ -290,7 +293,7 @@ public class UsuarioService {
      * Alterna o estado de ativação de um usuário.
      *
      * @param id ID do usuário.
-     * @return DTO do usuário com estado atualizado.
+     * @return true se a operação foi bem-sucedida.
      * @throws NotificacaoException qualquer erro.
      */
     @Transactional(rollbackFor = Exception.class)

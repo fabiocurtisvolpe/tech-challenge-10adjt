@@ -4,11 +4,14 @@ import java.nio.charset.StandardCharsets;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * Serviço responsável pela geração e validação de tokens JWT.
@@ -55,7 +58,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 1)) // 12h
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 1)) // 1h
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

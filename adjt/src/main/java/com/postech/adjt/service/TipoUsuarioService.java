@@ -20,6 +20,7 @@ import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
+import com.postech.adjt.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.mapper.TipoUsuarioMapper;
 import com.postech.adjt.model.TipoUsuario;
 import com.postech.adjt.repository.TipoUsuarioRepository;
@@ -81,6 +82,9 @@ public class TipoUsuarioService {
         try {
             TipoUsuario tipoUsuario = this.repository.save(this.mapper.toTipoUsuario(dto));
             return this.mapper.toTipoUsuarioDTO(tipoUsuario);
+
+        } catch (NotificacaoException e) {
+            throw e;
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntityException("Tipo de Usuário com nome " + dto.getNome() + " já cadastrado.");
         } catch (Exception e) {
@@ -104,6 +108,11 @@ public class TipoUsuarioService {
 
             Optional<TipoUsuario> entidade = this.repository.findById(id);
             if (entidade.isPresent()) {
+
+                if (!this.podeEditarExcluir(entidade.get())) {
+                    throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+                }
+
                 entidade.get().setNome(dto.getNome());
                 entidade.get().setDescricao(dto.getDescricao());
 
@@ -183,19 +192,26 @@ public class TipoUsuarioService {
      * Alterna o estado de ativação de um tipo de usuário.
      *
      * @param id ID do tipo de usuário.
-     * @return DTO com estado atualizado.
+     * @return true se a operação foi bem-sucedida.
      * @throws NotificacaoException se o tipo de usuário não for encontrado.
      */
     @Transactional(rollbackFor = Exception.class)
-    public TipoUsuarioDTO ativarInativar(Integer id) {
+    public boolean ativarInativar(Integer id) {
 
         try {
             Optional<TipoUsuario> entidade = this.repository.findById(id);
             if (entidade.isPresent()) {
+
+                if (!this.podeEditarExcluir(entidade.get())) {
+                    throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+                }
+
                 boolean ativo = entidade.get().getAtivo();
                 entidade.get().setAtivo(!ativo);
-                TipoUsuario tipoUsuario = this.repository.save(entidade.get());
-                return this.mapper.toTipoUsuarioDTO(tipoUsuario);
+                entidade.get().setDataAlteracao(java.time.LocalDateTime.now());
+
+                this.repository.save(entidade.get());
+                return true;
             }
 
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
@@ -206,5 +222,14 @@ public class TipoUsuarioService {
             throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
 
+    }
+
+    private boolean podeEditarExcluir(TipoUsuario tipoUsuario) {
+        if (((tipoUsuario.getNome().trim().toUpperCase().equals("CLIENTE"))
+                || (tipoUsuario.getNome().trim().toUpperCase().equals("DONORESTAURANTE")))) {
+            return false;
+        }
+
+        return true;
     }
 }

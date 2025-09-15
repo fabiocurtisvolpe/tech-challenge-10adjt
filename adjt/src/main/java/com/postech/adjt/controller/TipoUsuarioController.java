@@ -147,7 +147,7 @@ public class TipoUsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @DeleteMapping("/{id}")
-    public TipoUsuarioDTO ativarInativar(@PathVariable Integer id) {
+    public boolean ativarInativar(@PathVariable Integer id) {
         return this.service.ativarInativar(id);
     }
 }
