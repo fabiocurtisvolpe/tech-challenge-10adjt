@@ -3,6 +3,8 @@ package com.postech.adjt.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.envers.Audited;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
+@Audited
 @Table(schema = "public", name = "tipo_usuario")
 public class TipoUsuario extends BaseModel {
 

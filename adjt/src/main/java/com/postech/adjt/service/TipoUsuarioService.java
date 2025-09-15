@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
@@ -80,8 +81,10 @@ public class TipoUsuarioService {
         try {
             TipoUsuario tipoUsuario = this.repository.save(this.mapper.toTipoUsuario(dto));
             return this.mapper.toTipoUsuarioDTO(tipoUsuario);
-        } catch (DuplicateKeyException e) {
-            throw new DuplicateEntityException("Tipo de Usuário com nome '" + dto.getNome() + "' já cadastrado.");
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEntityException("Tipo de Usuário com nome " + dto.getNome() + " já cadastrado.");
+        } catch (Exception e) {
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
     }
 
@@ -108,12 +111,12 @@ public class TipoUsuarioService {
                 return this.mapper.toTipoUsuarioDTO(tipoUsuario);
             }
 
-            return null;
+            throw new NotificacaoException("Tipo de Usuário " + dto.getNome() + "não encontrado.");
 
-        } catch (DuplicateKeyException e) {
-            throw new DuplicateEntityException("Tipo de Usuário com nome '" + dto.getNome() + "' já cadastrado.");
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEntityException("Tipo de Usuário com nome " + dto.getNome() + " já cadastrado.");
         } catch (Exception e) {
-            throw new NotificacaoException("Não foi possível executar a operação.");
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
     }
 
@@ -132,7 +135,7 @@ public class TipoUsuarioService {
             return this.mapper.toTipoUsuarioDTO(entidade.get());
         }
 
-        throw new NotificacaoException("Tipo de Usuário não encontrado.");
+        throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
     }
 
     /**
@@ -192,6 +195,6 @@ public class TipoUsuarioService {
             return this.mapper.toTipoUsuarioDTO(tipoUsuario);
         }
 
-        throw new NotificacaoException("Não foi possível executar a operação.");
+        throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
     }
 }

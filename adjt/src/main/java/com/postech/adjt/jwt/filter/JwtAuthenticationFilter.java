@@ -8,11 +8,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.postech.adjt.jwt.service.AppUserDetailsService;
 import com.postech.adjt.jwt.service.JwtService;
 
 import jakarta.servlet.FilterChain;
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * Serviço que carrega os dados do usuário com base no nome de usuário extraído
      * do token.
      */
-    private final UserDetailsService userDetailsService;
+    private final AppUserDetailsService userDetailsService;
 
     /**
      * Construtor que injeta os serviços necessários para autenticação JWT.
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param jwtService         Serviço de manipulação de tokens JWT.
      * @param userDetailsService Serviço de carregamento de dados do usuário.
      */
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, AppUserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }

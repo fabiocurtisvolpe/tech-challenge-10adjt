@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.UsuarioDTO;
@@ -111,17 +113,14 @@ public class UsuarioService {
                 dto.getEnderecos().forEach(endereco -> {
                     usuario.adicionarEndereco(this.mapper.toEndereco(endereco));
                 });
-
-                Usuario usuarioEndereco = this.repository.save(usuario);
-                return this.mapper.toUsuarioDTO(usuarioEndereco);
             }
 
             return this.mapper.toUsuarioDTO(usuario);
 
-        } catch (DuplicateEntityException e) {
-            throw new DuplicateEntityException("Usuário com login '" + dto.getEmail() + "' já cadastrado.");
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEntityException("Usuário com login " + dto.getEmail() + " já cadastrado.");
         } catch (Exception e) {
-            throw new NotificacaoException("Não foi possível executar a operação.");
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
     }
 
@@ -160,12 +159,14 @@ public class UsuarioService {
                 return this.mapper.toUsuarioDTO(usuario);
             }
 
-            return null;
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
 
-        } catch (DuplicateEntityException e) {
-            throw new DuplicateEntityException("Usuário com login '" + dto.getEmail() + "' já cadastrado.");
+        } catch (NotificacaoException e) {
+            throw e;
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEntityException("Usuário com login " + dto.getEmail() + " já cadastrado.");
         } catch (Exception e) {
-            throw new NotificacaoException("Não foi possível executar a operação.");
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
     }
 
@@ -180,18 +181,25 @@ public class UsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public boolean atualizarSenha(Integer id, String senhaNova) {
 
-        String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
-        Optional<Usuario> entidade = this.repository.findById(id);
+        try {
+            String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
+            Optional<Usuario> entidade = this.repository.findById(id);
 
-        if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
+            if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
 
-            String senhaCodificada = passwordEncoder.encode(senhaNova);
-            entidade.get().setSenha(senhaCodificada);
-            this.repository.save(entidade.get());
-            return true;
+                String senhaCodificada = passwordEncoder.encode(senhaNova);
+                entidade.get().setSenha(senhaCodificada);
+                this.repository.save(entidade.get());
+                return true;
+            }
+
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+
+        } catch (NotificacaoException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
-
-        throw new NotificacaoException("Não foi possível executar a operação.");
     }
 
     /**
@@ -204,12 +212,18 @@ public class UsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public UsuarioDTO buscar(Integer id) {
 
-        Optional<Usuario> entidade = this.repository.findById(id);
-        if (entidade.isPresent()) {
-            return this.mapper.toUsuarioDTO(entidade.get());
-        }
+        try {
+            Optional<Usuario> entidade = this.repository.findById(id);
+            if (entidade.isPresent()) {
+                return this.mapper.toUsuarioDTO(entidade.get());
+            }
 
-        throw new NotificacaoException("Tipo de Usuário não encontrado.");
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
+        } catch (NotificacaoException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        }
     }
 
     /**
@@ -261,15 +275,21 @@ public class UsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public UsuarioDTO ativarInativar(Integer id) {
 
-        String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
-        Optional<Usuario> entidade = this.repository.findById(id);
-        if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
-            boolean ativo = entidade.get().getAtivo();
-            entidade.get().setAtivo(!ativo);
-            Usuario usuario = this.repository.save(entidade.get());
-            return this.mapper.toUsuarioDTO(usuario);
-        }
+        try {
+            String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
+            Optional<Usuario> entidade = this.repository.findById(id);
+            if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
+                boolean ativo = entidade.get().getAtivo();
+                entidade.get().setAtivo(!ativo);
+                Usuario usuario = this.repository.save(entidade.get());
+                return this.mapper.toUsuarioDTO(usuario);
+            }
 
-        throw new NotificacaoException("Não foi possível executar a operação.");
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+        } catch (NotificacaoException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        }
     }
 }
