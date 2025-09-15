@@ -28,7 +28,7 @@ public class Usuario extends BaseModel {
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tipo_usuario_id", nullable = false)
     private TipoUsuario tipoUsuario;
 

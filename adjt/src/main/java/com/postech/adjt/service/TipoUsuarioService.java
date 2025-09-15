@@ -11,6 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,6 +83,11 @@ public class TipoUsuarioService {
     public TipoUsuarioDTO criar(TipoUsuarioDTO dto) {
 
         try {
+
+            if (!UsuarioLogadoUtil.temPermissao()) {
+                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            }
+
             TipoUsuario tipoUsuario = this.repository.save(this.mapper.toTipoUsuario(dto));
             return this.mapper.toTipoUsuarioDTO(tipoUsuario);
 
@@ -105,6 +113,10 @@ public class TipoUsuarioService {
     public TipoUsuarioDTO atualizar(Integer id, TipoUsuarioDTO dto) {
 
         try {
+
+            if (!UsuarioLogadoUtil.temPermissao()) {
+                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            }
 
             Optional<TipoUsuario> entidade = this.repository.findById(id);
             if (entidade.isPresent()) {
@@ -141,12 +153,24 @@ public class TipoUsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public TipoUsuarioDTO buscar(Integer id) {
 
-        Optional<TipoUsuario> entidade = this.repository.findById(id);
-        if (entidade.isPresent()) {
-            return this.mapper.toTipoUsuarioDTO(entidade.get());
-        }
+        try {
 
-        throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+            if (!UsuarioLogadoUtil.temPermissao()) {
+                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            }
+
+            Optional<TipoUsuario> entidade = this.repository.findById(id);
+            if (entidade.isPresent()) {
+                return this.mapper.toTipoUsuarioDTO(entidade.get());
+            }
+
+            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+
+        } catch (NotificacaoException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        }
     }
 
     /**
@@ -156,6 +180,10 @@ public class TipoUsuarioService {
      */
     @Transactional(rollbackFor = Exception.class)
     public List<TipoUsuarioDTO> listar() {
+
+        if (!UsuarioLogadoUtil.temPermissao()) {
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+        }
 
         List<TipoUsuarioDTO> list = new ArrayList<>();
 
@@ -178,6 +206,10 @@ public class TipoUsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public ResultadoPaginacaoDTO<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
 
+        if (!UsuarioLogadoUtil.temPermissao()) {
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+        }
+
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
         Pageable pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho(), sort);
         Specification<TipoUsuario> spec = SpecificationGenerico.comFiltro(filtro);
@@ -199,6 +231,11 @@ public class TipoUsuarioService {
     public boolean ativarInativar(Integer id) {
 
         try {
+
+            if (!UsuarioLogadoUtil.temPermissao()) {
+                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            }
+
             Optional<TipoUsuario> entidade = this.repository.findById(id);
             if (entidade.isPresent()) {
 

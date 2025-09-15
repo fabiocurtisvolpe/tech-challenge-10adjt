@@ -1,5 +1,6 @@
 package com.postech.adjt.jwt.util;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +14,15 @@ public class UsuarioLogadoUtil {
         } else {
             return principal.toString();
         }
+    }
+
+    public static boolean temPermissao() {
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_DONO_RESTURANTE"))) {
+            return true;
+        }
+
+        return false;
     }
 
 }

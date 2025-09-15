@@ -64,9 +64,12 @@ public class AppUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
+                "ROLE_" + usuario.getTipoUsuario().getNome().replace(" ", "_").toUpperCase());
+
         return new User(
                 usuario.getEmail(),
                 usuario.getSenha(),
-                Collections.emptyList());
+                Collections.singletonList(authority));
     }
 }
