@@ -3,8 +3,7 @@ package com.postech.adjt.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
+@Audited
 public class BaseModel implements Serializable {
 
     @Id
@@ -20,11 +20,9 @@ public class BaseModel implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @CreationTimestamp
     @Column(name = "dt_criacao", updatable = false)
     private LocalDateTime dataCriacao;
 
-    @UpdateTimestamp
     @Column(name = "dt_alteracao")
     private LocalDateTime dataAlteracao;
 

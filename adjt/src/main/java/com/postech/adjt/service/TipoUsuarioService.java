@@ -113,6 +113,8 @@ public class TipoUsuarioService {
 
             throw new NotificacaoException("Tipo de Usuário " + dto.getNome() + "não encontrado.");
 
+        } catch (NotificacaoException e) {
+            throw e;
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntityException("Tipo de Usuário com nome " + dto.getNome() + " já cadastrado.");
         } catch (Exception e) {
@@ -187,14 +189,22 @@ public class TipoUsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public TipoUsuarioDTO ativarInativar(Integer id) {
 
-        Optional<TipoUsuario> entidade = this.repository.findById(id);
-        if (entidade.isPresent()) {
-            boolean ativo = entidade.get().getAtivo();
-            entidade.get().setAtivo(!ativo);
-            TipoUsuario tipoUsuario = this.repository.save(entidade.get());
-            return this.mapper.toTipoUsuarioDTO(tipoUsuario);
+        try {
+            Optional<TipoUsuario> entidade = this.repository.findById(id);
+            if (entidade.isPresent()) {
+                boolean ativo = entidade.get().getAtivo();
+                entidade.get().setAtivo(!ativo);
+                TipoUsuario tipoUsuario = this.repository.save(entidade.get());
+                return this.mapper.toTipoUsuarioDTO(tipoUsuario);
+            }
+
+            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+
+        } catch (NotificacaoException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
 
-        throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
     }
 }

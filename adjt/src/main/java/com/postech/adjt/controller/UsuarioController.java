@@ -153,7 +153,7 @@ public class UsuarioController {
      * Endpoint para ativar ou inativar um usuário.
      *
      * @param id ID do usuário.
-     * @return DTO com o estado atualizado.
+     * @return true se a operação ocorreu com sucesso.
      */
     @Operation(summary = "Usuario", description = "Realiza a exclusão lógica de um usuario através do id")
     @ApiResponses(value = {
@@ -162,7 +162,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @DeleteMapping("/{id}")
-    public UsuarioDTO ativarInativar(@PathVariable @Valid Integer id) {
+    public boolean ativarInativar(@PathVariable @Valid Integer id) {
         return this.service.ativarInativar(id);
     }
 }

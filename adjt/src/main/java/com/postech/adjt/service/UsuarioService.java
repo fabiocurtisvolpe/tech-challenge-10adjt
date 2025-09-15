@@ -1,5 +1,6 @@
 package com.postech.adjt.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.dto.UsuarioDTO;
 import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
@@ -54,6 +56,8 @@ public class UsuarioService {
      */
     private final UsuarioRepository repository;
 
+    private final TipoUsuarioService tipoUsuarioService;
+
     /**
      * Mapper para conversão entre {@link Usuario} e {@link UsuarioDTO}.
      */
@@ -78,11 +82,12 @@ public class UsuarioService {
      * @param passwordEncoder   Codificador de senhas.
      */
     public UsuarioService(UsuarioRepository repository, UsuarioMapper mapper, TipoUsuarioMapper tipoUsuarioMapper,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder, TipoUsuarioService tipoUsuarioService) {
         this.repository = repository;
         this.mapper = mapper;
         this.tipoUsuarioMapper = tipoUsuarioMapper;
         this.passwordEncoder = passwordEncoder;
+        this.tipoUsuarioService = tipoUsuarioService;
     }
 
     /**
@@ -105,6 +110,11 @@ public class UsuarioService {
 
             String senhaCodificada = passwordEncoder.encode(dto.getSenha());
             dto.setSenha(senhaCodificada);
+            dto.setAtivo(true);
+            dto.setDataCriacao(LocalDateTime.now());
+            dto.setDataAlteracao(LocalDateTime.now());
+
+            this.tipoUsuarioService.buscar(dto.getTipoUsuario().getId());
 
             Usuario usuario = this.repository.save(this.mapper.toUsuario(dto));
 
@@ -117,6 +127,8 @@ public class UsuarioService {
 
             return this.mapper.toUsuarioDTO(usuario);
 
+        } catch (NotificacaoException e) {
+            throw e;
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEntityException("Usuário com login " + dto.getEmail() + " já cadastrado.");
         } catch (Exception e) {
@@ -137,15 +149,21 @@ public class UsuarioService {
     public UsuarioDTO atualizar(Integer id, UsuarioDTO dto) {
 
         try {
-            String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
-            Optional<Usuario> entidade = this.repository.findById(id);
 
-            if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
+            Optional<Usuario> entidade = this.repository.findById(id);
+            if (entidade.isPresent()) {
+
+                if (!this.usuarioPodeExecutar(entidade.get().getEmail())) {
+                    throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+                }
+
                 entidade.get().setNome(dto.getNome());
                 entidade.get().setEmail(dto.getEmail());
+                dto.setAtivo(true);
+                dto.setDataAlteracao(LocalDateTime.now());
 
-                TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toTipoUsuario(dto.getTipoUsuario());
-                entidade.get().setTipoUsuario(tipoUsuario);
+                TipoUsuarioDTO tipoUsuarioDTO = this.tipoUsuarioService.buscar(dto.getTipoUsuario().getId());
+                entidade.get().setTipoUsuario(this.tipoUsuarioMapper.toTipoUsuario(tipoUsuarioDTO));
 
                 if (!dto.getEnderecos().isEmpty()) {
 
@@ -182,10 +200,13 @@ public class UsuarioService {
     public boolean atualizarSenha(Integer id, String senhaNova) {
 
         try {
-            String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
             Optional<Usuario> entidade = this.repository.findById(id);
 
-            if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
+            if (entidade.isPresent()) {
+
+                if (!this.usuarioPodeExecutar(entidade.get().getEmail())) {
+                    throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+                }
 
                 String senhaCodificada = passwordEncoder.encode(senhaNova);
                 entidade.get().setSenha(senhaCodificada);
@@ -193,7 +214,7 @@ public class UsuarioService {
                 return true;
             }
 
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
 
         } catch (NotificacaoException e) {
             throw e;
@@ -273,23 +294,35 @@ public class UsuarioService {
      * @throws NotificacaoException qualquer erro.
      */
     @Transactional(rollbackFor = Exception.class)
-    public UsuarioDTO ativarInativar(Integer id) {
+    public boolean ativarInativar(Integer id) {
 
         try {
-            String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
+
             Optional<Usuario> entidade = this.repository.findById(id);
-            if ((entidade.isPresent()) && (entidade.get().getEmail().equals(usuarioLogado))) {
+            if (entidade.isPresent()) {
+
+                if (!this.usuarioPodeExecutar(entidade.get().getEmail())) {
+                    throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+                }
+
                 boolean ativo = entidade.get().getAtivo();
                 entidade.get().setAtivo(!ativo);
-                Usuario usuario = this.repository.save(entidade.get());
-                return this.mapper.toUsuarioDTO(usuario);
+                entidade.get().setDataAlteracao(LocalDateTime.now());
+
+                this.repository.saveAndFlush(entidade.get());
+                return true;
             }
 
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         } catch (NotificacaoException e) {
             throw e;
         } catch (Exception e) {
             throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
+    }
+
+    private boolean usuarioPodeExecutar(String email) {
+        String usuarioLogado = UsuarioLogadoUtil.getUsuarioLogado();
+        return email.equals(usuarioLogado);
     }
 }
