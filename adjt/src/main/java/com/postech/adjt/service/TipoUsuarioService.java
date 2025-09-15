@@ -84,10 +84,6 @@ public class TipoUsuarioService {
 
         try {
 
-            if (!UsuarioLogadoUtil.temPermissao()) {
-                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
-            }
-
             TipoUsuario tipoUsuario = this.repository.save(this.mapper.toTipoUsuario(dto));
             return this.mapper.toTipoUsuarioDTO(tipoUsuario);
 
@@ -113,10 +109,6 @@ public class TipoUsuarioService {
     public TipoUsuarioDTO atualizar(Integer id, TipoUsuarioDTO dto) {
 
         try {
-
-            if (!UsuarioLogadoUtil.temPermissao()) {
-                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
-            }
 
             Optional<TipoUsuario> entidade = this.repository.findById(id);
             if (entidade.isPresent()) {
@@ -155,10 +147,6 @@ public class TipoUsuarioService {
 
         try {
 
-            if (!UsuarioLogadoUtil.temPermissao()) {
-                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
-            }
-
             Optional<TipoUsuario> entidade = this.repository.findById(id);
             if (entidade.isPresent()) {
                 return this.mapper.toTipoUsuarioDTO(entidade.get());
@@ -181,10 +169,6 @@ public class TipoUsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public List<TipoUsuarioDTO> listar() {
 
-        if (!UsuarioLogadoUtil.temPermissao()) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
-        }
-
         List<TipoUsuarioDTO> list = new ArrayList<>();
 
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
@@ -205,10 +189,6 @@ public class TipoUsuarioService {
      */
     @Transactional(rollbackFor = Exception.class)
     public ResultadoPaginacaoDTO<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
-
-        if (!UsuarioLogadoUtil.temPermissao()) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
-        }
 
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
         Pageable pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho(), sort);
@@ -231,10 +211,6 @@ public class TipoUsuarioService {
     public boolean ativarInativar(Integer id) {
 
         try {
-
-            if (!UsuarioLogadoUtil.temPermissao()) {
-                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
-            }
 
             Optional<TipoUsuario> entidade = this.repository.findById(id);
             if (entidade.isPresent()) {
