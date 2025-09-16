@@ -1,5 +1,7 @@
 # tech-challenge-10adjt
 
+O Problema: 
+
 Na nossa região, um grupo de restaurantes decidiu contratar estudantes 
 para construir um sistema de gestão para seus estabelecimentos. Essa decisão 
 foi motivada pelo alto custo de sistemas individuais, o que levou os 
@@ -49,6 +51,8 @@ Volume persistente	pg_data
 
 🚀 Como usar (cmd, prompt, bash)
 Para subir o banco de dados: docker-compose up -d
+Exemplo adjt/local/> docker-compose up -d 
+
 Para parar os serviços: docker-compose down
 
 🔍 Verificação de saúde
@@ -56,3 +60,23 @@ O container possui um healthcheck que verifica se o banco está pronto para cone
 
 📦 Persistência de dados
 Os dados do banco são armazenados no volume nomeado pg_data, garantindo que não sejam perdidos ao reiniciar o container.
+
+## Documentação da API - Swagger
+
+Esta API está documentada utilizando o Swagger, uma ferramenta interativa que facilita a visualização, teste e compreensão dos endpoints disponíveis.
+
+🔗 Acesso à documentação
+Após iniciar o projeto, acesse a documentação Swagger através do navegador:
+
+http://localhost:8080/swagger-ui/index.html
+
+📌 Funcionalidades disponíveis
+A documentação inclui:
+
+📄 Descrição dos endpoints
+
+🔐 Autenticação via token Bearer
+
+📥 Exemplos de requisições e respostas
+
+🧪 Testes interativos diretamente pelo navegador
