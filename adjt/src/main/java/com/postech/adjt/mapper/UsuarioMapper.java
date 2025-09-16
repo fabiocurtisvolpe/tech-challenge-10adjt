@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.postech.adjt.dto.EnderecoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
-import com.postech.adjt.dto.UsuarioDTO;
+import com.postech.adjt.dto.usuario.UsuarioDTO;
 import com.postech.adjt.model.Endereco;
 import com.postech.adjt.model.TipoUsuario;
 import com.postech.adjt.model.Usuario;

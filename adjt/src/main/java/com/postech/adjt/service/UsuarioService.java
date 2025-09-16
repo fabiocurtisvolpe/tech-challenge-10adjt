@@ -3,6 +3,7 @@ package com.postech.adjt.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,8 @@ import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
-import com.postech.adjt.dto.UsuarioDTO;
+import com.postech.adjt.dto.usuario.UsuarioDTO;
+import com.postech.adjt.dto.usuario.UsuarioSenhaDTO;
 import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
 import com.postech.adjt.jwt.util.UsuarioLogadoUtil;
@@ -111,6 +113,10 @@ public class UsuarioService {
 
         try {
 
+            if (dto.getSenha() == null || dto.getSenha().isBlank() || Objects.isNull(dto.getSenha())) {
+                throw new NotificacaoException("A senha não pode estar em branco.");
+            }
+
             String senhaCodificada = passwordEncoder.encode(dto.getSenha());
             dto.setSenha(senhaCodificada);
             dto.setAtivo(true);
@@ -200,7 +206,7 @@ public class UsuarioService {
      * @throws NotificacaoException qualquer outro erro.
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean atualizarSenha(Integer id, String senhaNova) {
+    public boolean atualizarSenha(Integer id, UsuarioSenhaDTO dto) {
 
         try {
             Optional<Usuario> entidade = this.repository.findById(id);
@@ -211,7 +217,7 @@ public class UsuarioService {
                     throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
                 }
 
-                String senhaCodificada = passwordEncoder.encode(senhaNova);
+                String senhaCodificada = passwordEncoder.encode(dto.getSenha());
                 entidade.get().setSenha(senhaCodificada);
                 this.repository.save(entidade.get());
                 return true;

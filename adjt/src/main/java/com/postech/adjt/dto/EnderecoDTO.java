@@ -1,5 +1,7 @@
 package com.postech.adjt.dto;
 
+import com.postech.adjt.dto.usuario.UsuarioDTO;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

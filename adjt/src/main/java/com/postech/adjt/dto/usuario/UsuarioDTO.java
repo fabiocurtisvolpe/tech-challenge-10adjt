@@ -1,7 +1,11 @@
-package com.postech.adjt.dto;
+package com.postech.adjt.dto.usuario;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.postech.adjt.dto.BaseDTO;
+import com.postech.adjt.dto.EnderecoDTO;
+import com.postech.adjt.dto.TipoUsuarioDTO;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
