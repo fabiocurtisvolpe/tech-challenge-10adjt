@@ -27,6 +27,42 @@ Esta coleção Postman contém endpoints organizados para testes e integração 
 📦 Estrutura organizada por módulos (login, usuário, tipo-usuario)  
 🧪 Exemplos de requisições válidas e inválidas para facilitar testes
 
+Ao fazer a busca paginada os filtros disponíveis são:
+
+Filtros 
+* EQUALS = "eq" 
+* NOT_EQUALS = "ne" 
+* LIKE = "like" 
+* GREATER_THAN = "gt" 
+* LESS_THAN = "lt" 
+* GREATER_EQUAL = "ge" 
+* LESS_EQUAL = "le" 
+* BETWEEN = "between" 
+
+e os tipos de dados suportados são:
+* String: filtro do tipo string, caractere
+* Number: filtro do tipo numérico, inteiro 
+* Boolean: filtro do tipo booleano, verdadeiro, falso 
+* Date: filtro do tipo data, no formato yyyy-MM-dd 
+
+Exemplo de como fazer a busca paginado
+
+{
+  "filtros": {  
+    "dataCriacao:gt:2025-09-16": "Date"
+  },
+  "pagina": 0,
+  "tamanho": 5
+}
+
+{
+  "filtros": {  
+    "campo:operador:valor": "tipo da variável"
+  },
+  "pagina": página atual,
+  "tamanho": quantidade por página
+}
+
 ## docker-compose (adjt/local/docker-compose.yml)
 
 Este projeto utiliza o PostgreSQL como banco de dados, configurado via docker-compose.yml para facilitar o setup em ambiente local.

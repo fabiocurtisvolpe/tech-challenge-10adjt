@@ -1,9 +1,13 @@
 package com.postech.adjt.specification;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -95,7 +99,7 @@ public class SpecificationGenerico {
 
             filtroDTO.getFiltros().forEach((valor, tipo) -> {
                 try {
-                    String[] partes = valor.split(":");
+                    String[] partes = valor.split(":", 3);
                     validarFormatoFiltro(partes);
 
                     String campo = partes[0];
@@ -122,9 +126,9 @@ public class SpecificationGenerico {
         }
     }
 
-    private static <T> Predicate criarPredicate(
-            jakarta.persistence.criteria.CriteriaBuilder cb,
-            jakarta.persistence.criteria.Root<T> root,
+    static <T> Predicate criarPredicate(
+            CriteriaBuilder cb,
+            Root<T> root,
             String campo,
             FilterOperator operador,
             String valor,
@@ -134,69 +138,74 @@ public class SpecificationGenerico {
             case "String" -> criarPredicateString(cb, root, campo, operador, valor);
             case "Number" -> criarPredicateNumber(cb, root, campo, operador, valor);
             case "Boolean" -> criarPredicateBoolean(cb, root, campo, valor);
-            case "DateTime" -> criarPredicateDateTime(cb, root, campo, operador, valor);
+            case "Date" -> criarPredicateDate(cb, root, campo, operador, valor);
             default -> throw new IllegalArgumentException("Tipo de filtro não suportado: " + tipo);
         };
     }
 
-    private static <T> Predicate criarPredicateString(jakarta.persistence.criteria.CriteriaBuilder cb,
-            jakarta.persistence.criteria.Root<T> root, String campo, FilterOperator operador, String valor) {
+    private static <T> Predicate criarPredicateString(CriteriaBuilder cb,
+            Root<T> root, String campo, FilterOperator operador, String valor) {
         switch (operador) {
             case LIKE:
-                return cb.like(cb.lower(root.get(campo)), "%" + valor.toLowerCase() + "%");
+                return cb.like(cb.lower(root.<String>get(campo)), "%" + valor.toLowerCase() + "%");
             case EQUALS:
-                return cb.equal(cb.lower(root.get(campo)), valor.toLowerCase());
+                return cb.equal(cb.lower(root.<String>get(campo)), valor.toLowerCase());
             case NOT_EQUALS:
-                return cb.notEqual(cb.lower(root.get(campo)), valor.toLowerCase());
+                return cb.notEqual(cb.lower(root.<String>get(campo)), valor.toLowerCase());
             default:
                 throw new IllegalArgumentException("Operador não suportado para String: " + operador);
         }
     }
 
-    private static <T> Predicate criarPredicateNumber(jakarta.persistence.criteria.CriteriaBuilder cb,
-            jakarta.persistence.criteria.Root<T> root, String campo, FilterOperator operador, String valor) {
-        Number numeroValor = Double.parseDouble(valor);
+    private static <T> Predicate criarPredicateNumber(CriteriaBuilder cb,
+            Root<T> root, String campo, FilterOperator operador, String valor) {
+        Number numeroValor = Integer.valueOf(valor);
         switch (operador) {
             case EQUALS:
-                return cb.equal(root.get(campo), numeroValor);
+                return cb.equal(root.<Number>get(campo), numeroValor);
             case NOT_EQUALS:
-                return cb.notEqual(root.get(campo), numeroValor);
+                return cb.notEqual(root.<Number>get(campo), numeroValor);
             case GREATER_THAN:
-                return cb.gt(root.get(campo), numeroValor);
+                return cb.gt(root.<Number>get(campo), numeroValor);
             case LESS_THAN:
-                return cb.lt(root.get(campo), numeroValor);
+                return cb.lt(root.<Number>get(campo), numeroValor);
             case GREATER_EQUAL:
-                return cb.ge(root.get(campo), numeroValor);
+                return cb.ge(root.<Number>get(campo), numeroValor);
             case LESS_EQUAL:
-                return cb.le(root.get(campo), numeroValor);
+                return cb.le(root.<Number>get(campo), numeroValor);
             default:
                 throw new IllegalArgumentException("Operador não suportado para Number: " + operador);
         }
     }
 
-    private static <T> Predicate criarPredicateBoolean(jakarta.persistence.criteria.CriteriaBuilder cb,
-            jakarta.persistence.criteria.Root<T> root, String campo, String valor) {
-        return cb.equal(root.get(campo), Boolean.parseBoolean(valor));
+    private static <T> Predicate criarPredicateBoolean(CriteriaBuilder cb,
+            Root<T> root, String campo, String valor) {
+        return cb.equal(root.<Boolean>get(campo), Boolean.parseBoolean(valor));
     }
 
-    private static <T> Predicate criarPredicateDateTime(jakarta.persistence.criteria.CriteriaBuilder cb,
-            jakarta.persistence.criteria.Root<T> root, String campo, FilterOperator operador, String valor) {
+    private static <T> Predicate criarPredicateDate(CriteriaBuilder cb,
+            Root<T> root,
+            String campo,
+            FilterOperator operador,
+            String valor) {
+
+        valor = valor.replaceAll("\\ *", "");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         switch (operador) {
-            case EQUALS:
-                return cb.equal(root.get(campo), LocalDateTime.parse(valor));
             case GREATER_THAN:
-                return cb.greaterThan(root.get(campo), LocalDateTime.parse(valor));
+                return cb.greaterThan(root.<LocalDate>get(campo), LocalDate.parse(valor, formatter));
             case LESS_THAN:
-                return cb.lessThan(root.get(campo), LocalDateTime.parse(valor));
+                return cb.lessThan(root.<LocalDate>get(campo), LocalDate.parse(valor, formatter));
             case BETWEEN:
                 String[] datas = valor.split(",");
                 if (datas.length != 2) {
                     throw new IllegalArgumentException(
                             "Para operador BETWEEN são necessárias duas datas separadas por vírgula");
                 }
-                return cb.between(root.get(campo),
-                        LocalDateTime.parse(datas[0]),
-                        LocalDateTime.parse(datas[1]));
+                return cb.between(root.<LocalDate>get(campo),
+                        LocalDate.parse(datas[0], formatter),
+                        LocalDate.parse(datas[1], formatter));
             default:
                 throw new IllegalArgumentException("Operador não suportado para DateTime: " + operador);
         }
