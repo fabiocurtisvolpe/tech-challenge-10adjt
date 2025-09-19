@@ -9,7 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.FiltroGenericoDTO;
+import com.postech.adjt.exception.NotificacaoException;
 
 /**
  * Classe utilitária para construção dinâmica de {@link Specification} JPA
@@ -101,8 +103,11 @@ public class SpecificationGenerico {
                     String valorFiltro = partes[2];
 
                     predicates.add(criarPredicate(cb, root, campo, operador, valorFiltro, tipo));
+
+                } catch (IllegalArgumentException e) {
+                    throw e;
                 } catch (Exception e) {
-                    throw new IllegalArgumentException("Erro ao processar filtro: " + valor, e);
+                    throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
                 }
             });
 
