@@ -4,28 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
 import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
-import com.postech.adjt.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.mapper.TipoUsuarioMapper;
 import com.postech.adjt.model.TipoUsuario;
+import com.postech.adjt.model.Usuario;
 import com.postech.adjt.repository.TipoUsuarioRepository;
 import com.postech.adjt.specification.SpecificationGenerico;
 
@@ -190,9 +185,8 @@ public class TipoUsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public ResultadoPaginacaoDTO<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
 
-        Sort sort = Sort.by(Sort.Direction.ASC, "nome");
-        Pageable pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho(), sort);
-        Specification<TipoUsuario> spec = SpecificationGenerico.comFiltro(filtro);
+        Specification<TipoUsuario> spec = SpecificationGenerico.criarSpecification(filtro);
+        Pageable pageable = SpecificationGenerico.criarPageable(filtro);
 
         Page<TipoUsuario> paginaTipoUsuario = this.repository.findAll(spec, pageable);
         Page<TipoUsuarioDTO> paginaDTO = paginaTipoUsuario.map(this.mapper::toTipoUsuarioDTO);

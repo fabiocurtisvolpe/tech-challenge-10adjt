@@ -11,7 +11,7 @@ package com.postech.adjt.exception;
  * 
  * <p>
  * Deve ser capturada e tratada pelo
- * {@link com.postech.adjt.controller.exception.GlobalExceptionHandler}
+ * {@link com.postech.adjt.exception.GlobalExceptionHandler}
  * para garantir respostas padronizadas ao cliente.
  * </p>
  * 

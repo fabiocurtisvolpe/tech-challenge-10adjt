@@ -1,4 +1,4 @@
-package com.postech.adjt.controller.exception;
+package com.postech.adjt.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

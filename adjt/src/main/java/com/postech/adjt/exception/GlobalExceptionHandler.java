@@ -1,4 +1,4 @@
-package com.postech.adjt.controller.exception;
+package com.postech.adjt.exception;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import com.postech.adjt.exception.DuplicateEntityException;
-import com.postech.adjt.exception.NotificacaoException;
-
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -23,8 +19,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-
-import jakarta.annotation.Nonnull;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;

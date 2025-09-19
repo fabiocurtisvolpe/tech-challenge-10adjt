@@ -402,7 +402,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"filtros\": {\r\n    \"nome:dono\": \"String\"\r\n  },\r\n  \"pagina\": 0,\r\n  \"tamanho\": 5\r\n}",
+							"raw": "{\r\n  \"filtros\": {  \r\n    \"nome:like:João\": \"String\"\r\n  },\r\n  \"pagina\": 0,\r\n  \"tamanho\": 5\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -670,7 +670,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"filtros\": {\r\n    \"nome:João\": \"String\"\r\n  },\r\n  \"pagina\": 0,\r\n  \"tamanho\": 5\r\n}",
+							"raw": "{\r\n  \"filtros\": {  \r\n    \"nome:like:João\": \"String\"\r\n  },\r\n  \"pagina\": 0,\r\n  \"tamanho\": 5\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -714,7 +714,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"login\": \"joao.silva@email.com\",\r\n    \"senha\": \"senhaSegura123\"\r\n}",
+					"raw": "{\r\n    \"login\": \"joao.silva@email.com\",\r\n    \"senha\": \"1234567890A\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

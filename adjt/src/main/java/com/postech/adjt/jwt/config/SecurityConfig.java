@@ -12,8 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.postech.adjt.controller.exception.CustomAccessDeniedHandler;
-import com.postech.adjt.controller.exception.CustomAuthenticationEntryPoint;
+import com.postech.adjt.exception.CustomAccessDeniedHandler;
+import com.postech.adjt.exception.CustomAuthenticationEntryPoint;
 import com.postech.adjt.jwt.filter.JwtAuthenticationFilter;
 import com.postech.adjt.jwt.service.AppUserDetailsService;
 

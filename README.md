@@ -37,10 +37,12 @@ Antes de iniciar, certifique-se de ter instalado:
 
 Docker (https://www.docker.com/)
 Docker Compose (https://docs.docker.com/compose/)
+Java 21 (https://www.oracle.com/br/java/technologies/downloads/)
+Postman (https://www.postman.com/)
 
 ⚙️ Configuração
 
-O serviço postgres será iniciado com as seguintes configurações padrão:
+O serviço PostgreSQL será iniciado com as seguintes configurações padrão:
 
 Variável            Valor padrão
 POSTGRES_USER	    admin

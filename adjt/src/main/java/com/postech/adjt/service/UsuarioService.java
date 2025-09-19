@@ -285,9 +285,8 @@ public class UsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public ResultadoPaginacaoDTO<UsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
 
-        Sort sort = Sort.by(Sort.Direction.ASC, "nome");
-        Pageable pageable = PageRequest.of(filtro.getPagina(), filtro.getTamanho(), sort);
-        Specification<Usuario> spec = SpecificationGenerico.comFiltro(filtro);
+        Specification<Usuario> spec = SpecificationGenerico.criarSpecification(filtro);
+        Pageable pageable = SpecificationGenerico.criarPageable(filtro);
 
         Page<Usuario> paginaUsuario = this.repository.findAll(spec, pageable);
         Page<UsuarioDTO> paginaDTO = paginaUsuario.map(this.mapper::toUsuarioDTO);
