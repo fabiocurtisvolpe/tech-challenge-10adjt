@@ -5,69 +5,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.postech.adjt.constants.MensagemUtil;
-import com.postech.adjt.dto.FiltroGenericoDTO;
+import com.postech.adjt.dto.filtro.FiltroGenericoDTO;
+import com.postech.adjt.enums.FiltroOperadorEnum;
 import com.postech.adjt.exception.NotificacaoException;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * Classe utilitária para construção dinâmica de {@link Specification} JPA
  * com base em filtros genéricos fornecidos via {@link FiltroGenericoDTO}.
  * 
- * <p>
- * Suporta os seguintes tipos de filtros:
- * - String: LIKE, EQUALS, NOT_EQUALS
- * - Number: EQUALS, GREATER_THAN, LESS_THAN, GREATER_EQUAL, LESS_EQUAL
- * - Boolean: EQUALS
- * - DateTime: EQUALS, GREATER_THAN, LESS_THAN, BETWEEN
- * </p>
- * 
- * <p>
- * Formato do filtro: "campo:operador:valor"
- * Exemplos:
- * - nome:like:João
- * - idade:gt:18
- * - ativo:eq:true
- * - dataCriacao:between:2025-01-01T00:00:00,2025-12-31T23:59:59
- * </p>
- * 
  * @author Fabio
  * @since 2025-09-19
  */
 public class SpecificationGenerico {
-
-    public enum FilterOperator {
-        EQUALS("eq"),
-        NOT_EQUALS("ne"),
-        LIKE("like"),
-        GREATER_THAN("gt"),
-        LESS_THAN("lt"),
-        GREATER_EQUAL("ge"),
-        LESS_EQUAL("le"),
-        BETWEEN("between");
-
-        private String operator;
-
-        FilterOperator(String operator) {
-            this.operator = operator;
-        }
-
-        public static FilterOperator fromString(String operator) {
-            for (FilterOperator fo : FilterOperator.values()) {
-                if (fo.operator.equalsIgnoreCase(operator)) {
-                    return fo;
-                }
-            }
-            throw new IllegalArgumentException("Operador inválido: " + operator);
-        }
-    }
 
     /**
      * Cria uma Specification com base nos filtros fornecidos
@@ -97,16 +55,11 @@ public class SpecificationGenerico {
                 return null;
             }
 
-            filtroDTO.getFiltros().forEach((valor, tipo) -> {
-                try {
-                    String[] partes = valor.split(":", 3);
-                    validarFormatoFiltro(partes);
+            filtroDTO.getFiltros().forEach((filtro) -> {
 
-                    String campo = partes[0];
-                    FilterOperator operador = FilterOperator.fromString(partes[1]);
-                    String valorFiltro = partes[2];
-
-                    predicates.add(criarPredicate(cb, root, campo, operador, valorFiltro, tipo));
+                try {    
+                    FiltroOperadorEnum operador = FiltroOperadorEnum.fromString(filtro.getOperador());
+                    predicates.add(criarPredicate(cb, root, filtro.getCampo(), operador, filtro.getValor(), filtro.getTipo()));
 
                 } catch (IllegalArgumentException e) {
                     throw e;
@@ -119,32 +72,25 @@ public class SpecificationGenerico {
         };
     }
 
-    private static void validarFormatoFiltro(String[] partes) {
-        if (partes.length < 3) {
-            throw new IllegalArgumentException(
-                    "Formato de filtro inválido. Use: campo:operador:valor");
-        }
-    }
-
     static <T> Predicate criarPredicate(
             CriteriaBuilder cb,
             Root<T> root,
             String campo,
-            FilterOperator operador,
+            FiltroOperadorEnum operador,
             String valor,
             String tipo) {
 
         return switch (tipo) {
-            case "String" -> criarPredicateString(cb, root, campo, operador, valor);
-            case "Number" -> criarPredicateNumber(cb, root, campo, operador, valor);
-            case "Boolean" -> criarPredicateBoolean(cb, root, campo, valor);
-            case "Date" -> criarPredicateDate(cb, root, campo, operador, valor);
+            case "string" -> criarPredicateString(cb, root, campo, operador, valor);
+            case "number" -> criarPredicateNumber(cb, root, campo, operador, valor);
+            case "boolean" -> criarPredicateBoolean(cb, root, campo, valor);
+            case "date" -> criarPredicateDate(cb, root, campo, operador, valor);
             default -> throw new IllegalArgumentException("Tipo de filtro não suportado: " + tipo);
         };
     }
 
     private static <T> Predicate criarPredicateString(CriteriaBuilder cb,
-            Root<T> root, String campo, FilterOperator operador, String valor) {
+            Root<T> root, String campo, FiltroOperadorEnum operador, String valor) {
         switch (operador) {
             case LIKE:
                 return cb.like(cb.lower(root.<String>get(campo)), "%" + valor.toLowerCase() + "%");
@@ -158,7 +104,7 @@ public class SpecificationGenerico {
     }
 
     private static <T> Predicate criarPredicateNumber(CriteriaBuilder cb,
-            Root<T> root, String campo, FilterOperator operador, String valor) {
+            Root<T> root, String campo, FiltroOperadorEnum operador, String valor) {
         Number numeroValor = Integer.valueOf(valor);
         switch (operador) {
             case EQUALS:
@@ -186,7 +132,7 @@ public class SpecificationGenerico {
     private static <T> Predicate criarPredicateDate(CriteriaBuilder cb,
             Root<T> root,
             String campo,
-            FilterOperator operador,
+            FiltroOperadorEnum operador,
             String valor) {
 
         valor = valor.replaceAll("\\ *", "");

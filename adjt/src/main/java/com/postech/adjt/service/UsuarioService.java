@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.postech.adjt.constants.MensagemUtil;
-import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
+import com.postech.adjt.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.dto.usuario.UsuarioDTO;
 import com.postech.adjt.dto.usuario.UsuarioSenhaDTO;
 import com.postech.adjt.exception.DuplicateEntityException;

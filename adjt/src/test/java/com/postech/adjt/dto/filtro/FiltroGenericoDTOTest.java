@@ -1,8 +1,12 @@
-package com.postech.adjt.dto;
+package com.postech.adjt.dto.filtro;
 
 import org.junit.jupiter.api.Test;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.postech.adjt.dto.filtro.FiltroCampoDTO;
+import com.postech.adjt.dto.filtro.FiltroGenericoDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FiltroGenericoDTOTest {
@@ -19,9 +23,13 @@ class FiltroGenericoDTOTest {
     @Test
     void testSetAndGetFiltros() {
         FiltroGenericoDTO dto = new FiltroGenericoDTO();
-        Map<String, String> filtros = new HashMap<>();
-        filtros.put("nome:dono", "Joao");
+        dto.setPagina(0);
+        dto.setTamanho(5);
+        
+        List<FiltroCampoDTO> filtros = new ArrayList<>();
+        filtros.add(new FiltroCampoDTO("nome", "like", "Joao", "string"));
         dto.setFiltros(filtros);
+
         assertEquals(filtros, dto.getFiltros());
     }
 

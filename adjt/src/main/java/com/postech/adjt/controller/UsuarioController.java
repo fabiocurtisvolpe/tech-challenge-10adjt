@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.postech.adjt.dto.FiltroGenericoDTO;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.dto.usuario.UsuarioDTO;
 import com.postech.adjt.dto.usuario.UsuarioSenhaDTO;
 import com.postech.adjt.model.Usuario;
