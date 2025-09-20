@@ -37,30 +37,27 @@ Filtros
 * LESS_THAN = "lt" 
 * GREATER_EQUAL = "ge" 
 * LESS_EQUAL = "le" 
-* BETWEEN = "between" 
+* BETWEEN = "bt" 
 
 e os tipos de dados suportados são:
-* String: filtro do tipo string, caractere
-* Number: filtro do tipo numérico, inteiro 
-* Boolean: filtro do tipo booleano, verdadeiro, falso 
-* Date: filtro do tipo data, no formato yyyy-MM-dd 
+* string: filtro do tipo string, caractere
+* number: filtro do tipo numérico, inteiro 
+* boolean: filtro do tipo booleano, verdadeiro, falso 
+* date: filtro do tipo data, no formato yyyy-MM-dd 
 
 Exemplo de como fazer a busca paginado
 
 {
-  "filtros": {  
-    "dataCriacao:gt:2025-09-16": "Date"
-  },
-  "pagina": 0,
-  "tamanho": 5
-}
-
-{
-  "filtros": {  
-    "campo:operador:valor": "tipo da variável"
-  },
-  "pagina": página atual,
-  "tamanho": quantidade por página
+    "pagina": 0,
+    "tamanho": 10,
+    "filtros": [
+        {
+            "campo": "nome",
+            "operador": "like",
+            "valor": "João",
+            "tipo": "string"
+        }
+    ]
 }
 
 ## docker-compose (adjt/local/docker-compose.yml)

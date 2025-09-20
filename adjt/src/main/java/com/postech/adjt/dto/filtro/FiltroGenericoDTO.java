@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class FiltroGenericoDTO {
 
-    @Schema(description = "Filtros aplicados à busca", example = "{\"campo: nome :valor\": \"tipo\"}")
+    @Schema(description = "Filtros aplicados à busca", example = "{\"campo\": \"nomeCampo\", \"operador\": \"like\", \"valor\": \"valorDesejado\", \"tipo\": \"string\"   }")
     private List<FiltroCampoDTO> filtros = new ArrayList<>();
 
     @Schema(description = "Número da página", example = "0")
