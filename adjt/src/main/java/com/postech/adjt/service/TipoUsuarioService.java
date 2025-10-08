@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
+import com.postech.adjt.dto.filtro.FiltroCampoDTO;
 import com.postech.adjt.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.exception.DuplicateEntityException;
 import com.postech.adjt.exception.NotificacaoException;
 import com.postech.adjt.mapper.TipoUsuarioMapper;
 import com.postech.adjt.model.TipoUsuario;
-import com.postech.adjt.model.Usuario;
 import com.postech.adjt.repository.TipoUsuarioRepository;
 import com.postech.adjt.specification.SpecificationGenerico;
 
@@ -105,7 +105,7 @@ public class TipoUsuarioService {
         try {
 
             Optional<TipoUsuario> entidade = this.repository.findById(id);
-            if (entidade.isPresent()) {
+            if ((entidade.isPresent()) && (entidade.get().getAtivo() == true)) {
 
                 if (!this.podeEditarExcluir(entidade.get())) {
                     throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
@@ -142,7 +142,7 @@ public class TipoUsuarioService {
         try {
 
             Optional<TipoUsuario> entidade = this.repository.findById(id);
-            if (entidade.isPresent()) {
+            if ((entidade.isPresent()) && (entidade.get().getAtivo() == true)) {
                 return this.mapper.toTipoUsuarioDTO(entidade.get());
             }
 
@@ -167,6 +167,7 @@ public class TipoUsuarioService {
 
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
         List<TipoUsuario> tipoUsuarios = this.repository.findAll(sort);
+        tipoUsuarios = tipoUsuarios.stream().filter(t -> t.getAtivo() == true).collect(Collectors.toList());
 
         if (!tipoUsuarios.isEmpty()) {
             return tipoUsuarios.stream().map(this.mapper::toTipoUsuarioDTO).collect(Collectors.toList());
@@ -183,6 +184,9 @@ public class TipoUsuarioService {
      */
     @Transactional(rollbackFor = Exception.class)
     public ResultadoPaginacaoDTO<TipoUsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
+
+        FiltroCampoDTO filtroAtivo = new FiltroCampoDTO("ativo", "eq", "true", "boolean");
+        filtro.getFiltros().add(filtroAtivo);
 
         Specification<TipoUsuario> spec = SpecificationGenerico.criarSpecification(filtro);
         Pageable pageable = SpecificationGenerico.criarPageable(filtro);

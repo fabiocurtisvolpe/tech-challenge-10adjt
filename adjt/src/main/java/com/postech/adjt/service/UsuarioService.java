@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.postech.adjt.constants.MensagemUtil;
 import com.postech.adjt.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.dto.TipoUsuarioDTO;
+import com.postech.adjt.dto.filtro.FiltroCampoDTO;
 import com.postech.adjt.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.dto.usuario.UsuarioDTO;
 import com.postech.adjt.dto.usuario.UsuarioSenhaDTO;
@@ -159,7 +160,7 @@ public class UsuarioService {
         try {
 
             Optional<Usuario> entidade = this.repository.findById(id);
-            if (entidade.isPresent()) {
+            if ((entidade.isPresent()) && (entidade.get().getAtivo() == true)) {
 
                 if (!this.usuarioPodeExecutar(entidade.get().getEmail())) {
                     throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
@@ -167,7 +168,6 @@ public class UsuarioService {
 
                 entidade.get().setNome(dto.getNome());
                 entidade.get().setEmail(dto.getEmail());
-                dto.setAtivo(true);
                 dto.setDataAlteracao(LocalDateTime.now());
 
                 TipoUsuarioDTO tipoUsuarioDTO = this.tipoUsuarioService.buscar(dto.getTipoUsuario().getId());
@@ -210,7 +210,7 @@ public class UsuarioService {
         try {
             Optional<Usuario> entidade = this.repository.findById(id);
 
-            if (entidade.isPresent()) {
+            if ((entidade.isPresent()) && (entidade.get().getAtivo() == true)) {
 
                 if (!this.usuarioPodeExecutar(entidade.get().getEmail())) {
                     throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
@@ -243,7 +243,8 @@ public class UsuarioService {
 
         try {
             Optional<Usuario> entidade = this.repository.findById(id);
-            if (entidade.isPresent()) {
+
+            if ((entidade.isPresent()) && (entidade.get().getAtivo() == true)) {
                 return this.mapper.toUsuarioDTO(entidade.get());
             }
 
@@ -267,6 +268,7 @@ public class UsuarioService {
 
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
         List<Usuario> usuarios = this.repository.findAll(sort);
+        usuarios = usuarios.stream().filter(u -> u.getAtivo() == true).collect(Collectors.toList());
 
         if (!usuarios.isEmpty()) {
             return usuarios.stream().map(this.mapper::toUsuarioDTO).collect(Collectors.toList());
@@ -284,10 +286,14 @@ public class UsuarioService {
     @Transactional(rollbackFor = Exception.class)
     public ResultadoPaginacaoDTO<UsuarioDTO> listarPaginado(FiltroGenericoDTO filtro) {
 
+        FiltroCampoDTO filtroAtivo = new FiltroCampoDTO("ativo", "eq", "true", "boolean");
+        filtro.getFiltros().add(filtroAtivo);
+
         Specification<Usuario> spec = SpecificationGenerico.criarSpecification(filtro);
         Pageable pageable = SpecificationGenerico.criarPageable(filtro);
 
         Page<Usuario> paginaUsuario = this.repository.findAll(spec, pageable);
+
         Page<UsuarioDTO> paginaDTO = paginaUsuario.map(this.mapper::toUsuarioDTO);
 
         return new ResultadoPaginacaoDTO<>(paginaDTO.getContent(), (int) paginaDTO.getTotalElements());
