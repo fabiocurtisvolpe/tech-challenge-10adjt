@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.postech.adjt.data.entity.UsuarioEntity;
+import com.postech.adjt.data.repository.UsuarioRepository;
 import com.postech.adjt.domain.model.Usuario;
 
 /**
@@ -60,7 +62,7 @@ public class AppUserDetailsService implements UserDetailsService {
         @Override
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-                Usuario usuario = this.usuarioRepository.findByEmail(email)
+                UsuarioEntity usuario = this.usuarioRepository.findByEmail(email)
                                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
