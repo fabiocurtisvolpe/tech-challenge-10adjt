@@ -70,7 +70,7 @@ Antes de iniciar, certifique-se de ter instalado:
 
 Docker (https://www.docker.com/)
 Docker Compose (https://docs.docker.com/compose/)
-Java 21 (https://www.oracle.com/br/java/technologies/downloads/)
+Java 25 (https://www.oracle.com/br/java/technologies/downloads/)
 Postman (https://www.postman.com/)
 
 ⚙️ Configuração

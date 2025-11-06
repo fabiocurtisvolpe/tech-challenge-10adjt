@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AdjtApplication",
+            "request": "launch",
+            "mainClass": "com.postech.adjt.api.AdjtApplication",
+            "projectName": "adjt-api"
+        },
+        {
+            "type": "java",
+            "name": "AdjtApplication",
+            "request": "launch",
+            "mainClass": "com.postech.adjt.api.AdjtApplication",
+            "projectName": "tech-challenge-10adjt_498aca5f"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-AdjtApplication<adjt>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
