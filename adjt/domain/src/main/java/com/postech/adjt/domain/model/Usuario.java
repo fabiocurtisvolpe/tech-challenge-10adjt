@@ -12,56 +12,56 @@ public class Usuario extends BaseModel {
     private List<Endereco> enderecos = new ArrayList<>();
     private Boolean ehDonoRestaurante;
 
-    public String getNome() {
-        return nome;
+    public Usuario(String nome, String email, String senha, TipoUsuario tipoUsuario, Boolean ehDonoRestaurante,
+            List<Endereco> enderecos) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.tipoUsuario = tipoUsuario;
+        this.ehDonoRestaurante = ehDonoRestaurante;
+        this.enderecos = enderecos;
     }
 
-    public void setNome(String nome) {
+    public Usuario(Integer id, Boolean ativo, String nome, String email, String senha, TipoUsuario tipoUsuario,
+            Boolean ehDonoRestaurante, List<Endereco> enderecos) {
+        this.setId(id);
+        this.setAtivo(ativo);
         this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.tipoUsuario = tipoUsuario;
+        this.ehDonoRestaurante = ehDonoRestaurante;
+        this.enderecos = enderecos;
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getSenha() {
         return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 
     public TipoUsuario getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(TipoUsuario tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-
     public List<Endereco> getEnderecos() {
         return enderecos;
     }
 
-    public void setEnderecos(List<Endereco> enderecos) {
-        this.enderecos = enderecos;
-    }
-
-    public void adicionarEndereco(Endereco endereco) {
-        endereco.setUsuario(this);
-        this.enderecos.add(endereco);
-    }
+    /*
+     * public void adicionarEndereco(Endereco endereco) {
+     * endereco.setUsuario(this);
+     * this.enderecos.add(endereco);
+     * }
+     */
 
     public Boolean getEhDonoRestaurante() {
         return ehDonoRestaurante;
-    }
-
-    public void setEhDonoRestaurante(Boolean ehDonoRestaurante) {
-        this.ehDonoRestaurante = ehDonoRestaurante;
     }
 }

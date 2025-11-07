@@ -38,8 +38,6 @@ public class TipoUsuarioMapper {
 
         TipoUsuarioEntity entity = new TipoUsuarioEntity();
         entity.setId(domain.getId());
-        entity.setDataCriacao(domain.getDataCriacao());
-        entity.setDataAlteracao(domain.getDataAlteracao());
         entity.setAtivo(domain.getAtivo());
         entity.setNome(domain.getNome());
         entity.setDescricao(domain.getDescricao());
@@ -60,14 +58,8 @@ public class TipoUsuarioMapper {
             return null;
         }
 
-        TipoUsuario domain = new TipoUsuario();
-        domain.setId(entity.getId());
-        domain.setDataCriacao(entity.getDataCriacao());
-        domain.setDataAlteracao(entity.getDataAlteracao());
-        domain.setAtivo(entity.getAtivo());
-        domain.setNome(entity.getNome());
-        domain.setDescricao(entity.getDescricao());
-
-        return domain;
+        return new TipoUsuario(entity.getId(), entity.getAtivo(),
+                entity.getPodeSerExcluido(), entity.getNome(),
+                entity.getDescricao());
     }
 }

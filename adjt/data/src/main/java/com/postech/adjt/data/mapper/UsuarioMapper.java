@@ -12,9 +12,9 @@ import com.postech.adjt.domain.model.Endereco;
 import com.postech.adjt.domain.model.TipoUsuario;
 import com.postech.adjt.domain.model.Usuario;
 
-
 /**
- * Componente responsável por mapear objetos entre as entidades e o modelo de domínio.
+ * Componente responsável por mapear objetos entre as entidades e o modelo de
+ * domínio.
  *
  * <p>
  * Realiza conversões bidirecionais entre {@link UsuarioEntity} e
@@ -49,25 +49,19 @@ public class UsuarioMapper {
             return null;
         }
 
-        Usuario usuario = new Usuario();
-        usuario.setId(entity.getId());
-        usuario.setDataCriacao(entity.getDataCriacao());
-        usuario.setDataAlteracao(entity.getDataAlteracao());
-        usuario.setAtivo(entity.getAtivo());
-        usuario.setNome(entity.getNome());
-        usuario.setEmail(entity.getEmail());
-        usuario.setSenha(entity.getSenha());
-
-        TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toDomain(entity.getTipoUsuario());
-        usuario.setTipoUsuario(tipoUsuario);
+        List<Endereco> enderecos = new ArrayList<>();
 
         if (Objects.nonNull(entity.getEnderecos()) && !entity.getEnderecos().isEmpty()) {
-            List<Endereco> enderecos = new ArrayList<>();
             for (EnderecoEntity endereco : entity.getEnderecos()) {
                 enderecos.add(this.toEnderecoDomain(endereco));
             }
-            usuario.setEnderecos(enderecos);
         }
+
+        TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toDomain(entity.getTipoUsuario());
+
+        Usuario usuario = new Usuario(entity.getId(), entity.getAtivo(),
+                entity.getNome(), entity.getEmail(), entity.getSenha(), tipoUsuario,
+                entity.getEhDonoRestaurante(), enderecos);
 
         return usuario;
     }
@@ -136,20 +130,10 @@ public class UsuarioMapper {
             return null;
         }
 
-        Endereco endereco = new Endereco();
-        endereco.setId(entity.getId());
-        endereco.setDataCriacao(entity.getDataCriacao());
-        endereco.setDataAlteracao(entity.getDataAlteracao());
-        endereco.setAtivo(entity.getAtivo());
-        endereco.setLogradouro(entity.getLogradouro());
-        endereco.setNumero(entity.getNumero());
-        endereco.setComplemento(entity.getComplemento());
-        endereco.setBairro(entity.getBairro());
-        endereco.setPontoReferencia(entity.getPontoReferencia());
-        endereco.setCep(entity.getCep());
-        endereco.setMunicipio(entity.getMunicipio());
-        endereco.setUf(entity.getUf());
-        endereco.setPrincipal(entity.getPrincipal());
+        Endereco endereco = new Endereco(entity.getId(), entity.getAtivo(), entity.getLogradouro(), entity.getNumero(),
+                entity.getComplemento(), entity.getBairro(), entity.getPontoReferencia(), entity.getCep(),
+                entity.getMunicipio(), entity.getUf(), entity.getPrincipal(),
+                entity.getUsuario() != null ? this.toDomain(entity.getUsuario()) : null);
 
         return endereco;
     }

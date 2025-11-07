@@ -97,15 +97,12 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
             }
 
             String senhaCodificada = passwordEncoder.encode(model.getSenha());
-            model.setSenha(senhaCodificada);
-            model.setAtivo(true);
-            model.setDataCriacao(LocalDateTime.now());
-            model.setDataAlteracao(LocalDateTime.now());
-
             TipoUsuario tipoUsuario = this.tipoUsuarioService.buscar(model.getTipoUsuario().getId());
-            model.setTipoUsuario(tipoUsuario);
 
-            UsuarioEntity entityToSave = this.mapper.toEntity(model);
+            Usuario novo = new Usuario(model.getNome(),
+                    senhaCodificada, model.getEmail(), tipoUsuario, model.getEhDonoRestaurante(), model.getEnderecos());
+
+            UsuarioEntity entityToSave = this.mapper.toEntity(novo);
             if (entityToSave == null) {
                 throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
             }

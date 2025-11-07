@@ -9,7 +9,6 @@ public class BaseModel implements Serializable {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAlteracao;
     private Boolean ativo;
-    private Boolean podeSerExcluido;
 
     public Integer getId() {
         return id;
@@ -41,13 +40,5 @@ public class BaseModel implements Serializable {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public Boolean getPodeSerExcluido() {
-        return podeSerExcluido;
-    }
-
-    public void setPodeSerExcluido(Boolean podeSerExcluido) {
-        this.podeSerExcluido = podeSerExcluido;
     }
 }
