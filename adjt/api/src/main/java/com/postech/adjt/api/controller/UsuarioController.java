@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.postech.adjt.data.service.UsuarioServiceImpl;
-import com.postech.adjt.domain.model.ResultadoPaginacao;
+import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.domain.dto.UsuarioSenhaDTO;
+import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.model.Usuario;
-import com.postech.adjt.domain.model.UsuarioSenha;
-import com.postech.adjt.domain.model.filtro.FiltroGenerico;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -107,7 +107,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PutMapping("/alterar-senha/{id}")
-    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioSenha dto) {
+    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioSenhaDTO dto) {
         return this.service.atualizarSenha(id, dto);
     }
 
@@ -141,7 +141,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PostMapping("/paginado")
-    public ResultadoPaginacao<Usuario> paginado(@RequestBody @Valid FiltroGenerico filtro) {
+    public ResultadoPaginacaoDTO<Usuario> paginado(@RequestBody @Valid FiltroGenericoDTO filtro) {
         return this.service.listarPaginado(filtro);
     }
 

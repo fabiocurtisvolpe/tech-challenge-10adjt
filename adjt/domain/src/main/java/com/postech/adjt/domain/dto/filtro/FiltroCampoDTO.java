@@ -1,8 +1,8 @@
-package com.postech.adjt.domain.model.filtro;
+package com.postech.adjt.domain.dto.filtro;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class FiltroCampo {
+public class FiltroCampoDTO {
 
     @NotBlank(message = "O campo não pode estar em branco")
     private String campo;
@@ -16,10 +16,10 @@ public class FiltroCampo {
     @NotBlank(message = "O tipo não pode estar em branco")
     private String tipo;
 
-    public FiltroCampo() {
+    public FiltroCampoDTO() {
     }
 
-    public FiltroCampo(String campo, String operador, String valor, String tipo) {
+    public FiltroCampoDTO(String campo, String operador, String valor, String tipo) {
         this.campo = campo;
         this.operador = operador;
         this.valor = valor;

@@ -20,11 +20,11 @@ import com.postech.adjt.data.mapper.TipoUsuarioMapper;
 import com.postech.adjt.data.repository.TipoUsuarioRepository;
 import com.postech.adjt.data.specification.SpecificationGenerico;
 import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.domain.dto.filtro.FiltroCampoDTO;
+import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.model.ResultadoPaginacao;
 import com.postech.adjt.domain.model.TipoUsuario;
-import com.postech.adjt.domain.model.filtro.FiltroCampo;
-import com.postech.adjt.domain.model.filtro.FiltroGenerico;
 import com.postech.adjt.domain.service.BaseService;
 
 @Service
@@ -179,9 +179,9 @@ public class TipoUsuarioServiceImpl implements BaseService<TipoUsuario> {
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public ResultadoPaginacao<TipoUsuario> listarPaginado(FiltroGenerico filtro) {
+    public ResultadoPaginacaoDTO<TipoUsuario> listarPaginado(FiltroGenericoDTO filtro) {
 
-        FiltroCampo filtroAtivo = new FiltroCampo("ativo", "eq", "true", "boolean");
+        FiltroCampoDTO filtroAtivo = new FiltroCampoDTO("ativo", "eq", "true", "boolean");
         filtro.getFiltros().add(filtroAtivo);
 
         Specification<TipoUsuarioEntity> spec = SpecificationGenerico.criarSpecification(filtro);
@@ -194,7 +194,7 @@ public class TipoUsuarioServiceImpl implements BaseService<TipoUsuario> {
         Page<TipoUsuarioEntity> paginaTipoUsuario = this.repository.findAll(spec, pageable);
         Page<TipoUsuario> pagina = paginaTipoUsuario.map(this.mapper::toDomain);
 
-        return new ResultadoPaginacao<>(pagina.getContent(), (int) pagina.getTotalElements());
+        return new ResultadoPaginacaoDTO<>(pagina.getContent(), (int) pagina.getTotalElements());
     }
 
     /**

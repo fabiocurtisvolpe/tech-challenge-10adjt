@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.enums.FiltroOperadorEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.model.filtro.FiltroGenerico;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -20,7 +20,7 @@ import jakarta.persistence.criteria.Root;
 
 /**
  * Classe utilitária para construção dinâmica de {@link Specification} JPA
- * com base em filtros genéricos fornecidos via {@link FiltroGenerico}.
+ * com base em filtros genéricos fornecidos via {@link FiltroGenericoDTO}.
  * 
  * @author Fabio
  * @since 2025-09-19
@@ -33,7 +33,7 @@ public class SpecificationGenerico {
      * @param filtro contendo os filtros e informações de paginação
      * @return Specification construída
      */
-    public static <T> Specification<T> criarSpecification(FiltroGenerico filtro) {
+    public static <T> Specification<T> criarSpecification(FiltroGenericoDTO filtro) {
         return comFiltro(filtro);
     }
 
@@ -43,11 +43,11 @@ public class SpecificationGenerico {
      * @param filtro DTO contendo as informações de paginação
      * @return Pageable configurado
      */
-    public static Pageable criarPageable(FiltroGenerico filtro) {
+    public static Pageable criarPageable(FiltroGenericoDTO filtro) {
         return PageRequest.of(filtro.getPagina(), filtro.getTamanho());
     }
 
-    private static <T> Specification<T> comFiltro(FiltroGenerico filtro) {
+    private static <T> Specification<T> comFiltro(FiltroGenericoDTO filtro) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 

@@ -2,8 +2,8 @@ package com.postech.adjt.domain.service;
 
 import java.util.List;
 
-import com.postech.adjt.domain.model.ResultadoPaginacao;
-import com.postech.adjt.domain.model.filtro.FiltroGenerico;
+import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 
 public interface BaseService<T> {
 
@@ -15,7 +15,7 @@ public interface BaseService<T> {
 
     List<T> listar();
 
-    ResultadoPaginacao<T> listarPaginado(FiltroGenerico filtro);
+    ResultadoPaginacaoDTO<T> listarPaginado(FiltroGenericoDTO filtro);
 
     boolean ativarInativar(Integer id);
 }

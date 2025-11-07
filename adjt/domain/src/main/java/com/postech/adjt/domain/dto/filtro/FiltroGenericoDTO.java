@@ -1,19 +1,19 @@
-package com.postech.adjt.domain.model.filtro;
+package com.postech.adjt.domain.dto.filtro;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FiltroGenerico {
+public class FiltroGenericoDTO {
 
-    private List<FiltroCampo> filtros = new ArrayList<>();
+    private List<FiltroCampoDTO> filtros = new ArrayList<>();
     private int pagina = 0;
     private int tamanho = 10;
 
-    public List<FiltroCampo> getFiltros() {
+    public List<FiltroCampoDTO> getFiltros() {
         return filtros;
     }
 
-    public void setFiltros(List<FiltroCampo> filtros) {
+    public void setFiltros(List<FiltroCampoDTO> filtros) {
         this.filtros = filtros;
     }
 

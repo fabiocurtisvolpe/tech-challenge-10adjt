@@ -22,13 +22,13 @@ import com.postech.adjt.data.mapper.UsuarioMapper;
 import com.postech.adjt.data.repository.UsuarioRepository;
 import com.postech.adjt.data.specification.SpecificationGenerico;
 import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.domain.dto.UsuarioSenhaDTO;
+import com.postech.adjt.domain.dto.filtro.FiltroCampoDTO;
+import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.model.ResultadoPaginacao;
 import com.postech.adjt.domain.model.TipoUsuario;
 import com.postech.adjt.domain.model.Usuario;
-import com.postech.adjt.domain.model.UsuarioSenha;
-import com.postech.adjt.domain.model.filtro.FiltroCampo;
-import com.postech.adjt.domain.model.filtro.FiltroGenerico;
 import com.postech.adjt.domain.service.BaseService;
 
 @Service
@@ -189,7 +189,7 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
      * @throws NotificacaoException qualquer outro erro.
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean atualizarSenha(Integer id, UsuarioSenha dto) {
+    public boolean atualizarSenha(Integer id, UsuarioSenhaDTO dto) {
 
         try {
 
@@ -279,8 +279,8 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public ResultadoPaginacao<Usuario> listarPaginado(FiltroGenerico filtro) {
-        FiltroCampo filtroAtivo = new FiltroCampo("ativo", "eq", "true", "boolean");
+    public ResultadoPaginacaoDTO<Usuario> listarPaginado(FiltroGenericoDTO filtro) {
+        FiltroCampoDTO filtroAtivo = new FiltroCampoDTO("ativo", "eq", "true", "boolean");
         filtro.getFiltros().add(filtroAtivo);
 
         Specification<UsuarioEntity> spec = SpecificationGenerico.criarSpecification(filtro);
@@ -293,7 +293,7 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
         Page<UsuarioEntity> paginaUsuario = this.repository.findAll(spec, pageable);
         Page<Usuario> pagina = paginaUsuario.map(this.mapper::toDomain);
 
-        return new ResultadoPaginacao<>(pagina.getContent(), (int) pagina.getTotalElements());
+        return new ResultadoPaginacaoDTO<>(pagina.getContent(), (int) pagina.getTotalElements());
     }
 
     @Override
