@@ -76,8 +76,9 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PostMapping("/criar")
-    public Usuario criar(@RequestBody @Valid UsuarioDTO dto) {
-        return this.service.criar(this.usuarioMapper.toUsuario(dto));
+    public UsuarioDTO criar(@RequestBody @Valid UsuarioDTO dto) {
+        Usuario usuario = this.service.criar(this.usuarioMapper.toUsuario(dto));
+        return this.usuarioMapper.toUsuarioDTO(usuario);
     }
 
     /**
@@ -95,8 +96,9 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PutMapping("/{id}")
-    public Usuario atualizar(@PathVariable @Valid Integer id, @RequestBody @Valid Usuario dto) {
-        return this.service.atualizar(id, dto);
+    public UsuarioDTO atualizar(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioDTO dto) {
+        Usuario usuario = this.service.atualizar(id, this.usuarioMapper.toUsuario(dto));
+        return this.usuarioMapper.toUsuarioDTO(usuario);
     }
 
     /**
