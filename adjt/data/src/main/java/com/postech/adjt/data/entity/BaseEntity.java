@@ -32,9 +32,6 @@ public class BaseEntity implements Serializable {
     @Column(name = "pode_ser_excluido", updatable = false)
     private Boolean podeSerExcluido;
 
-    @Column(name = "eh_dono_restaurante", updatable = false)
-    private Boolean ehDonoRestaurante;
-
     public Integer getId() {
         return id;
     }
@@ -74,13 +71,4 @@ public class BaseEntity implements Serializable {
     public void setPodeSerExcluido(Boolean podeSerExcluido) {
         this.podeSerExcluido = podeSerExcluido;
     }
-
-    public Boolean getEhDonoRestaurante() {
-        return ehDonoRestaurante;
-    }
-
-    public void setEhDonoRestaurante(Boolean ehDonoRestaurante) {
-        this.ehDonoRestaurante = ehDonoRestaurante;
-    }
-
 }

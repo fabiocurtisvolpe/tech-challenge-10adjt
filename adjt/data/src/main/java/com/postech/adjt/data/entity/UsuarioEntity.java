@@ -35,6 +35,9 @@ public class UsuarioEntity extends BaseEntity {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnderecoEntity> enderecos = new ArrayList<>();
 
+    @Column(name = "eh_dono_restaurante", updatable = false)
+    private Boolean ehDonoRestaurante;
+
     public String getNome() {
         return nome;
     }
@@ -78,5 +81,13 @@ public class UsuarioEntity extends BaseEntity {
     public void adicionarEndereco(EnderecoEntity endereco) {
         endereco.setUsuario(this);
         this.enderecos.add(endereco);
+    }
+
+    public Boolean getEhDonoRestaurante() {
+        return ehDonoRestaurante;
+    }
+
+    public void setEhDonoRestaurante(Boolean ehDonoRestaurante) {
+        this.ehDonoRestaurante = ehDonoRestaurante;
     }
 }

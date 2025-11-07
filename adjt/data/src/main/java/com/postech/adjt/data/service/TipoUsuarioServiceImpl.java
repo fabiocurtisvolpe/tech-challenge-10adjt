@@ -103,10 +103,6 @@ public class TipoUsuarioServiceImpl implements BaseService<TipoUsuario> {
 
             if (entidadeAtual.getAtivo() == true) {
 
-                if (!entidadeAtual.getEhDonoRestaurante()) {
-                    throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
-                }
-
                 entidadeAtual.setNome(model.getNome());
                 entidadeAtual.setDescricao(model.getDescricao());
 
@@ -223,7 +219,7 @@ public class TipoUsuarioServiceImpl implements BaseService<TipoUsuario> {
             TipoUsuarioEntity entidadeAtual = entidade.get();
             Objects.requireNonNull(entidadeAtual, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
-            if (entidade.get().getEhDonoRestaurante() && (entidade.get().getPodeSerExcluido())) {
+            if (entidadeAtual.getPodeSerExcluido()) {
                 boolean ativo = entidadeAtual.getAtivo();
                 entidadeAtual.setAtivo(!ativo);
                 entidadeAtual.setDataAlteracao(java.time.LocalDateTime.now());

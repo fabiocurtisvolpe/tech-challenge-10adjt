@@ -10,6 +10,7 @@ public class Usuario extends BaseModel {
     private String senha;
     private TipoUsuario tipoUsuario;
     private List<Endereco> enderecos = new ArrayList<>();
+    private Boolean ehDonoRestaurante;
 
     public String getNome() {
         return nome;
@@ -54,5 +55,13 @@ public class Usuario extends BaseModel {
     public void adicionarEndereco(Endereco endereco) {
         endereco.setUsuario(this);
         this.enderecos.add(endereco);
+    }
+
+    public Boolean getEhDonoRestaurante() {
+        return ehDonoRestaurante;
+    }
+
+    public void setEhDonoRestaurante(Boolean ehDonoRestaurante) {
+        this.ehDonoRestaurante = ehDonoRestaurante;
     }
 }
