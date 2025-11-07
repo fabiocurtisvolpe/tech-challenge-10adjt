@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.postech.adjt.api.dto.UsuarioDTO;
+import com.postech.adjt.api.mapper.UsuarioMapperDTO;
 import com.postech.adjt.data.service.UsuarioServiceImpl;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.UsuarioSenhaDTO;
@@ -47,13 +49,17 @@ public class UsuarioController {
      */
     protected final UsuarioServiceImpl service;
 
+    protected final UsuarioMapperDTO usuarioMapper;
+
     /**
      * Construtor com injeção de dependência do serviço de usuário.
      *
      * @param service Serviço de usuário.
      */
-    public UsuarioController(UsuarioServiceImpl service) {
+    public UsuarioController(UsuarioServiceImpl service,
+            UsuarioMapperDTO usuarioMapper) {
         this.service = service;
+        this.usuarioMapper = usuarioMapper;
     }
 
     /**
@@ -70,8 +76,8 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PostMapping("/criar")
-    public Usuario criar(@RequestBody @Valid Usuario dto) {
-        return this.service.criar(dto);
+    public Usuario criar(@RequestBody @Valid UsuarioDTO dto) {
+        return this.service.criar(this.usuarioMapper.toUsuario(dto));
     }
 
     /**

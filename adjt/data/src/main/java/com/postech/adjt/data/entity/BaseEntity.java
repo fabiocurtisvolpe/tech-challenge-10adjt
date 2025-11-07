@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 
 @MappedSuperclass
 @Audited
@@ -28,9 +29,6 @@ public class BaseEntity implements Serializable {
 
     @Column(name = "ativo")
     private Boolean ativo;
-
-    @Column(name = "pode_ser_excluido", updatable = false)
-    private Boolean podeSerExcluido;
 
     public Integer getId() {
         return id;
@@ -64,11 +62,18 @@ public class BaseEntity implements Serializable {
         this.ativo = ativo;
     }
 
-    public Boolean getPodeSerExcluido() {
-        return podeSerExcluido;
-    }
+    @PrePersist
+    protected void onCreate() {
+        if (this.dataCriacao == null) {
+            this.dataCriacao = LocalDateTime.now();
+        }
 
-    public void setPodeSerExcluido(Boolean podeSerExcluido) {
-        this.podeSerExcluido = podeSerExcluido;
+        if (this.dataAlteracao == null) {
+            this.dataAlteracao = LocalDateTime.now();
+        }
+
+        if (this.ativo == null) {
+            this.ativo = true;
+        }
     }
 }

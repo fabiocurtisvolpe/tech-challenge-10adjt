@@ -27,7 +27,6 @@ import com.postech.adjt.domain.dto.UsuarioSenhaDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroCampoDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.model.TipoUsuario;
 import com.postech.adjt.domain.model.Usuario;
 import com.postech.adjt.domain.service.BaseService;
 
@@ -38,11 +37,6 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
      * Repositório JPA para acesso aos dados de usuários.
      */
     private final UsuarioRepository repository;
-
-    /**
-     * Serviço para operações relacionadas a tipos de usuário.
-     */
-    private final TipoUsuarioServiceImpl tipoUsuarioService;
 
     /**
      * Mapper para conversão entre {@link Usuario} e {@link Usuario}.
@@ -64,11 +58,9 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
      */
     public UsuarioServiceImpl(
             UsuarioRepository repository,
-            TipoUsuarioServiceImpl tipoUsuarioService,
             UsuarioMapper mapper,
             PasswordEncoder passwordEncoder) {
         this.repository = repository;
-        this.tipoUsuarioService = tipoUsuarioService;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
     }
@@ -97,10 +89,9 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
             }
 
             String senhaCodificada = passwordEncoder.encode(model.getSenha());
-            TipoUsuario tipoUsuario = this.tipoUsuarioService.buscar(model.getTipoUsuario().getId());
 
             Usuario novo = new Usuario(model.getNome(),
-                    senhaCodificada, model.getEmail(), tipoUsuario, model.getEhDonoRestaurante(), model.getEnderecos());
+                    model.getEmail(), senhaCodificada, model.getTipoUsuario());
 
             UsuarioEntity entityToSave = this.mapper.toEntity(novo);
             if (entityToSave == null) {
@@ -307,16 +298,12 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
             UsuarioEntity entidadeAtual = entidade.get();
             Objects.requireNonNull(entidadeAtual, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
-            if (entidade.get().getEhDonoRestaurante() && (entidade.get().getPodeSerExcluido())) {
-                boolean ativo = entidadeAtual.getAtivo();
-                entidadeAtual.setAtivo(!ativo);
-                entidadeAtual.setDataAlteracao(java.time.LocalDateTime.now());
+            boolean ativo = entidadeAtual.getAtivo();
+            entidadeAtual.setAtivo(!ativo);
+            entidadeAtual.setDataAlteracao(java.time.LocalDateTime.now());
 
-                this.repository.save(entidadeAtual);
-                return true;
-            }
-
-            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+            this.repository.save(entidadeAtual);
+            return true;
 
         } catch (NotificacaoException e) {
             throw e;

@@ -31,6 +31,23 @@ public class Endereco extends BaseModel {
         this.usuario = usuario;
     }
 
+    public Endereco(Integer id, String logradouro,
+            String numero, String complemento, String bairro,
+            String pontoReferencia, String cep, String municipio, String uf,
+            Boolean principal, Usuario usuario) {
+        this.setId(id);
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.pontoReferencia = pontoReferencia;
+        this.cep = cep;
+        this.municipio = municipio;
+        this.uf = uf;
+        this.principal = principal;
+        this.usuario = usuario;
+    }
+
     public String getLogradouro() {
         return logradouro;
     }

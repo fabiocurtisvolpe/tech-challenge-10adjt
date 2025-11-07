@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.hibernate.envers.Audited;
 
+import com.postech.adjt.data.converter.TipoUsuarioEnumConverter;
+import com.postech.adjt.domain.enums.TipoUsuarioEnum;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -28,15 +30,12 @@ public class UsuarioEntity extends BaseEntity {
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tipo_usuario_id", nullable = false)
-    private TipoUsuarioEntity tipoUsuario;
+    @Column(name = "tipo_usuario", nullable = false, length = 1)
+    @Convert(converter = TipoUsuarioEnumConverter.class)
+    private TipoUsuarioEnum tipoUsuario;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnderecoEntity> enderecos = new ArrayList<>();
-
-    @Column(name = "eh_dono_restaurante", updatable = false)
-    private Boolean ehDonoRestaurante;
 
     public String getNome() {
         return nome;
@@ -62,12 +61,12 @@ public class UsuarioEntity extends BaseEntity {
         this.senha = senha;
     }
 
-    public TipoUsuarioEntity getTipoUsuario() {
-        return tipoUsuario;
+    public void setTipoUsuario(TipoUsuarioEnum tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
-    public void setTipoUsuario(TipoUsuarioEntity tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
+    public TipoUsuarioEnum getTipoUsuario() {
+        return tipoUsuario;
     }
 
     public List<EnderecoEntity> getEnderecos() {
@@ -81,13 +80,5 @@ public class UsuarioEntity extends BaseEntity {
     public void adicionarEndereco(EnderecoEntity endereco) {
         endereco.setUsuario(this);
         this.enderecos.add(endereco);
-    }
-
-    public Boolean getEhDonoRestaurante() {
-        return ehDonoRestaurante;
-    }
-
-    public void setEhDonoRestaurante(Boolean ehDonoRestaurante) {
-        this.ehDonoRestaurante = ehDonoRestaurante;
     }
 }

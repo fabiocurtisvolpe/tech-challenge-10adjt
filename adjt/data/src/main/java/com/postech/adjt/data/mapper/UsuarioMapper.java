@@ -7,9 +7,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 import com.postech.adjt.data.entity.EnderecoEntity;
 import com.postech.adjt.data.entity.UsuarioEntity;
-import com.postech.adjt.data.entity.TipoUsuarioEntity;
 import com.postech.adjt.domain.model.Endereco;
-import com.postech.adjt.domain.model.TipoUsuario;
 import com.postech.adjt.domain.model.Usuario;
 
 /**
@@ -32,12 +30,6 @@ import com.postech.adjt.domain.model.Usuario;
 @Component
 public class UsuarioMapper {
 
-    private final TipoUsuarioMapper tipoUsuarioMapper;
-
-    public UsuarioMapper(TipoUsuarioMapper tipoUsuarioMapper) {
-        this.tipoUsuarioMapper = tipoUsuarioMapper;
-    }
-
     /**
      * Converte uma entidade para um objeto de domínio
      *
@@ -57,11 +49,9 @@ public class UsuarioMapper {
             }
         }
 
-        TipoUsuario tipoUsuario = this.tipoUsuarioMapper.toDomain(entity.getTipoUsuario());
-
         Usuario usuario = new Usuario(entity.getId(), entity.getAtivo(),
-                entity.getNome(), entity.getEmail(), entity.getSenha(), tipoUsuario,
-                entity.getEhDonoRestaurante(), enderecos);
+                entity.getNome(), entity.getEmail(), entity.getSenha(), entity.getTipoUsuario(),
+                enderecos);
 
         return usuario;
     }
@@ -104,17 +94,16 @@ public class UsuarioMapper {
         entity.setNome(usuario.getNome());
         entity.setEmail(usuario.getEmail());
         entity.setSenha(usuario.getSenha());
+        entity.setTipoUsuario(usuario.getTipoUsuario());
 
-        TipoUsuarioEntity tipoUsuario = this.tipoUsuarioMapper.toEntity(usuario.getTipoUsuario());
-        entity.setTipoUsuario(tipoUsuario);
-
+        List<EnderecoEntity> enderecos = new ArrayList<>();
         if (Objects.nonNull(usuario.getEnderecos()) && !usuario.getEnderecos().isEmpty()) {
-            List<EnderecoEntity> enderecos = new ArrayList<>();
             for (Endereco endereco : usuario.getEnderecos()) {
                 enderecos.add(this.toEnderecoEntity(endereco));
             }
-            entity.setEnderecos(enderecos);
         }
+
+        entity.setEnderecos(enderecos);
 
         return entity;
     }
@@ -133,7 +122,7 @@ public class UsuarioMapper {
         Endereco endereco = new Endereco(entity.getId(), entity.getAtivo(), entity.getLogradouro(), entity.getNumero(),
                 entity.getComplemento(), entity.getBairro(), entity.getPontoReferencia(), entity.getCep(),
                 entity.getMunicipio(), entity.getUf(), entity.getPrincipal(),
-                entity.getUsuario() != null ? this.toDomain(entity.getUsuario()) : null);
+                null);
 
         return endereco;
     }

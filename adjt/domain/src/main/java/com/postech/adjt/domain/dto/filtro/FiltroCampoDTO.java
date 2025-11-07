@@ -1,19 +1,10 @@
 package com.postech.adjt.domain.dto.filtro;
 
-import jakarta.validation.constraints.NotBlank;
-
 public class FiltroCampoDTO {
 
-    @NotBlank(message = "O campo não pode estar em branco")
     private String campo;
-
-    @NotBlank(message = "O operador não pode estar em branco")
     private String operador;
-
-    @NotBlank(message = "O valor não pode estar em branco")
     private String valor;
-
-    @NotBlank(message = "O tipo não pode estar em branco")
     private String tipo;
 
     public FiltroCampoDTO() {

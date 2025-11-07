@@ -1,8 +1,5 @@
 package com.postech.adjt.api.jwt.service;
 
-import java.util.Collections;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -65,12 +62,18 @@ public class AppUserDetailsService implements UserDetailsService {
                 UsuarioEntity usuario = this.usuarioRepository.findByEmail(email)
                                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
-                                "ROLE_" + usuario.getTipoUsuario().getNome().replace(" ", "_").toUpperCase());
+                /*
+                 * SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
+                 * "ROLE_" + usuario.getTipoUsuario().replace(" ", "_").toUpperCase());
+                 * 
+                 * return new User(
+                 * usuario.getEmail(),
+                 * usuario.getSenha(),
+                 * Collections.singletonList(authority));
+                 */
 
                 return new User(
                                 usuario.getEmail(),
-                                usuario.getSenha(),
-                                Collections.singletonList(authority));
+                                usuario.getSenha(), null);
         }
 }

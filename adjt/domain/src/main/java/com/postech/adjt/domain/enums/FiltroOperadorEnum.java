@@ -38,6 +38,6 @@ public enum FiltroOperadorEnum {
                 return fo;
             }
         }
-        throw new IllegalArgumentException("Operador inválido: " + operator);
+        throw new IllegalArgumentException("Filtro Operador Inválido: " + operator);
     }
 }
