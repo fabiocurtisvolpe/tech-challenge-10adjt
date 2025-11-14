@@ -1,4 +1,4 @@
 package com.postech.adjt.domain.dto;
 
-public record UsuarioTrocarSenhaDTO(Integer id, String senha) {
+public record UsuarioTrocarSenhaDTO(Integer id, String senha, String senhaCodificada) {
 }

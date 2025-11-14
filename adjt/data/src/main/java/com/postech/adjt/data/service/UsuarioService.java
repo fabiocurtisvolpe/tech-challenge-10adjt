@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,11 +44,6 @@ public class UsuarioService implements BaseService<Usuario> {
     private final UsuarioMapper mapper;
 
     /**
-     * Codificador de senhas utilizado para proteger credenciais dos usuários.
-     */
-    private final PasswordEncoder passwordEncoder;
-
-    /**
      * Construtor que inicializa todas as dependências necessárias.
      *
      * @param repository         Repositório JPA para usuários
@@ -59,11 +53,9 @@ public class UsuarioService implements BaseService<Usuario> {
      */
     public UsuarioService(
             UsuarioRepository repository,
-            UsuarioMapper mapper,
-            PasswordEncoder passwordEncoder) {
+            UsuarioMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -81,15 +73,13 @@ public class UsuarioService implements BaseService<Usuario> {
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Usuario criar(Usuario model) {
+    public Usuario criar(Usuario model, String senhaCodificada) {
 
         try {
 
             if (model.getSenha() == null || model.getSenha().isBlank() || Objects.isNull(model.getSenha())) {
                 throw new NotificacaoException(MensagemUtil.SENHA_EM_BRANCO);
             }
-
-            String senhaCodificada = passwordEncoder.encode(model.getSenha());
 
             Usuario novo = new Usuario(model.getNome(),
                     model.getEmail(), senhaCodificada, model.getTipoUsuario());
@@ -196,8 +186,8 @@ public class UsuarioService implements BaseService<Usuario> {
                     throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
                 }
 
-                String senhaCodificada = passwordEncoder.encode(dto.senha());
-                entidadeAtual.setSenha(senhaCodificada);
+            
+                entidadeAtual.setSenha(dto.senhaCodificada());
                 this.repository.save(entidadeAtual);
                 return true;
             }

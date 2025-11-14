@@ -1,5 +1,6 @@
 package com.postech.adjt.api.controller;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,15 +52,19 @@ public class UsuarioController {
 
     protected final UsuarioMapperDTO usuarioMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     /**
      * Construtor com injeção de dependência do serviço de usuário.
      *
      * @param service Serviço de usuário.
      */
     public UsuarioController(UsuarioService service,
-            UsuarioMapperDTO usuarioMapper) {
+            UsuarioMapperDTO usuarioMapper,
+            PasswordEncoder passwordEncoder) {
         this.service = service;
         this.usuarioMapper = usuarioMapper;
+        this.passwordEncoder = passwordEncoder; 
     }
 
     /**
@@ -77,7 +82,10 @@ public class UsuarioController {
     })
     @PostMapping("/criar")
     public UsuarioDTO criar(@RequestBody @Valid UsuarioDTO dto) {
-        Usuario usuario = this.service.criar(this.usuarioMapper.toUsuario(dto));
+
+        String senhaCodificada = passwordEncoder.encode(dto.getSenha());
+
+        Usuario usuario = this.service.criar(this.usuarioMapper.toUsuario(dto), senhaCodificada);
         return this.usuarioMapper.toUsuarioDTO(usuario);
     }
 
@@ -116,7 +124,10 @@ public class UsuarioController {
     })
     @PutMapping("/alterar-senha/{id}")
     public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioTrocarSenhaDTO dto) {
-        return this.service.atualizarSenha(id, dto);
+
+        String senhaCodificada = passwordEncoder.encode(dto.senha());
+        UsuarioTrocarSenhaDTO dtoComSenhaCodificada = new UsuarioTrocarSenhaDTO(id, dto.senha(), senhaCodificada);
+        return this.service.atualizarSenha(id, dtoComSenhaCodificada);
     }
 
     /**

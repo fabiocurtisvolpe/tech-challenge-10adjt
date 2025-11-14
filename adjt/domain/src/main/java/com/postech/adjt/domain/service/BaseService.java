@@ -7,7 +7,7 @@ import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 
 public interface BaseService<T> {
 
-    T criar(T entidade);
+    T criar(T entidade, String senhaCodificada);
 
     T atualizar(Integer id, T entidade);
 

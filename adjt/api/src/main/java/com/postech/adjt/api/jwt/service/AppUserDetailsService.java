@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.postech.adjt.data.entity.UsuarioEntity;
 import com.postech.adjt.data.repository.UsuarioRepository;
 import com.postech.adjt.data.service.UsuarioService;
 import com.postech.adjt.domain.dto.UsuarioLoginDTO;
