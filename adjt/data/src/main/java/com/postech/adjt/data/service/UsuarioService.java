@@ -23,7 +23,8 @@ import com.postech.adjt.data.repository.UsuarioRepository;
 import com.postech.adjt.data.specification.SpecificationGenerico;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
-import com.postech.adjt.domain.dto.UsuarioSenhaDTO;
+import com.postech.adjt.domain.dto.UsuarioLoginDTO;
+import com.postech.adjt.domain.dto.UsuarioTrocarSenhaDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroCampoDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.exception.NotificacaoException;
@@ -31,7 +32,7 @@ import com.postech.adjt.domain.model.Usuario;
 import com.postech.adjt.domain.service.BaseService;
 
 @Service
-public class UsuarioServiceImpl implements BaseService<Usuario> {
+public class UsuarioService implements BaseService<Usuario> {
 
     /**
      * Repositório JPA para acesso aos dados de usuários.
@@ -56,7 +57,7 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
      * @param mapper             Mapper para conversão de usuários
      * @param passwordEncoder    Encoder para senhas
      */
-    public UsuarioServiceImpl(
+    public UsuarioService(
             UsuarioRepository repository,
             UsuarioMapper mapper,
             PasswordEncoder passwordEncoder) {
@@ -138,7 +139,7 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
             UsuarioEntity entidadeAtual = entidade.get();
             Objects.requireNonNull(entidadeAtual, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
-            if (entidadeAtual.getAtivo() == true) {
+            if (entidadeAtual.getAtivo()) {
 
                 if (!this.usuarioPodeExecutar(id, entidadeAtual.getEmail())) {
                     throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
@@ -177,7 +178,7 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
      * @throws NotificacaoException qualquer outro erro.
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean atualizarSenha(Integer id, UsuarioSenhaDTO dto) {
+    public boolean atualizarSenha(Integer id, UsuarioTrocarSenhaDTO dto) {
 
         try {
 
@@ -189,7 +190,7 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
             UsuarioEntity entidadeAtual = entidade.get();
             Objects.requireNonNull(entidadeAtual, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
-            if (entidadeAtual.getAtivo() == true) {
+            if (entidadeAtual.getAtivo()) {
 
                 if (!this.usuarioPodeExecutar(id, entidade.get().getEmail())) {
                     throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
@@ -228,7 +229,7 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
 
             Optional<UsuarioEntity> entidade = this.repository.findById(id);
 
-            if ((entidade.isPresent()) && (entidade.get().getAtivo() == true)) {
+            if ((entidade.isPresent()) && (entidade.get().getAtivo())) {
                 return this.mapper.toDomain(entidade.get());
             }
 
@@ -315,5 +316,24 @@ public class UsuarioServiceImpl implements BaseService<Usuario> {
     private boolean usuarioPodeExecutar(Integer id, String email) {
         Optional<UsuarioEntity> entidade = this.repository.findByEmail(email);
         return entidade.isPresent() && entidade.get().getId().equals(id);
+    }
+
+    public Optional<UsuarioLoginDTO> buscarPorEmail(String email) {
+        try {
+            Optional<UsuarioEntity> entidade = this.repository.findByEmail(email);
+
+            if (entidade.isPresent() && entidade.get().getAtivo()) {
+                UsuarioEntity usuarioEntity = entidade.get();
+                return Optional.of(new UsuarioLoginDTO(
+                        usuarioEntity.getNome(),
+                        usuarioEntity.getEmail(),
+                        usuarioEntity.getSenha(),
+                        usuarioEntity.getTipoUsuario()));
+            }
+
+            return Optional.empty();
+        } catch (Exception e) {
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        }
     }
 }

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.postech.adjt.api.dto.UsuarioDTO;
 import com.postech.adjt.api.mapper.UsuarioMapperDTO;
-import com.postech.adjt.data.service.UsuarioServiceImpl;
+import com.postech.adjt.data.service.UsuarioService;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
-import com.postech.adjt.domain.dto.UsuarioSenhaDTO;
+import com.postech.adjt.domain.dto.UsuarioTrocarSenhaDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.model.Usuario;
 
@@ -47,7 +47,7 @@ public class UsuarioController {
     /**
      * Serviço responsável pela lógica de negócio relacionada aos usuários.
      */
-    protected final UsuarioServiceImpl service;
+    protected final UsuarioService service;
 
     protected final UsuarioMapperDTO usuarioMapper;
 
@@ -56,7 +56,7 @@ public class UsuarioController {
      *
      * @param service Serviço de usuário.
      */
-    public UsuarioController(UsuarioServiceImpl service,
+    public UsuarioController(UsuarioService service,
             UsuarioMapperDTO usuarioMapper) {
         this.service = service;
         this.usuarioMapper = usuarioMapper;
@@ -115,7 +115,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PutMapping("/alterar-senha/{id}")
-    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioSenhaDTO dto) {
+    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioTrocarSenhaDTO dto) {
         return this.service.atualizarSenha(id, dto);
     }
 

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.postech.adjt.data.entity.UsuarioEntity;
 import com.postech.adjt.data.repository.UsuarioRepository;
+import com.postech.adjt.data.service.UsuarioService;
+import com.postech.adjt.domain.dto.UsuarioLoginDTO;
 import com.postech.adjt.domain.model.Usuario;
 
 /**
@@ -36,15 +38,15 @@ public class AppUserDetailsService implements UserDetailsService {
         /**
          * Repositório de acesso à entidade {@link Usuario}.
          */
-        private final UsuarioRepository usuarioRepository;
+        private final UsuarioService usuarioService;
 
         /**
          * Construtor que injeta o repositório de usuários.
          *
-         * @param usuarioRepository Repositório de usuários.
+         * @param usuarioService Repositório de usuários.
          */
-        public AppUserDetailsService(UsuarioRepository usuarioRepository) {
-                this.usuarioRepository = usuarioRepository;
+        public AppUserDetailsService(UsuarioService usuarioService) {
+                this.usuarioService = usuarioService;
         }
 
         /**
@@ -62,15 +64,15 @@ public class AppUserDetailsService implements UserDetailsService {
         @Override
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-                UsuarioEntity usuario = this.usuarioRepository.findByEmail(email)
+                UsuarioLoginDTO uLoginDTO = this.usuarioService.buscarPorEmail(email)
                                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
-                                "ROLE_" + usuario.getTipoUsuario().toString());
+                                "ROLE_" + uLoginDTO.getTipoUsuario().toString());
 
                 return new User(
-                                usuario.getEmail(),
-                                usuario.getSenha(),
+                                uLoginDTO.getEmail(),
+                                uLoginDTO.getSenha(),
                                 Collections.singletonList(authority));
         }
 }
