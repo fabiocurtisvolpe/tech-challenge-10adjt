@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.postech.adjt.data.repository.UsuarioRepository;
+import com.postech.adjt.data.repository.UsuarioRepositoryAdapter;
 import com.postech.adjt.data.service.UsuarioService;
 import com.postech.adjt.domain.dto.UsuarioLoginDTO;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -24,7 +24,7 @@ import com.postech.adjt.domain.entidade.Usuario;
  * </p>
  *
  * <p>
- * Utiliza o {@link UsuarioRepository} para buscar o usuário no banco de dados
+ * Utiliza o {@link UsuarioRepositoryAdapter} para buscar o usuário no banco de dados
  * com base no login informado.
  * </p>
  *

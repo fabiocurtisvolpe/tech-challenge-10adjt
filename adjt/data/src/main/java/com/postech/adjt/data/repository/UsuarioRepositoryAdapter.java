@@ -18,11 +18,11 @@ import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
-public class UsuarioRepository implements UsuarioRepositoryPort {
+public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
 
     private final SpringDataUsuarioRepository dataUsuarioRepository;
 
-    public UsuarioRepository(SpringDataUsuarioRepository dataUsuarioRepository) {
+    public UsuarioRepositoryAdapter(SpringDataUsuarioRepository dataUsuarioRepository) {
         this.dataUsuarioRepository = dataUsuarioRepository;
     }
 

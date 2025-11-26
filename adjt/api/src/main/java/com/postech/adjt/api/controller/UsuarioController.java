@@ -1,29 +1,14 @@
 package com.postech.adjt.api.controller;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.postech.adjt.api.dto.UsuarioDTO;
-import com.postech.adjt.api.mapper.UsuarioMapperDTO;
-import com.postech.adjt.data.service.UsuarioService;
-import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
-import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
-import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
 import com.postech.adjt.domain.entidade.Usuario;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
+import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 
 /**
  * Controlador REST responsável pelas operações relacionadas aos usuários.
@@ -39,145 +24,27 @@ import jakarta.validation.Valid;
  * </p>
  * 
  * @author Fabio
- * @since 2025-09-05
+ * @since 2025-11-26
  */
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
 
-    /**
-     * Serviço responsável pela lógica de negócio relacionada aos usuários.
-     */
-    protected final UsuarioService service;
+    private final AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
 
-    protected final UsuarioMapperDTO usuarioMapper;
-
-    private final PasswordEncoder passwordEncoder;
-
-    /**
-     * Construtor com injeção de dependência do serviço de usuário.
-     *
-     * @param service Serviço de usuário.
-     */
-    public UsuarioController(UsuarioService service,
-            UsuarioMapperDTO usuarioMapper,
-            PasswordEncoder passwordEncoder) {
-        this.service = service;
-        this.usuarioMapper = usuarioMapper;
-        this.passwordEncoder = passwordEncoder; 
+    public UsuarioController(AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase) {
+        this.ativarInativarUsuarioUseCase = ativarInativarUsuarioUseCase;
     }
 
-    /**
-     * Endpoint para criação de um novo usuário.
-     *
-     * @param dto DTO contendo os dados do usuário.
-     * @return DTO do usuário criado.
-     */
-    @Operation(summary = "Usuario", description = "Realiza o cadastro de um novo usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PostMapping("/criar")
-    public UsuarioDTO criar(@RequestBody @Valid UsuarioDTO dto) {
-
-        String senhaCodificada = passwordEncoder.encode(dto.getSenha());
-
-        Usuario usuario = this.service.criar(this.usuarioMapper.toUsuario(dto), senhaCodificada);
-        return this.usuarioMapper.toUsuarioDTO(usuario);
+    @PutMapping("/{email}/ativar")
+    public ResponseEntity<Usuario> ativar(@PathVariable String email) {
+        Usuario usuario = ativarInativarUsuarioUseCase.run(email, true);
+        return ResponseEntity.ok(usuario);
     }
 
-    /**
-     * Endpoint para atualização dos dados de um usuário existente.
-     *
-     * @param id  ID do usuário a ser atualizado.
-     * @param dto DTO com os novos dados.
-     * @return DTO atualizado.
-     */
-    @Operation(summary = "Usuario", description = "Realiza atualização de um usuário através do id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PutMapping("/{id}")
-    public UsuarioDTO atualizar(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioDTO dto) {
-        Usuario usuario = this.service.atualizar(id, this.usuarioMapper.toUsuario(dto));
-        return this.usuarioMapper.toUsuarioDTO(usuario);
-    }
-
-    /**
-     * Endpoint para atualização dos dados de um usuário existente.
-     *
-     * @param id        ID do usuário a ser atualizado.
-     * @param senhaNova Senha novo do usuário.
-     * @return DTO atualizado.
-     */
-    @Operation(summary = "Usuario", description = "Realiza a atualização/modificação da senha de um usuário através do id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Atualização realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PutMapping("/alterar-senha/{id}")
-    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid TrocarSenhaUsuarioDTO dto) {
-
-        String senhaCodificada = passwordEncoder.encode(dto.senha());
-        TrocarSenhaUsuarioDTO dtoComSenhaCodificada = new TrocarSenhaUsuarioDTO(id, dto.senha(), senhaCodificada);
-        return this.service.atualizarSenha(id, dtoComSenhaCodificada);
-    }
-
-    /**
-     * Endpoint para buscar um usuário pelo ID.
-     *
-     * @param id Identificador do usuário.
-     * @return DTO do usuário encontrado.
-     */
-    @Operation(summary = "Usuario", description = "Realiza busca de um usuário através do id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @GetMapping("/{id}")
-    public Usuario buscar(@PathVariable @Valid Integer id) {
-        return this.service.buscar(id);
-    }
-
-    /**
-     * Endpoint para listar usuários com paginação e filtros dinâmicos.
-     *
-     * @param filtro DTO contendo os parâmetros de filtro e paginação.
-     * @return Página de DTOs de usuários.
-     */
-    @Operation(summary = "Usuario", description = "Realiza busca paginada de usuário")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PostMapping("/paginado")
-    public ResultadoPaginacaoDTO<Usuario> paginado(@RequestBody @Valid FiltroGenericoDTO filtro) {
-        return this.service.listarPaginado(filtro);
-    }
-
-    /**
-     * Endpoint para ativar ou inativar um usuário.
-     *
-     * @param id ID do usuário.
-     * @return true se a operação ocorreu com sucesso.
-     */
-    @Operation(summary = "Usuario", description = "Realiza a exclusão lógica de um usuario através do id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @DeleteMapping("/{id}")
-    public boolean ativarInativar(@PathVariable @Valid Integer id) {
-        return this.service.ativarInativar(id);
+    @PutMapping("/{email}/desativar")
+    public ResponseEntity<Usuario> desativar(@PathVariable String email) {
+        Usuario usuario = ativarInativarUsuarioUseCase.run(email, false);
+        return ResponseEntity.ok(usuario);
     }
 }
