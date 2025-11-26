@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.postech.adjt.data.repository.UsuarioRepository;
 import com.postech.adjt.data.service.UsuarioService;
 import com.postech.adjt.domain.dto.UsuarioLoginDTO;
-import com.postech.adjt.domain.model.Usuario;
+import com.postech.adjt.domain.entidade.Usuario;
 
 /**
  * Serviço responsável por carregar os dados do usuário para autenticação.

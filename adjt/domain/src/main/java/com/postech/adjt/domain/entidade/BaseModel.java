@@ -1,9 +1,9 @@
-package com.postech.adjt.domain.dto;
+package com.postech.adjt.domain.entidade;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class BaseDTO implements Serializable {
+public class BaseModel implements Serializable {
 
     private Integer id;
     private LocalDateTime dataCriacao;

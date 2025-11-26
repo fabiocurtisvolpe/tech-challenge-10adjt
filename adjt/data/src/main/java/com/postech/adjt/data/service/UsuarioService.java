@@ -23,11 +23,11 @@ import com.postech.adjt.data.specification.SpecificationGenerico;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.UsuarioLoginDTO;
-import com.postech.adjt.domain.dto.UsuarioTrocarSenhaDTO;
+import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroCampoDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
+import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.model.Usuario;
 import com.postech.adjt.domain.service.BaseService;
 
 @Service
@@ -168,7 +168,7 @@ public class UsuarioService implements BaseService<Usuario> {
      * @throws NotificacaoException qualquer outro erro.
      */
     @Transactional(rollbackFor = Exception.class)
-    public boolean atualizarSenha(Integer id, UsuarioTrocarSenhaDTO dto) {
+    public boolean atualizarSenha(Integer id, TrocarSenhaUsuarioDTO dto) {
 
         try {
 

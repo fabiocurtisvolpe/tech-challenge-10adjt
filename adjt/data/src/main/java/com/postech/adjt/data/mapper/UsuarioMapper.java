@@ -7,8 +7,8 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 import com.postech.adjt.data.entity.EnderecoEntity;
 import com.postech.adjt.data.entity.UsuarioEntity;
-import com.postech.adjt.domain.model.Endereco;
-import com.postech.adjt.domain.model.Usuario;
+import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.Usuario;
 
 /**
  * Componente responsável por mapear objetos entre as entidades e o modelo de

@@ -1,6 +1,10 @@
-package com.postech.adjt.domain.model;
+package com.postech.adjt.domain.entidade;
+
+import org.apache.commons.validator.routines.RegexValidator;
 
 public class Endereco extends BaseModel {
+
+    private static final RegexValidator CEP_VALIDATOR = new RegexValidator("^[0-9]{5}-?[0-9]{3}$");
 
     private String logradouro;
     private String numero;
@@ -13,12 +17,12 @@ public class Endereco extends BaseModel {
     private Boolean principal = false;
     private Usuario usuario;
 
-    public Endereco(Integer id, Boolean ativo, String logradouro,
-            String numero, String complemento, String bairro,
-            String pontoReferencia, String cep, String municipio, String uf,
-            Boolean principal, Usuario usuario) {
-        this.setId(id);
-        this.setAtivo(ativo);
+    public Endereco(String logradouro, String numero, String complemento, String bairro, String pontoReferencia,
+            String cep, String municipio, String uf, Boolean principal, Usuario usuario) throws IllegalArgumentException {
+
+        this.validarUsuario(usuario);
+        this.validarCep(cep);
+
         this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;
@@ -31,21 +35,16 @@ public class Endereco extends BaseModel {
         this.usuario = usuario;
     }
 
-    public Endereco(Integer id, String logradouro,
-            String numero, String complemento, String bairro,
-            String pontoReferencia, String cep, String municipio, String uf,
-            Boolean principal, Usuario usuario) {
-        this.setId(id);
-        this.logradouro = logradouro;
-        this.numero = numero;
-        this.complemento = complemento;
-        this.bairro = bairro;
-        this.pontoReferencia = pontoReferencia;
-        this.cep = cep;
-        this.municipio = municipio;
-        this.uf = uf;
-        this.principal = principal;
-        this.usuario = usuario;
+    private void validarCep(String cep) {
+        if (cep == null || !CEP_VALIDATOR.isValid(cep)) {
+            throw new IllegalArgumentException("CEP inválido");
+        }
+    }
+
+    private void validarUsuario(Usuario usuario) {
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário do endereço é obrigatório");
+        }
     }
 
     public String getLogradouro() {

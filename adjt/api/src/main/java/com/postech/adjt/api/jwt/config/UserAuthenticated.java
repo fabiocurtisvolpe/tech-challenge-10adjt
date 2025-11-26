@@ -3,7 +3,7 @@ package com.postech.adjt.api.jwt.config;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.postech.adjt.domain.model.Usuario;
+import com.postech.adjt.domain.entidade.Usuario;
 
 import java.util.Collection;
 import java.util.List;

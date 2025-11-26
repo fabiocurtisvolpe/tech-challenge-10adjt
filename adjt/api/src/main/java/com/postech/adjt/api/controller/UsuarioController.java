@@ -14,9 +14,9 @@ import com.postech.adjt.api.dto.UsuarioDTO;
 import com.postech.adjt.api.mapper.UsuarioMapperDTO;
 import com.postech.adjt.data.service.UsuarioService;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
-import com.postech.adjt.domain.dto.UsuarioTrocarSenhaDTO;
+import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.dto.filtro.FiltroGenericoDTO;
-import com.postech.adjt.domain.model.Usuario;
+import com.postech.adjt.domain.entidade.Usuario;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -123,10 +123,10 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PutMapping("/alterar-senha/{id}")
-    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid UsuarioTrocarSenhaDTO dto) {
+    public boolean atualizarSenha(@PathVariable @Valid Integer id, @RequestBody @Valid TrocarSenhaUsuarioDTO dto) {
 
         String senhaCodificada = passwordEncoder.encode(dto.senha());
-        UsuarioTrocarSenhaDTO dtoComSenhaCodificada = new UsuarioTrocarSenhaDTO(id, dto.senha(), senhaCodificada);
+        TrocarSenhaUsuarioDTO dtoComSenhaCodificada = new TrocarSenhaUsuarioDTO(id, dto.senha(), senhaCodificada);
         return this.service.atualizarSenha(id, dtoComSenhaCodificada);
     }
 
