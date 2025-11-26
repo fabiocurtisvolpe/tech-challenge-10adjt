@@ -1,7 +1,6 @@
 package com.postech.adjt.domain.usecase.usuario;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.dto.AtualizaUsuarioDTO;
 import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;

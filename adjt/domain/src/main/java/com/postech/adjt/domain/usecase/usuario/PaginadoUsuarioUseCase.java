@@ -7,6 +7,7 @@ import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
 public class PaginadoUsuarioUseCase {
@@ -24,7 +25,7 @@ public class PaginadoUsuarioUseCase {
     public ResultadoPaginacaoDTO<Usuario> run(int page, int size, List<FilterDTO> filters, List<SortDTO> sorts) {
         
         if (page < 0 || size <= 0) {
-            throw new IllegalArgumentException(MensagemUtil.PAGINA_SIZE_INVALIDA);
+            throw new NotificacaoException(MensagemUtil.PAGINA_SIZE_INVALIDA);
         }
 
         return usuarioRepository.listarPaginado(page, size, filters, sorts);
