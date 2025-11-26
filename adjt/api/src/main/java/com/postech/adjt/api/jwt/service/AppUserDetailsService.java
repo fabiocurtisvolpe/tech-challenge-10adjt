@@ -1,6 +1,7 @@
 package com.postech.adjt.api.jwt.service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -10,9 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.postech.adjt.data.repository.UsuarioRepositoryAdapter;
-import com.postech.adjt.data.service.UsuarioService;
-import com.postech.adjt.domain.dto.UsuarioLoginDTO;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorEmailUseCase;
 
 /**
  * Serviço responsável por carregar os dados do usuário para autenticação.
@@ -24,54 +24,37 @@ import com.postech.adjt.domain.entidade.Usuario;
  * </p>
  *
  * <p>
- * Utiliza o {@link UsuarioRepositoryAdapter} para buscar o usuário no banco de dados
+ * Utiliza o {@link UsuarioRepositoryAdapter} para buscar o usuário no banco de
+ * dados
  * com base no login informado.
  * </p>
  *
  * @author Fabio
- * @since 2025-09-08
+ * @since 2025-11-26
  */
 @Service
 public class AppUserDetailsService implements UserDetailsService {
 
-        /**
-         * Repositório de acesso à entidade {@link Usuario}.
-         */
-        private final UsuarioService usuarioService;
+        private final ObterUsuarioPorEmailUseCase obterUsuarioPorEmail;
 
-        /**
-         * Construtor que injeta o repositório de usuários.
-         *
-         * @param usuarioService Repositório de usuários.
-         */
-        public AppUserDetailsService(UsuarioService usuarioService) {
-                this.usuarioService = usuarioService;
+        public AppUserDetailsService(ObterUsuarioPorEmailUseCase obterUsuarioPorEmail) {
+                this.obterUsuarioPorEmail = obterUsuarioPorEmail;
         }
 
         /**
-         * Carrega os dados do usuário com base no login informado.
-         *
-         * <p>
-         * Busca o usuário no banco de dados e, se encontrado, retorna uma instância
-         * de {@link User} com e-mail, senha e lista de autoridades (vazia por padrão).
-         * </p>
-         *
-         * @param login E-mail de usuário informado no processo de autenticação.
-         * @return Detalhes do usuário para autenticação.
-         * @throws UsernameNotFoundException Se o usuário não for encontrado.
+         * Carrega os detalhes do usuário com base no email fornecido.
          */
         @Override
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-                UsuarioLoginDTO uLoginDTO = this.usuarioService.buscarPorEmail(email)
-                                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+                Optional<Usuario> usuario = this.obterUsuarioPorEmail.run(email);
 
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
-                                "ROLE_" + uLoginDTO.getTipoUsuario().toString());
+                                "ROLE_" + usuario.get().getTipoUsuario().toString());
 
                 return new User(
-                                uLoginDTO.getEmail(),
-                                uLoginDTO.getSenha(),
+                                usuario.get().getEmail(),
+                                usuario.get().getSenha(),
                                 Collections.singletonList(authority));
         }
 }
