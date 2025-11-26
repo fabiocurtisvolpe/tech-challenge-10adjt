@@ -89,14 +89,7 @@ public interface UsuarioRepositoryPort {
     /**
      * Desativa um usuário (soft delete).
      *
-     * @param id O ID do usuário a desativar
+     * @param usuario O usuário a ativar ou desativar
      */
-    void desativar(Integer id);
-
-    /**
-     * Ativa um usuário.
-     *
-     * @param id O ID do usuário a ativar
-     */
-    void ativar(Integer id);
+    Boolean ativarDesativar(Usuario usuario);
 }

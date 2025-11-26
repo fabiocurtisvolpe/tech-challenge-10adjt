@@ -15,7 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.postech.adjt.data.entity.UsuarioEntity;
+import com.postech.adjt.data.entidade.UsuarioEntidade;
 import com.postech.adjt.data.exception.DuplicateEntityException;
 import com.postech.adjt.data.mapper.UsuarioMapper;
 import com.postech.adjt.data.repository.UsuarioRepository;
@@ -84,12 +84,12 @@ public class UsuarioService implements BaseService<Usuario> {
             Usuario novo = new Usuario(model.getNome(),
                     model.getEmail(), senhaCodificada, model.getTipoUsuario());
 
-            UsuarioEntity entityToSave = this.mapper.toEntity(novo);
+            UsuarioEntidade entityToSave = this.mapper.toEntity(novo);
             if (entityToSave == null) {
                 throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
             }
 
-            UsuarioEntity entidade = this.repository.save(entityToSave);
+            UsuarioEntidade entidade = this.repository.save(entityToSave);
 
             if (!model.getEnderecos().isEmpty()) {
                 model.getEnderecos().forEach(endereco -> {
@@ -125,8 +125,8 @@ public class UsuarioService implements BaseService<Usuario> {
                 throw new NotificacaoException(MensagemUtil.ID_NULO);
             }
 
-            Optional<UsuarioEntity> entidade = this.repository.findById(id);
-            UsuarioEntity entidadeAtual = entidade.get();
+            Optional<UsuarioEntidade> entidade = this.repository.findById(id);
+            UsuarioEntidade entidadeAtual = entidade.get();
             Objects.requireNonNull(entidadeAtual, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
             if (entidadeAtual.getAtivo()) {
@@ -176,8 +176,8 @@ public class UsuarioService implements BaseService<Usuario> {
                 throw new NotificacaoException(MensagemUtil.ID_NULO);
             }
 
-            Optional<UsuarioEntity> entidade = this.repository.findById(id);
-            UsuarioEntity entidadeAtual = entidade.get();
+            Optional<UsuarioEntidade> entidade = this.repository.findById(id);
+            UsuarioEntidade entidadeAtual = entidade.get();
             Objects.requireNonNull(entidadeAtual, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
             if (entidadeAtual.getAtivo()) {
@@ -217,7 +217,7 @@ public class UsuarioService implements BaseService<Usuario> {
                 throw new NotificacaoException(MensagemUtil.ID_NULO);
             }
 
-            Optional<UsuarioEntity> entidade = this.repository.findById(id);
+            Optional<UsuarioEntidade> entidade = this.repository.findById(id);
 
             if ((entidade.isPresent()) && (entidade.get().getAtivo())) {
                 return this.mapper.toDomain(entidade.get());
@@ -240,7 +240,7 @@ public class UsuarioService implements BaseService<Usuario> {
     @Override
     public List<Usuario> listar() {
         Sort sort = Sort.by(Sort.Direction.ASC, "nome");
-        List<UsuarioEntity> usuarios = this.repository.findAll(sort);
+        List<UsuarioEntidade> usuarios = this.repository.findAll(sort);
         usuarios = usuarios.stream().filter(t -> t.getAtivo() == true).collect(Collectors.toList());
 
         if (!usuarios.isEmpty()) {
@@ -262,14 +262,14 @@ public class UsuarioService implements BaseService<Usuario> {
         FiltroCampoDTO filtroAtivo = new FiltroCampoDTO("ativo", "eq", "true", "boolean");
         filtro.getFiltros().add(filtroAtivo);
 
-        Specification<UsuarioEntity> spec = SpecificationGenerico.criarSpecification(filtro);
+        Specification<UsuarioEntidade> spec = SpecificationGenerico.criarSpecification(filtro);
         Pageable pageable = SpecificationGenerico.criarPageable(filtro);
 
         if ((spec == null) || (pageable == null)) {
             throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
 
-        Page<UsuarioEntity> paginaUsuario = this.repository.findAll(spec, pageable);
+        Page<UsuarioEntidade> paginaUsuario = this.repository.findAll(spec, pageable);
         Page<Usuario> pagina = paginaUsuario.map(this.mapper::toDomain);
 
         return new ResultadoPaginacaoDTO<>(pagina.getContent(), (int) pagina.getTotalElements());
@@ -284,9 +284,9 @@ public class UsuarioService implements BaseService<Usuario> {
                 throw new NotificacaoException(MensagemUtil.ID_NULO);
             }
 
-            Optional<UsuarioEntity> entidade = this.repository.findById(id);
+            Optional<UsuarioEntidade> entidade = this.repository.findById(id);
 
-            UsuarioEntity entidadeAtual = entidade.get();
+            UsuarioEntidade entidadeAtual = entidade.get();
             Objects.requireNonNull(entidadeAtual, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
             boolean ativo = entidadeAtual.getAtivo();
@@ -304,16 +304,16 @@ public class UsuarioService implements BaseService<Usuario> {
     }
 
     private boolean usuarioPodeExecutar(Integer id, String email) {
-        Optional<UsuarioEntity> entidade = this.repository.findByEmail(email);
+        Optional<UsuarioEntidade> entidade = this.repository.findByEmail(email);
         return entidade.isPresent() && entidade.get().getId().equals(id);
     }
 
     public Optional<UsuarioLoginDTO> buscarPorEmail(String email) {
         try {
-            Optional<UsuarioEntity> entidade = this.repository.findByEmail(email);
+            Optional<UsuarioEntidade> entidade = this.repository.findByEmail(email);
 
             if (entidade.isPresent() && entidade.get().getAtivo()) {
-                UsuarioEntity usuarioEntity = entidade.get();
+                UsuarioEntidade usuarioEntity = entidade.get();
                 return Optional.of(new UsuarioLoginDTO(
                         usuarioEntity.getNome(),
                         usuarioEntity.getEmail(),

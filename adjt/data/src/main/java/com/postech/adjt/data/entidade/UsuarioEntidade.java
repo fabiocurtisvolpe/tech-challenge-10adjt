@@ -1,4 +1,4 @@
-package com.postech.adjt.data.entity;
+package com.postech.adjt.data.entidade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 @Entity
 @Audited
 @Table(schema = "public", name = "usuario")
-public class UsuarioEntity extends BaseEntity {
+public class UsuarioEntidade extends BaseEntidade {
 
     @Column(name = "nome", nullable = false, length = 50)
     private String nome;
@@ -35,7 +35,7 @@ public class UsuarioEntity extends BaseEntity {
     private TipoUsuarioEnum tipoUsuario;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EnderecoEntity> enderecos = new ArrayList<>();
+    private List<EnderecoEntidade> enderecos = new ArrayList<>();
 
     public String getNome() {
         return nome;
@@ -69,15 +69,15 @@ public class UsuarioEntity extends BaseEntity {
         return tipoUsuario;
     }
 
-    public List<EnderecoEntity> getEnderecos() {
+    public List<EnderecoEntidade> getEnderecos() {
         return enderecos;
     }
 
-    public void setEnderecos(List<EnderecoEntity> enderecos) {
+    public void setEnderecos(List<EnderecoEntidade> enderecos) {
         this.enderecos = enderecos;
     }
 
-    public void adicionarEndereco(EnderecoEntity endereco) {
+    public void adicionarEndereco(EnderecoEntidade endereco) {
         endereco.setUsuario(this);
         this.enderecos.add(endereco);
     }

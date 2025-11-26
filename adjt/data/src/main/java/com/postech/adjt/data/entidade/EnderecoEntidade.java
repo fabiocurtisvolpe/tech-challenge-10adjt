@@ -1,4 +1,4 @@
-package com.postech.adjt.data.entity;
+package com.postech.adjt.data.entidade;
 
 import org.hibernate.envers.Audited;
 
@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Audited
 @Table(schema = "public", name = "endereco")
-public class EnderecoEntity extends BaseEntity {
+public class EnderecoEntidade extends BaseEntidade {
 
     @Column(name = "logradouro", nullable = false, length = 200)
     private String logradouro;
@@ -43,7 +43,7 @@ public class EnderecoEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
-    private UsuarioEntity usuario;
+    private UsuarioEntidade usuario;
 
     public String getLogradouro() {
         return logradouro;
@@ -117,11 +117,11 @@ public class EnderecoEntity extends BaseEntity {
         this.principal = principal;
     }
 
-    public UsuarioEntity getUsuario() {
+    public UsuarioEntidade getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(UsuarioEntity usuario) {
+    public void setUsuario(UsuarioEntidade usuario) {
         this.usuario = usuario;
     }
 }

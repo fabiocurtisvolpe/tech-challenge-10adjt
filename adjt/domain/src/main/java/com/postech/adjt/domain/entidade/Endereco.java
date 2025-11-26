@@ -2,7 +2,7 @@ package com.postech.adjt.domain.entidade;
 
 import org.apache.commons.validator.routines.RegexValidator;
 
-public class Endereco extends BaseModel {
+public class Endereco extends Base {
 
     private static final RegexValidator CEP_VALIDATOR = new RegexValidator("^[0-9]{5}-?[0-9]{3}$");
 
@@ -23,6 +23,27 @@ public class Endereco extends BaseModel {
         this.validarUsuario(usuario);
         this.validarCep(cep);
 
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.pontoReferencia = pontoReferencia;
+        this.cep = cep;
+        this.municipio = municipio;
+        this.uf = uf;
+        this.principal = principal;
+        this.usuario = usuario;
+    }
+
+    public Endereco(Integer id, String logradouro, String numero, String complemento, String bairro, String pontoReferencia,
+            String cep, String municipio, String uf, Boolean principal, Boolean ativo, Usuario usuario) throws IllegalArgumentException {
+
+        this.validarUsuario(usuario);
+        this.validarCep(cep);
+
+        this.setId(id);
+        this.setAtivo(ativo);
+        
         this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;

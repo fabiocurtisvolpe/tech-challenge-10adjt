@@ -9,7 +9,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 
-public class Usuario extends BaseModel {
+public class Usuario extends Base {
 
     private static final int SENHA_MINIMA_LENGTH = 6;
     private static final int NOME_MINIMO_LENGTH = 3;
@@ -41,11 +41,15 @@ public class Usuario extends BaseModel {
         return new Usuario(id, nome, email, senha, tipoUsuario, enderecos, ativo);
     }
 
-    private Usuario(String nome, String email, String senha,
+    public Usuario(String nome, String email,
             TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos) {
     }
 
-    private Usuario(Integer id, String nome, String email, String senha,
+    public Usuario(String nome, String email, String senha,
+            TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos) {
+    }
+
+    public Usuario(Integer id, String nome, String email, String senha,
             TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos, Boolean ativo) {
     }
 

@@ -1,54 +1,92 @@
 package com.postech.adjt.data.repository;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
-import com.postech.adjt.data.entity.UsuarioEntity;
+import com.postech.adjt.data.entidade.UsuarioEntidade;
+import com.postech.adjt.data.mapper.UsuarioMapper;
+import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.domain.dto.filtro.FilterDTO;
+import com.postech.adjt.domain.dto.filtro.SortDTO;
+import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
-/**
- * Repositório de acesso à entidade {@link UsuarioEntity}.
- *
- * <p>
- * Estende {@link JpaRepository} para operações CRUD e
- * {@link JpaSpecificationExecutor}
- * para consultas dinâmicas com {@code Specification}.
- * </p>
- *
- * <p>
- * Inclui métodos personalizados para buscar usuários por nome ou login.
- * </p>
- *
- * <p>
- * Utilizado principalmente na autenticação e gerenciamento de usuários.
- * </p>
- *
- * @author Fabio
- * @since 2025-09-08
- */
-@Repository
-public interface UsuarioRepository
-        extends JpaRepository<UsuarioEntity, Integer>, JpaSpecificationExecutor<UsuarioEntity> {
+public class UsuarioRepository implements UsuarioRepositoryPort {
 
-    /**
-     * Busca um {@link UsuarioEntity} pelo nome.
-     *
-     * @param nome Nome do usuário.
-     * @return {@link Optional} contendo o usuário, se encontrado.
-     */
-    Optional<UsuarioEntity> findByNome(String nome);
+    private final SpringDataUsuarioRepository dataUsuarioRepository;
 
-    /**
-     * Busca um {@link UsuarioEntity} pelo e-mail.
-     *
-     * <p>
-     * Esse método é utilizado principalmente no processo de autenticação.
-     * </p>
-     *
-     * @param email E-mail do usuário.
-     * @return {@link Optional} contendo o usuário, se encontrado.
-     */
-    Optional<UsuarioEntity> findByEmail(String email);
+    public UsuarioRepository(SpringDataUsuarioRepository dataUsuarioRepository) {
+        this.dataUsuarioRepository = dataUsuarioRepository;
+    }
+
+    @Override
+    public Usuario criar(Usuario usuario) {
+        UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
+        Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+
+        UsuarioEntidade salvo = dataUsuarioRepository.save(entidade);
+        return UsuarioMapper.toDomain(salvo);
+    }
+
+    @Override
+    public Optional<Usuario> obterPorId(Integer id) {
+        Objects.requireNonNull(id, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        return dataUsuarioRepository.findById(id).map(UsuarioMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Usuario> obterPorEmail(String email) {
+        return dataUsuarioRepository.findByEmail(email).map(UsuarioMapper::toDomain);
+    }
+
+    @Override
+    public Usuario atualizar(Usuario usuario) {
+        UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
+        Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+
+        UsuarioEntidade salvo = dataUsuarioRepository.save(entidade);
+        return UsuarioMapper.toDomain(salvo);
+    }
+
+    @Override
+    public ResultadoPaginacaoDTO<Usuario> listarPaginado(int page, int size, List<FilterDTO> filters,
+            List<SortDTO> sorts) {
+
+        Specification<UsuarioEntidade> spec = (root, query, cb) -> cb.conjunction();
+
+        for (FilterDTO f : filters) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get(f.getField()), f.getValue()));
+        }
+
+        Sort springSort = Sort.unsorted();
+        for (SortDTO s : sorts) {
+            springSort = springSort
+                    .and(Sort.by(s.getDirection() == SortDTO.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
+                            s.getField()));
+        }
+
+        Page<UsuarioEntidade> result = dataUsuarioRepository.findAll(spec, PageRequest.of(page, size, springSort));
+
+        List<Usuario> usuarios = result.getContent()
+                .stream()
+                .map(entity -> UsuarioMapper.toDomain(entity))
+                .toList();
+
+        return new ResultadoPaginacaoDTO<>(usuarios, result.getNumber(), result.getSize(), result.getTotalElements());
+    }
+
+    @Override
+    public Boolean ativarDesativar(Usuario usuario) {
+        UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
+        Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        dataUsuarioRepository.save(entidade);
+        return true;
+    }
 }

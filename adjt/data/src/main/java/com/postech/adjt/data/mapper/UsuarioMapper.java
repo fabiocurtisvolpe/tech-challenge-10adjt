@@ -1,12 +1,11 @@
 package com.postech.adjt.data.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
-import com.postech.adjt.data.entity.EnderecoEntity;
-import com.postech.adjt.data.entity.UsuarioEntity;
+
+import com.postech.adjt.data.entidade.EnderecoEntidade;
+import com.postech.adjt.data.entidade.UsuarioEntidade;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Usuario;
 
@@ -15,9 +14,9 @@ import com.postech.adjt.domain.entidade.Usuario;
  * domínio.
  *
  * <p>
- * Realiza conversões bidirecionais entre {@link UsuarioEntity} e
+ * Realiza conversões bidirecionais entre {@link UsuarioEntidade} e
  * {@link Usuario},
- * bem como entre {@link EnderecoEntity} e {@link Endereco}.
+ * bem como entre {@link EnderecoEntidade} e {@link Endereco}.
  * </p>
  *
  * <p>
@@ -30,129 +29,85 @@ import com.postech.adjt.domain.entidade.Usuario;
 @Component
 public class UsuarioMapper {
 
-    /**
-     * Converte uma entidade para um objeto de domínio
-     *
-     * @param entity A entidade a ser convertida
-     * @return O objeto de domínio correspondente
-     */
-    public Usuario toDomain(UsuarioEntity entity) {
-        if (Objects.isNull(entity)) {
-            return null;
+    public static UsuarioEntidade toEntity(Usuario usuario) {
+        if (usuario == null) return null;
+
+        UsuarioEntidade entidade = new UsuarioEntidade();
+        entidade.setId(usuario.getId());
+        entidade.setNome(usuario.getNome());
+        entidade.setEmail(usuario.getEmail());
+        entidade.setSenha(usuario.getSenha());
+        entidade.setTipoUsuario(usuario.getTipoUsuario());
+        entidade.setAtivo(usuario.getAtivo());
+        entidade.setDataCriacao(usuario.getDataCriacao());
+        entidade.setDataAlteracao(usuario.getDataAlteracao());
+
+        if (usuario.getEnderecos() != null) {
+            entidade.setEnderecos(
+                usuario.getEnderecos().stream()
+                    .map(UsuarioMapper::toEntityEndereco)
+                    .collect(Collectors.toList())
+            );
         }
 
-        List<Endereco> enderecos = new ArrayList<>();
+        return entidade;
+    }
 
-        if (Objects.nonNull(entity.getEnderecos()) && !entity.getEnderecos().isEmpty()) {
-            for (EnderecoEntity endereco : entity.getEnderecos()) {
-                enderecos.add(this.toEnderecoDomain(endereco));
-            }
-        }
+    private static EnderecoEntidade toEntityEndereco(Endereco endereco) {
+        EnderecoEntidade entidade = new EnderecoEntidade();
+        entidade.setId(endereco.getId());
+        entidade.setLogradouro(endereco.getLogradouro());
+        entidade.setNumero(endereco.getNumero());
+        entidade.setComplemento(endereco.getComplemento());
+        entidade.setBairro(endereco.getBairro());
+        entidade.setPontoReferencia(endereco.getPontoReferencia());
+        entidade.setCep(endereco.getCep());
+        entidade.setMunicipio(endereco.getMunicipio());
+        entidade.setUf(endereco.getUf());
+        entidade.setPrincipal(endereco.getPrincipal());
+        entidade.setAtivo(endereco.getAtivo());
+        entidade.setDataCriacao(endereco.getDataCriacao());
+        entidade.setDataAlteracao(endereco.getDataAlteracao());
+        return entidade;
+    }
 
-        Usuario usuario = new Usuario(entity.getId(), entity.getAtivo(),
-                entity.getNome(), entity.getEmail(), entity.getSenha(), entity.getTipoUsuario(),
-                enderecos);
+    public static Usuario toDomain(UsuarioEntidade entidade) {
+        if (entidade == null) return null;
+
+        Usuario usuario = new Usuario(
+            entidade.getId(),
+            entidade.getNome(),
+            entidade.getEmail(),
+            entidade.getSenha(),
+            entidade.getTipoUsuario(),
+            entidade.getEnderecos() != null
+                ? entidade.getEnderecos().stream()
+                    .map(UsuarioMapper::toDomainEndereco)
+                    .collect(Collectors.toList())
+                : null,
+            entidade.getAtivo()
+        );
+
+        usuario.setDataCriacao(entidade.getDataCriacao());
+        usuario.setDataAlteracao(entidade.getDataAlteracao());
 
         return usuario;
     }
 
-    /**
-     * Converte uma lista de entidades para uma lista de objetos de domínio
-     *
-     * @param entities A lista de entidades a ser convertida
-     * @return A lista de objetos de domínio correspondente
-     */
-    public List<Usuario> toDomainList(List<UsuarioEntity> entities) {
-        if (Objects.isNull(entities)) {
-            return null;
-        }
-
-        List<Usuario> usuarios = new ArrayList<>();
-        for (UsuarioEntity entity : entities) {
-            usuarios.add(this.toDomain(entity));
-        }
-
-        return usuarios;
-    }
-
-    /**
-     * Converte um objeto de domínio para uma entidade
-     *
-     * @param usuario O objeto de domínio a ser convertido
-     * @return A entidade correspondente
-     */
-    public UsuarioEntity toEntity(Usuario usuario) {
-        if (Objects.isNull(usuario)) {
-            return null;
-        }
-
-        UsuarioEntity entity = new UsuarioEntity();
-        entity.setId(usuario.getId());
-        entity.setDataCriacao(usuario.getDataCriacao());
-        entity.setDataAlteracao(usuario.getDataAlteracao());
-        entity.setAtivo(usuario.getAtivo());
-        entity.setNome(usuario.getNome());
-        entity.setEmail(usuario.getEmail());
-        entity.setSenha(usuario.getSenha());
-        entity.setTipoUsuario(usuario.getTipoUsuario());
-
-        List<EnderecoEntity> enderecos = new ArrayList<>();
-        if (Objects.nonNull(usuario.getEnderecos()) && !usuario.getEnderecos().isEmpty()) {
-            for (Endereco endereco : usuario.getEnderecos()) {
-                enderecos.add(this.toEnderecoEntity(endereco));
-            }
-        }
-
-        entity.setEnderecos(enderecos);
-
-        return entity;
-    }
-
-    /**
-     * Converte uma entidade de endereço para um objeto de domínio
-     *
-     * @param entity A entidade de endereço a ser convertida
-     * @return O objeto de domínio correspondente
-     */
-    public Endereco toEnderecoDomain(EnderecoEntity entity) {
-        if (Objects.isNull(entity)) {
-            return null;
-        }
-
-        Endereco endereco = new Endereco(entity.getId(), entity.getAtivo(), entity.getLogradouro(), entity.getNumero(),
-                entity.getComplemento(), entity.getBairro(), entity.getPontoReferencia(), entity.getCep(),
-                entity.getMunicipio(), entity.getUf(), entity.getPrincipal(),
-                null);
-
-        return endereco;
-    }
-
-    /**
-     * Converte um objeto de domínio de endereço para uma entidade
-     *
-     * @param endereco O objeto de domínio de endereço a ser convertido
-     * @return A entidade correspondente
-     */
-    public EnderecoEntity toEnderecoEntity(Endereco endereco) {
-        if (Objects.isNull(endereco)) {
-            return null;
-        }
-
-        EnderecoEntity entity = new EnderecoEntity();
-        entity.setId(endereco.getId());
-        entity.setDataCriacao(endereco.getDataCriacao());
-        entity.setDataAlteracao(endereco.getDataAlteracao());
-        entity.setAtivo(endereco.getAtivo());
-        entity.setLogradouro(endereco.getLogradouro());
-        entity.setNumero(endereco.getNumero());
-        entity.setComplemento(endereco.getComplemento());
-        entity.setBairro(endereco.getBairro());
-        entity.setPontoReferencia(endereco.getPontoReferencia());
-        entity.setCep(endereco.getCep());
-        entity.setMunicipio(endereco.getMunicipio());
-        entity.setUf(endereco.getUf());
-        entity.setPrincipal(endereco.getPrincipal());
-
-        return entity;
+    private static Endereco toDomainEndereco(EnderecoEntidade entidade) {
+        return new Endereco(
+            entidade.getId(),
+            entidade.getLogradouro(),
+            entidade.getNumero(),
+            entidade.getComplemento(),
+            entidade.getBairro(),
+            entidade.getPontoReferencia(),
+            entidade.getCep(),
+            entidade.getMunicipio(),
+            entidade.getUf(),
+            entidade.getPrincipal(),
+            entidade.getAtivo(),
+            null
+        );
     }
 }

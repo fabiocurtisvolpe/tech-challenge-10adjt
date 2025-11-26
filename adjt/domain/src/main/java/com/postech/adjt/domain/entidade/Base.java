@@ -3,7 +3,7 @@ package com.postech.adjt.domain.entidade;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class BaseModel implements Serializable {
+public class Base implements Serializable {
 
     private Integer id;
     private LocalDateTime dataCriacao;

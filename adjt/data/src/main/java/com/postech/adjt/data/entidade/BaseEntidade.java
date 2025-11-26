@@ -1,4 +1,4 @@
-package com.postech.adjt.data.entity;
+package com.postech.adjt.data.entidade;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import jakarta.persistence.PrePersist;
 
 @MappedSuperclass
 @Audited
-public class BaseEntity implements Serializable {
+public class BaseEntidade implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

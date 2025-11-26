@@ -1,4 +1,4 @@
-package com.postech.adjt.data.entity;
+package com.postech.adjt.data.entidade;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 @Entity
 @RevisionEntity
 @Table(name = "custom_rev_model")
-public class CustomRevEntity {
+public class CustomRevEntidade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
