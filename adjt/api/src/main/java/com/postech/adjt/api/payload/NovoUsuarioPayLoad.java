@@ -2,7 +2,6 @@ package com.postech.adjt.api.payload;
 
 import java.util.List;
 
-import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 
 import jakarta.validation.constraints.Email;
@@ -30,7 +29,7 @@ public class NovoUsuarioPayLoad {
 
     @NotNull(message = "O endereço não pode ser nulo")
     @Size(min = 1, message = "O endereço deve conter pelo menos um item")
-    private List<Endereco> enderecos;
+    private List<EnderecoPayLoad> enderecos;
 
     public NovoUsuarioPayLoad() {
     }
@@ -67,11 +66,11 @@ public class NovoUsuarioPayLoad {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public List<Endereco> getEnderecos() {
+    public List<EnderecoPayLoad> getEnderecos() {
         return enderecos;
     }
 
-    public void setEnderecos(List<Endereco> enderecos) {
+    public void setEnderecos(List<EnderecoPayLoad> enderecos) {
         this.enderecos = enderecos;
     }    
 }

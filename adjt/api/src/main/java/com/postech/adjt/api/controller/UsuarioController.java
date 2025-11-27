@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.postech.adjt.api.mapper.UsuarioMapperApi;
 import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
 import com.postech.adjt.api.payload.PaginacaoPayLoad;
@@ -55,7 +56,7 @@ import jakarta.validation.Valid;
 public class UsuarioController {
 
         private final PasswordEncoder passwordEncoder;
-
+        
         private final AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
         private final CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
         private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
@@ -105,12 +106,7 @@ public class UsuarioController {
 
                 String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
 
-                NovoUsuarioDTO usuarioDTO = new NovoUsuarioDTO(
-                                dto.getNome(),
-                                dto.getEmail(),
-                                senhaEncriptada,
-                                dto.getTipoUsuario(),
-                                dto.getEnderecos());
+                NovoUsuarioDTO usuarioDTO = UsuarioMapperApi.toNovoUsuarioDTO(dto, senhaEncriptada);
 
                 return this.cadastrarUsuarioUseCase.run(usuarioDTO);
         }

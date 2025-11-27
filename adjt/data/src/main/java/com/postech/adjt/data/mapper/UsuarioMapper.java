@@ -1,5 +1,6 @@
 package com.postech.adjt.data.mapper;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -30,7 +31,8 @@ import com.postech.adjt.domain.entidade.Usuario;
 public class UsuarioMapper {
 
     public static UsuarioEntidade toEntity(Usuario usuario) {
-        if (usuario == null) return null;
+        if (usuario == null)
+            return null;
 
         UsuarioEntidade entidade = new UsuarioEntidade();
         entidade.setId(usuario.getId());
@@ -43,17 +45,17 @@ public class UsuarioMapper {
         entidade.setDataAlteracao(usuario.getDataAlteracao());
 
         if (usuario.getEnderecos() != null) {
-            entidade.setEnderecos(
-                usuario.getEnderecos().stream()
-                    .map(UsuarioMapper::toEntityEndereco)
-                    .collect(Collectors.toList())
-            );
+            List<EnderecoEntidade> enderecos = usuario.getEnderecos().stream()
+                    .map(e -> toEntityEndereco(e, entidade))
+                    .collect(Collectors.toList());
+
+            entidade.setEnderecos(enderecos);
         }
 
         return entidade;
     }
 
-    private static EnderecoEntidade toEntityEndereco(Endereco endereco) {
+    private static EnderecoEntidade toEntityEndereco(Endereco endereco, UsuarioEntidade usuarioEntidade) {
         EnderecoEntidade entidade = new EnderecoEntidade();
         entidade.setId(endereco.getId());
         entidade.setLogradouro(endereco.getLogradouro());
@@ -68,25 +70,29 @@ public class UsuarioMapper {
         entidade.setAtivo(endereco.getAtivo());
         entidade.setDataCriacao(endereco.getDataCriacao());
         entidade.setDataAlteracao(endereco.getDataAlteracao());
+
+        // vínculo obrigatório
+        entidade.setUsuario(usuarioEntidade);
+
         return entidade;
     }
 
     public static Usuario toDomain(UsuarioEntidade entidade) {
-        if (entidade == null) return null;
+        if (entidade == null)
+            return null;
 
         Usuario usuario = new Usuario(
-            entidade.getId(),
-            entidade.getNome(),
-            entidade.getEmail(),
-            entidade.getSenha(),
-            entidade.getTipoUsuario(),
-            entidade.getEnderecos() != null
-                ? entidade.getEnderecos().stream()
-                    .map(UsuarioMapper::toDomainEndereco)
-                    .collect(Collectors.toList())
-                : null,
-            entidade.getAtivo()
-        );
+                entidade.getId(),
+                entidade.getNome(),
+                entidade.getEmail(),
+                entidade.getSenha(),
+                entidade.getTipoUsuario(),
+                entidade.getEnderecos() != null
+                        ? entidade.getEnderecos().stream()
+                                .map(UsuarioMapper::toDomainEndereco)
+                                .collect(Collectors.toList())
+                        : null,
+                entidade.getAtivo());
 
         usuario.setDataCriacao(entidade.getDataCriacao());
         usuario.setDataAlteracao(entidade.getDataAlteracao());
@@ -96,18 +102,17 @@ public class UsuarioMapper {
 
     private static Endereco toDomainEndereco(EnderecoEntidade entidade) {
         return new Endereco(
-            entidade.getId(),
-            entidade.getLogradouro(),
-            entidade.getNumero(),
-            entidade.getComplemento(),
-            entidade.getBairro(),
-            entidade.getPontoReferencia(),
-            entidade.getCep(),
-            entidade.getMunicipio(),
-            entidade.getUf(),
-            entidade.getPrincipal(),
-            entidade.getAtivo(),
-            null
-        );
+                entidade.getId(),
+                entidade.getLogradouro(),
+                entidade.getNumero(),
+                entidade.getComplemento(),
+                entidade.getBairro(),
+                entidade.getPontoReferencia(),
+                entidade.getCep(),
+                entidade.getMunicipio(),
+                entidade.getUf(),
+                entidade.getPrincipal(),
+                entidade.getAtivo(),
+                null);
     }
 }

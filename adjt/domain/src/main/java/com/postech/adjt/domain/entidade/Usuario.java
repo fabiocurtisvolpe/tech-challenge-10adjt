@@ -43,14 +43,30 @@ public class Usuario extends Base {
 
     public Usuario(String nome, String email,
             TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos) {
+                this.nome = nome;
+                this.email = email;
+                this.tipoUsuario = tipoUsuario;
+                this.enderecos = enderecos;
     }
 
     public Usuario(String nome, String email, String senha,
             TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos) {
+                this.nome = nome;
+                this.email = email;
+                this.senha = senha;
+                this.tipoUsuario = tipoUsuario;
+                this.enderecos = enderecos;
     }
 
     public Usuario(Integer id, String nome, String email, String senha,
             TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos, Boolean ativo) {
+                this.setId(id);
+                this.nome = nome;
+                this.email = email;
+                this.senha = senha;
+                this.tipoUsuario = tipoUsuario;
+                this.enderecos = enderecos;
+                this.setAtivo(ativo);
     }
 
     private static void validarEndereco(List<Endereco> enderecos) {

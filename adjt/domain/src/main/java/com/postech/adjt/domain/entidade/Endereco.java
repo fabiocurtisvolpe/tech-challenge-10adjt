@@ -20,7 +20,7 @@ public class Endereco extends Base {
     public Endereco(String logradouro, String numero, String complemento, String bairro, String pontoReferencia,
             String cep, String municipio, String uf, Boolean principal, Usuario usuario) throws IllegalArgumentException {
 
-        this.validarUsuario(usuario);
+        //this.validarUsuario(usuario);
         this.validarCep(cep);
 
         this.logradouro = logradouro;
@@ -38,7 +38,7 @@ public class Endereco extends Base {
     public Endereco(Integer id, String logradouro, String numero, String complemento, String bairro, String pontoReferencia,
             String cep, String municipio, String uf, Boolean principal, Boolean ativo, Usuario usuario) throws IllegalArgumentException {
 
-        this.validarUsuario(usuario);
+        //this.validarUsuario(usuario);
         this.validarCep(cep);
 
         this.setId(id);
