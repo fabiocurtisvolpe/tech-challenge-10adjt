@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableCaching
 @EntityScan({
         "com.postech.adjt.domain.model",
-        "com.postech.adjt.data.entity"
+        "com.postech.adjt.data.entidade"
 })
 @EnableJpaRepositories("com.postech.adjt.data.repository")
 @ComponentScan({

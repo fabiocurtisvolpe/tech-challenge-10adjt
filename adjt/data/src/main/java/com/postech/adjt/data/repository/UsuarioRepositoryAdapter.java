@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.UsuarioEntidade;
 import com.postech.adjt.data.mapper.UsuarioMapper;
@@ -18,6 +19,7 @@ import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
+@Repository
 public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
 
     private final SpringDataUsuarioRepository dataUsuarioRepository;

@@ -10,27 +10,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.postech.adjt.data.repository.UsuarioRepositoryAdapter;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorEmailUseCase;
 
 /**
- * Serviço responsável por carregar os dados do usuário para autenticação.
- *
- * <p>
- * Implementa a interface {@link UserDetailsService} do Spring Security,
- * permitindo que o framework recupere informações de login e senha a partir
- * da entidade {@link Usuario}.
- * </p>
- *
- * <p>
- * Utiliza o {@link UsuarioRepositoryAdapter} para buscar o usuário no banco de
- * dados
- * com base no login informado.
- * </p>
- *
- * @author Fabio
- * @since 2025-11-26
+ * Serviço personalizado para carregar os detalhes do usuário com base no email.
  */
 @Service
 public class AppUserDetailsService implements UserDetailsService {
