@@ -2,8 +2,6 @@ package com.postech.adjt.api.payload;
 
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 
@@ -13,8 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class NovoUsuarioPayLoad {
-
-    private final PasswordEncoder passwordEncoder;
 
     @NotBlank(message = "O nome não pode estar em branco")
     @Size(max = 50, message = "O nome deve ter até 50 caracteres")
@@ -36,8 +32,7 @@ public class NovoUsuarioPayLoad {
     @Size(min = 1, message = "O endereço deve conter pelo menos um item")
     private List<Endereco> enderecos;
 
-    public NovoUsuarioPayLoad(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public NovoUsuarioPayLoad() {
     }
 
     public String getNome() {
@@ -54,6 +49,10 @@ public class NovoUsuarioPayLoad {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
     }
 
     public void setSenha(String senha) {
@@ -75,8 +74,4 @@ public class NovoUsuarioPayLoad {
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
     }    
-
-    public String getSenhaEncriptada() {
-        return passwordEncoder.encode(this.senha);
-    }
 }

@@ -2,6 +2,7 @@ package com.postech.adjt.api.controller;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,132 +54,138 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/usuario")
 public class UsuarioController {
 
-    private final AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
-    private final CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
-    private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
-    private final AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase;
-    private final ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
-    private final PaginadoUsuarioUseCase paginadoUsuarioUseCase;
+        private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Construtor com injeção de dependência do caso de uso de ativar/inativar
-     * usuário.
-     *
-     * @param ativarInativarUsuarioUseCase Caso de uso de ativar/inativar usuário.
-     * @param cadastrarUsuarioUseCase      Caso de uso de cadastrar usuário.
-     * @param atualizarUsuarioUseCase      Caso de uso de atualizar usuário.
-     * @param atualizarSenhaUsuarioUseCase Caso de uso de atualizar senha do
-     *                                     usuário.
-     * @param obterUsuarioPorEmailUseCase  Caso de uso de obter usuário por email.
-     * @param paginadoUsuarioUseCase       Caso de uso de paginação de usuários.
-     */
+        private final AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
+        private final CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
+        private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
+        private final AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase;
+        private final ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
+        private final PaginadoUsuarioUseCase paginadoUsuarioUseCase;
 
-    public UsuarioController(AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase,
-            CadastrarUsuarioUseCase cadastrarUsuarioUseCase,
-            AtualizarUsuarioUseCase atualizarUsuarioUseCase,
-            AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase,
-            ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase,
-            PaginadoUsuarioUseCase paginadoUsuarioUseCase) {
+        /**
+         * Construtor com injeção de dependência do caso de uso de ativar/inativar
+         * usuário.
+         *
+         * @param ativarInativarUsuarioUseCase Caso de uso de ativar/inativar usuário.
+         * @param cadastrarUsuarioUseCase      Caso de uso de cadastrar usuário.
+         * @param atualizarUsuarioUseCase      Caso de uso de atualizar usuário.
+         * @param atualizarSenhaUsuarioUseCase Caso de uso de atualizar senha do
+         *                                     usuário.
+         * @param obterUsuarioPorEmailUseCase  Caso de uso de obter usuário por email.
+         * @param paginadoUsuarioUseCase       Caso de uso de paginação de usuários.
+         */
 
-        this.ativarInativarUsuarioUseCase = ativarInativarUsuarioUseCase;
-        this.cadastrarUsuarioUseCase = cadastrarUsuarioUseCase;
-        this.atualizarUsuarioUseCase = atualizarUsuarioUseCase;
-        this.atualizarSenhaUsuarioUseCase = atualizarSenhaUsuarioUseCase;
-        this.obterUsuarioPorEmailUseCase = obterUsuarioPorEmailUseCase;
-        this.paginadoUsuarioUseCase = paginadoUsuarioUseCase;
-    }
+        public UsuarioController(PasswordEncoder passwordEncoder,
+                        AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase,
+                        CadastrarUsuarioUseCase cadastrarUsuarioUseCase,
+                        AtualizarUsuarioUseCase atualizarUsuarioUseCase,
+                        AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase,
+                        ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase,
+                        PaginadoUsuarioUseCase paginadoUsuarioUseCase) {
 
-    @Operation(summary = "Usuario", description = "Realiza o cadastro de um novo usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PostMapping("/criar")
-    public Usuario criar(@RequestBody @Valid NovoUsuarioPayLoad dto) {
+                this.passwordEncoder = passwordEncoder;
+                this.ativarInativarUsuarioUseCase = ativarInativarUsuarioUseCase;
+                this.cadastrarUsuarioUseCase = cadastrarUsuarioUseCase;
+                this.atualizarUsuarioUseCase = atualizarUsuarioUseCase;
+                this.atualizarSenhaUsuarioUseCase = atualizarSenhaUsuarioUseCase;
+                this.obterUsuarioPorEmailUseCase = obterUsuarioPorEmailUseCase;
+                this.paginadoUsuarioUseCase = paginadoUsuarioUseCase;
+        }
 
-        NovoUsuarioDTO usuarioDTO = new NovoUsuarioDTO(
-                dto.getNome(),
-                dto.getEmail(),
-                dto.getSenhaEncriptada(),
-                dto.getTipoUsuario(),
-                dto.getEnderecos());
+        @Operation(summary = "Usuario", description = "Realiza o cadastro de um novo usuario")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+                        @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
+                        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+        })
+        @PostMapping("/criar")
+        public Usuario criar(@RequestBody @Valid NovoUsuarioPayLoad dto) {
 
-        return this.cadastrarUsuarioUseCase.run(usuarioDTO);
-    }
+                String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
 
-    @Operation(summary = "Usuario", description = "Realiza atualização de um usuário através do email")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PutMapping("/atualizar")
-    public Usuario atualizar(@RequestBody @Valid AtualizaUsuarioPayLoad dto) {
+                NovoUsuarioDTO usuarioDTO = new NovoUsuarioDTO(
+                                dto.getNome(),
+                                dto.getEmail(),
+                                senhaEncriptada,
+                                dto.getTipoUsuario(),
+                                dto.getEnderecos());
 
-        AtualizaUsuarioDTO usuarioDTO = new AtualizaUsuarioDTO(
-                dto.getNome(),
-                dto.getEmail(),
-                dto.getEnderecos());
+                return this.cadastrarUsuarioUseCase.run(usuarioDTO);
+        }
 
-        return this.atualizarUsuarioUseCase.run(usuarioDTO);
-    }
+        @Operation(summary = "Usuario", description = "Realiza atualização de um usuário através do email")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Atualização realizada com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+                        @ApiResponse(responseCode = "409", description = "Usuário já cadastrado", content = @Content),
+                        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+        })
+        @PutMapping("/atualizar")
+        public Usuario atualizar(@RequestBody @Valid AtualizaUsuarioPayLoad dto) {
 
-    @Operation(summary = "Usuario", description = "Realiza a atualização/modificação da senha de um usuário através do email")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Atualização realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PutMapping("/alterar-senha")
-    public Usuario atualizarSenha(@RequestBody @Valid TrocarSenhaUsuarioPayLoad dto) {
+                AtualizaUsuarioDTO usuarioDTO = new AtualizaUsuarioDTO(
+                                dto.getNome(),
+                                dto.getEmail(),
+                                dto.getEnderecos());
 
-        TrocarSenhaUsuarioDTO senha = new TrocarSenhaUsuarioDTO(
-                dto.getEmail(),
-                dto.getSenha(),
-                dto.getSenhaEncriptada());
+                return this.atualizarUsuarioUseCase.run(usuarioDTO);
+        }
 
-        return this.atualizarSenhaUsuarioUseCase.run(senha);
-    }
+        @Operation(summary = "Usuario", description = "Realiza a atualização/modificação da senha de um usuário através do email")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Atualização realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+                        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+        })
+        @PutMapping("/alterar-senha")
+        public Usuario atualizarSenha(@RequestBody @Valid TrocarSenhaUsuarioPayLoad dto) {
 
-    @Operation(summary = "Usuario", description = "Realiza busca de um usuário através do id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @GetMapping("/{email}")
-    public Optional<Usuario> buscar(@PathVariable String email) {
-        return this.obterUsuarioPorEmailUseCase.run(email);
-    }
+                TrocarSenhaUsuarioDTO senha = new TrocarSenhaUsuarioDTO(
+                                dto.getEmail(),
+                                dto.getSenha(),
+                                dto.getSenhaEncriptada());
 
-    @Operation(summary = "Usuario", description = "Realiza busca paginada de usuário")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
-    })
-    @PostMapping("/paginado")
-    public ResultadoPaginacaoDTO<Usuario> paginado(@RequestBody @Valid PaginacaoPayLoad paginacao) {
+                return this.atualizarSenhaUsuarioUseCase.run(senha);
+        }
 
-        return this.paginadoUsuarioUseCase.run(
-                paginacao.getPage(),
-                paginacao.getSize(),
-                paginacao.getFilters(),
-                paginacao.getSorts());
-    }
+        @Operation(summary = "Usuario", description = "Realiza busca de um usuário através do id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+                        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+        })
+        @GetMapping("/{email}")
+        public Optional<Usuario> buscar(@PathVariable String email) {
+                return this.obterUsuarioPorEmailUseCase.run(email);
+        }
 
-    @PutMapping("/{email}/ativar")
-    public Usuario ativar(@PathVariable String email) {
-        Usuario usuario = ativarInativarUsuarioUseCase.run(email, true);
-        return usuario;
-    }
+        @Operation(summary = "Usuario", description = "Realiza busca paginada de usuário")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+                        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+        })
+        @PostMapping("/paginado")
+        public ResultadoPaginacaoDTO<Usuario> paginado(@RequestBody @Valid PaginacaoPayLoad paginacao) {
 
-    @PutMapping("/{email}/desativar")
-    public Usuario desativar(@PathVariable String email) {
-        Usuario usuario = ativarInativarUsuarioUseCase.run(email, false);
-        return usuario;
-    }
+                return this.paginadoUsuarioUseCase.run(
+                                paginacao.getPage(),
+                                paginacao.getSize(),
+                                paginacao.getFilters(),
+                                paginacao.getSorts());
+        }
+
+        @PutMapping("/{email}/ativar")
+        public Usuario ativar(@PathVariable String email) {
+                Usuario usuario = ativarInativarUsuarioUseCase.run(email, true);
+                return usuario;
+        }
+
+        @PutMapping("/{email}/desativar")
+        public Usuario desativar(@PathVariable String email) {
+                Usuario usuario = ativarInativarUsuarioUseCase.run(email, false);
+                return usuario;
+        }
 }
