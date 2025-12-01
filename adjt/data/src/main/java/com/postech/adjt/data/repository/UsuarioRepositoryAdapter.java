@@ -1,5 +1,6 @@
 package com.postech.adjt.data.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +59,8 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
     public Usuario atualizar(Usuario usuario) {
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+
+        entidade.setDataAlteracao(LocalDateTime.now());
 
         UsuarioEntidade salvo = dataUsuarioRepository.save(entidade);
         return UsuarioMapper.toDomain(salvo);

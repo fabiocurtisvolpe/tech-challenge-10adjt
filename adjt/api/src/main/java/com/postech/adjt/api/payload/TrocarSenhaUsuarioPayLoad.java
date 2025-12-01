@@ -1,14 +1,10 @@
 package com.postech.adjt.api.payload;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class TrocarSenhaUsuarioPayLoad {
-
-    private final PasswordEncoder passwordEncoder;
 
     @NotBlank(message = "O e-mail não pode estar em branco")
     @Email(message = "O e-mail no formato inválido")
@@ -19,8 +15,7 @@ public class TrocarSenhaUsuarioPayLoad {
     @Size(max = 50, message = "A senha deve ter até 50 caracteres")
     private String senha;
 
-    public TrocarSenhaUsuarioPayLoad(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public TrocarSenhaUsuarioPayLoad() {
     }
 
     public String getEmail() {
@@ -37,9 +32,5 @@ public class TrocarSenhaUsuarioPayLoad {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    public String getSenhaEncriptada() {
-        return passwordEncoder.encode(this.senha);
     }
 }

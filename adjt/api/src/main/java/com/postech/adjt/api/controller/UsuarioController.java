@@ -133,10 +133,11 @@ public class UsuarioController {
         @PutMapping("/alterar-senha")
         public Usuario atualizarSenha(@RequestBody @Valid TrocarSenhaUsuarioPayLoad dto) {
 
+                String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
                 TrocarSenhaUsuarioDTO senha = new TrocarSenhaUsuarioDTO(
                                 dto.getEmail(),
                                 dto.getSenha(),
-                                dto.getSenhaEncriptada());
+                                senhaEncriptada);
 
                 return this.atualizarSenhaUsuarioUseCase.run(senha);
         }
