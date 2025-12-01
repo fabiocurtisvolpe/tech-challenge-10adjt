@@ -1,14 +1,18 @@
 package com.postech.adjt.api.mapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.postech.adjt.api.dto.EnderecoRespostaDTO;
+import com.postech.adjt.api.dto.UsuarioRespostaDTO;
 import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
 import com.postech.adjt.domain.dto.AtualizaUsuarioDTO;
 import com.postech.adjt.domain.dto.NovoUsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.Usuario;
 
 @Component
 public class UsuarioMapperApi {
@@ -63,5 +67,41 @@ public class UsuarioMapperApi {
                                 payload.getNome(),
                                 payload.getEmail(),
                                 enderecos);
+        }
+
+        public static UsuarioRespostaDTO toUsuarioRespostaDTO(Usuario usuario) {
+                if (usuario == null) {
+                        return null;
+                }
+
+                List<EnderecoRespostaDTO> enderecos = usuario.getEnderecos() != null
+                                ? usuario.getEnderecos().stream()
+                                                .map(UsuarioMapperApi::toEnderecoRespostaDTO)
+                                                .collect(Collectors.toList())
+                                : null;
+
+                return new UsuarioRespostaDTO(
+                                usuario.getNome(),
+                                usuario.getEmail(),
+                                usuario.getTipoUsuario(),
+                                enderecos,
+                                usuario.getDataAlteracao());
+        }
+
+        private static EnderecoRespostaDTO toEnderecoRespostaDTO(Endereco endereco) {
+                if (endereco == null) {
+                        return null;
+                }
+
+                return new EnderecoRespostaDTO(
+                                endereco.getLogradouro(),
+                                endereco.getNumero(),
+                                endereco.getComplemento(),
+                                endereco.getBairro(),
+                                endereco.getPontoReferencia(),
+                                endereco.getCep(),
+                                endereco.getMunicipio(),
+                                endereco.getUf(),
+                                endereco.getPrincipal());
         }
 }

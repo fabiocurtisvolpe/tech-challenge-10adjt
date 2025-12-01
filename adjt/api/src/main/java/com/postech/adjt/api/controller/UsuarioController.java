@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.postech.adjt.api.dto.UsuarioRespostaDTO;
 import com.postech.adjt.api.mapper.UsuarioMapperApi;
 import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
@@ -102,12 +103,13 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
         })
         @PostMapping("/criar")
-        public Usuario criar(@RequestBody @Valid NovoUsuarioPayLoad dto) {
+        public UsuarioRespostaDTO criar(@RequestBody @Valid NovoUsuarioPayLoad dto) {
 
                 String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
                 NovoUsuarioDTO usuarioDTO = UsuarioMapperApi.toNovoUsuarioDTO(dto, senhaEncriptada);
 
-                return this.cadastrarUsuarioUseCase.run(usuarioDTO);
+                Usuario usuario = this.cadastrarUsuarioUseCase.run(usuarioDTO);
+                return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
         @Operation(summary = "Usuario", description = "Realiza atualização de um usuário através do email")
@@ -118,10 +120,11 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
         })
         @PutMapping("/atualizar")
-        public Usuario atualizar(@RequestBody @Valid AtualizaUsuarioPayLoad dto) {
+        public UsuarioRespostaDTO atualizar(@RequestBody @Valid AtualizaUsuarioPayLoad dto) {
 
                 AtualizaUsuarioDTO usuarioDTO = UsuarioMapperApi.toAtualizaUsuarioDTO(dto);
-                return this.atualizarUsuarioUseCase.run(usuarioDTO);
+                Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
+                return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
         @Operation(summary = "Usuario", description = "Realiza a atualização/modificação da senha de um usuário através do email")
@@ -131,7 +134,7 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
         })
         @PutMapping("/alterar-senha")
-        public Usuario atualizarSenha(@RequestBody @Valid TrocarSenhaUsuarioPayLoad dto) {
+        public UsuarioRespostaDTO atualizarSenha(@RequestBody @Valid TrocarSenhaUsuarioPayLoad dto) {
 
                 String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
                 TrocarSenhaUsuarioDTO senha = new TrocarSenhaUsuarioDTO(
@@ -139,7 +142,8 @@ public class UsuarioController {
                                 dto.getSenha(),
                                 senhaEncriptada);
 
-                return this.atualizarSenhaUsuarioUseCase.run(senha);
+                Usuario usuario = this.atualizarSenhaUsuarioUseCase.run(senha);
+                return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
         @Operation(summary = "Usuario", description = "Realiza busca de um usuário através do id")
@@ -149,8 +153,9 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
         })
         @GetMapping("/{email}")
-        public Optional<Usuario> buscar(@PathVariable String email) {
-                return this.obterUsuarioPorEmailUseCase.run(email);
+        public UsuarioRespostaDTO buscar(@PathVariable String email) {
+                Optional<Usuario> usuario = this.obterUsuarioPorEmailUseCase.run(email);
+                return usuario.map(UsuarioMapperApi::toUsuarioRespostaDTO).orElse(null);
         }
 
         @Operation(summary = "Usuario", description = "Realiza busca paginada de usuário")
@@ -160,24 +165,32 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
         })
         @PostMapping("/paginado")
-        public ResultadoPaginacaoDTO<Usuario> paginado(@RequestBody @Valid PaginacaoPayLoad paginacao) {
+        public ResultadoPaginacaoDTO<UsuarioRespostaDTO> paginado(@RequestBody @Valid PaginacaoPayLoad paginacao) {
 
-                return this.paginadoUsuarioUseCase.run(
+                ResultadoPaginacaoDTO<Usuario> resultado = this.paginadoUsuarioUseCase.run(
                                 paginacao.getPage(),
                                 paginacao.getSize(),
                                 paginacao.getFilters(),
                                 paginacao.getSorts());
+
+                return new ResultadoPaginacaoDTO<>(
+                                resultado.getContent().stream()
+                                        .map(UsuarioMapperApi::toUsuarioRespostaDTO)
+                                        .toList(),
+                                resultado.getPageNumber(),
+                                resultado.getPageSize(),
+                                resultado.getTotalElements());
         }
 
         @PutMapping("/{email}/ativar")
-        public Usuario ativar(@PathVariable String email) {
+        public UsuarioRespostaDTO ativar(@PathVariable String email) {
                 Usuario usuario = ativarInativarUsuarioUseCase.run(email, true);
-                return usuario;
+                return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
         @PutMapping("/{email}/desativar")
-        public Usuario desativar(@PathVariable String email) {
+        public UsuarioRespostaDTO desativar(@PathVariable String email) {
                 Usuario usuario = ativarInativarUsuarioUseCase.run(email, false);
-                return usuario;
+                return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 }
