@@ -2,8 +2,6 @@ package com.postech.adjt.api.payload;
 
 import java.util.List;
 
-import com.postech.adjt.domain.entidade.Endereco;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +20,7 @@ public class AtualizaUsuarioPayLoad {
 
     @NotNull(message = "O endereço não pode ser nulo")
     @Size(min = 1, message = "O endereço deve conter pelo menos um item")
-    private List<Endereco> enderecos;
+    private List<EnderecoPayLoad> enderecos;
 
     public AtualizaUsuarioPayLoad() {
     }
@@ -43,11 +41,11 @@ public class AtualizaUsuarioPayLoad {
         this.email = email;
     }
 
-    public List<Endereco> getEnderecos() {
+    public List<EnderecoPayLoad> getEnderecos() {
         return enderecos;
     }
 
-    public void setEnderecos(List<Endereco> enderecos) {
+    public void setEnderecos(List<EnderecoPayLoad> enderecos) {
         this.enderecos = enderecos;
     }
 }

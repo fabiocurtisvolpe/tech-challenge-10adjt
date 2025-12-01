@@ -105,7 +105,6 @@ public class UsuarioController {
         public Usuario criar(@RequestBody @Valid NovoUsuarioPayLoad dto) {
 
                 String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
-
                 NovoUsuarioDTO usuarioDTO = UsuarioMapperApi.toNovoUsuarioDTO(dto, senhaEncriptada);
 
                 return this.cadastrarUsuarioUseCase.run(usuarioDTO);
@@ -121,11 +120,7 @@ public class UsuarioController {
         @PutMapping("/atualizar")
         public Usuario atualizar(@RequestBody @Valid AtualizaUsuarioPayLoad dto) {
 
-                AtualizaUsuarioDTO usuarioDTO = new AtualizaUsuarioDTO(
-                                dto.getNome(),
-                                dto.getEmail(),
-                                dto.getEnderecos());
-
+                AtualizaUsuarioDTO usuarioDTO = UsuarioMapperApi.toAtualizaUsuarioDTO(dto);
                 return this.atualizarUsuarioUseCase.run(usuarioDTO);
         }
 

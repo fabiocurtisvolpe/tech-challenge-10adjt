@@ -19,6 +19,8 @@ import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
 
@@ -29,6 +31,7 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
     }
 
     @Override
+    @Transactional
     public Usuario criar(Usuario usuario) {
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
@@ -38,17 +41,20 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
     }
 
     @Override
+    @Transactional
     public Optional<Usuario> obterPorId(Integer id) {
         Objects.requireNonNull(id, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         return dataUsuarioRepository.findById(id).map(UsuarioMapper::toDomain);
     }
 
     @Override
+    @Transactional
     public Optional<Usuario> obterPorEmail(String email) {
         return dataUsuarioRepository.findByEmail(email).map(UsuarioMapper::toDomain);
     }
 
     @Override
+    @Transactional
     public Usuario atualizar(Usuario usuario) {
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
@@ -58,6 +64,7 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
     }
 
     @Override
+    @Transactional
     public ResultadoPaginacaoDTO<Usuario> listarPaginado(int page, int size, List<FilterDTO> filters,
             List<SortDTO> sorts) {
 
@@ -85,6 +92,7 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
     }
 
     @Override
+    @Transactional
     public Boolean ativarDesativar(Usuario usuario) {
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);

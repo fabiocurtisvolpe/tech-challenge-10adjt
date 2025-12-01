@@ -2,6 +2,8 @@ package com.postech.adjt.domain.entidade;
 
 import org.apache.commons.validator.routines.RegexValidator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Endereco extends Base {
 
     private static final RegexValidator CEP_VALIDATOR = new RegexValidator("^[0-9]{5}-?[0-9]{3}$");
@@ -15,12 +17,13 @@ public class Endereco extends Base {
     private String municipio;
     private String uf;
     private Boolean principal = false;
+
+    @JsonIgnore
     private Usuario usuario;
 
     public Endereco(String logradouro, String numero, String complemento, String bairro, String pontoReferencia,
             String cep, String municipio, String uf, Boolean principal, Usuario usuario) throws IllegalArgumentException {
 
-        //this.validarUsuario(usuario);
         this.validarCep(cep);
 
         this.logradouro = logradouro;
@@ -38,7 +41,6 @@ public class Endereco extends Base {
     public Endereco(Integer id, String logradouro, String numero, String complemento, String bairro, String pontoReferencia,
             String cep, String municipio, String uf, Boolean principal, Boolean ativo, Usuario usuario) throws IllegalArgumentException {
 
-        //this.validarUsuario(usuario);
         this.validarCep(cep);
 
         this.setId(id);
@@ -59,12 +61,6 @@ public class Endereco extends Base {
     private void validarCep(String cep) {
         if (cep == null || !CEP_VALIDATOR.isValid(cep)) {
             throw new IllegalArgumentException("CEP inválido");
-        }
-    }
-
-    private void validarUsuario(Usuario usuario) {
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário do endereço é obrigatório");
         }
     }
 
