@@ -2,13 +2,15 @@ package com.postech.adjt.api.payload;
 
 import java.util.List;
 
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class NovoUsuarioPayLoad {
 
     @NotBlank(message = "O nome não pode estar em branco")
@@ -24,53 +26,10 @@ public class NovoUsuarioPayLoad {
     @Size(max = 50, message = "A senha deve ter até 50 caracteres")
     private String senha;
 
-    @NotNull(message = "O tipo do usuári não pode ser nulo")
-    private TipoUsuarioEnum tipoUsuario;
+    @NotNull(message = "O tipo do usuário não pode ser nulo")
+    private TipoUsuarioPayLoad tipoUsuario;
 
     @NotNull(message = "O endereço não pode ser nulo")
     @Size(min = 1, message = "O endereço deve conter pelo menos um item")
     private List<EnderecoPayLoad> enderecos;
-
-    public NovoUsuarioPayLoad() {
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public TipoUsuarioEnum getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(TipoUsuarioEnum tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-
-    public List<EnderecoPayLoad> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<EnderecoPayLoad> enderecos) {
-        this.enderecos = enderecos;
-    }    
 }

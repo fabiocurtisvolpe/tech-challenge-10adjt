@@ -1,6 +1,7 @@
 package com.postech.adjt.domain.usecase.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
@@ -38,6 +39,7 @@ class ObterUsuarioPorIdUseCaseTest {
     private ObterUsuarioPorIdUseCase useCase;
 
     private Usuario usuario;
+    private TipoUsuario tipoUsuarioValido;
     private List<Endereco> enderecos;
 
     @BeforeEach
@@ -47,26 +49,31 @@ class ObterUsuarioPorIdUseCaseTest {
         // Preparar endereços
         enderecos = new ArrayList<>();
         enderecos.add(Endereco.builder()
-            .logradouro("Rua Teste")
-            .numero("123")
-            .complemento("Apto 101")
-            .bairro("Centro")
-            .pontoReferencia("Perto da praça")
-            .cep("12345-678")
-            .municipio("São Paulo")
-            .uf("SP")
-            .principal(true)
-            .build());
+                .logradouro("Rua Teste")
+                .numero("123")
+                .complemento("Apto 101")
+                .bairro("Centro")
+                .pontoReferencia("Perto da praça")
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
+
+        tipoUsuarioValido = TipoUsuario.builder()
+                .id(1)
+                .descricao("CLIENTE")
+                .build();
 
         usuario = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
     }
 
     @Test
@@ -74,7 +81,7 @@ class ObterUsuarioPorIdUseCaseTest {
     void testObterUsuarioPorIdComSucesso() {
         // Arrange
         when(usuarioRepository.obterPorId(1))
-            .thenReturn(Optional.of(usuario));
+                .thenReturn(Optional.of(usuario));
 
         // Act
         Optional<Usuario> resultado = useCase.run(1);
@@ -125,7 +132,7 @@ class ObterUsuarioPorIdUseCaseTest {
     void testObterUsuarioPorIdNaoEncontrado() {
         // Arrange
         when(usuarioRepository.obterPorId(999))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
@@ -140,7 +147,7 @@ class ObterUsuarioPorIdUseCaseTest {
     void testRetornarUsuarioComDadosCompletos() {
         // Arrange
         when(usuarioRepository.obterPorId(1))
-            .thenReturn(Optional.of(usuario));
+                .thenReturn(Optional.of(usuario));
 
         // Act
         Optional<Usuario> resultado = useCase.run(1);
@@ -151,7 +158,7 @@ class ObterUsuarioPorIdUseCaseTest {
         assertEquals("João Silva", resultado.get().getNome());
         assertEquals("joao@email.com", resultado.get().getEmail());
         assertEquals("senha123", resultado.get().getSenha());
-        assertEquals(TipoUsuarioEnum.CLIENTE, resultado.get().getTipoUsuario());
+        assertEquals(tipoUsuarioValido, resultado.get().getTipoUsuario());
         assertTrue(resultado.get().getAtivo());
     }
 
@@ -160,7 +167,7 @@ class ObterUsuarioPorIdUseCaseTest {
     void testRetornarUsuarioComEnderecos() {
         // Arrange
         when(usuarioRepository.obterPorId(1))
-            .thenReturn(Optional.of(usuario));
+                .thenReturn(Optional.of(usuario));
 
         // Act
         Optional<Usuario> resultado = useCase.run(1);
@@ -177,19 +184,19 @@ class ObterUsuarioPorIdUseCaseTest {
     void testObterUsuariosDiferentesIds() {
         // Arrange
         Usuario usuario2 = Usuario.builder()
-            .id(2)
-            .nome("Maria Silva")
-            .email("maria@email.com")
-            .senha("senha456")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(2)
+                .nome("Maria Silva")
+                .email("maria@email.com")
+                .senha("senha456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorId(1))
-            .thenReturn(Optional.of(usuario));
+                .thenReturn(Optional.of(usuario));
         when(usuarioRepository.obterPorId(2))
-            .thenReturn(Optional.of(usuario2));
+                .thenReturn(Optional.of(usuario2));
 
         // Act
         Optional<Usuario> resultado1 = useCase.run(1);
@@ -207,7 +214,7 @@ class ObterUsuarioPorIdUseCaseTest {
     void testChamarRepositorioComIdCorreto() {
         // Arrange
         when(usuarioRepository.obterPorId(1))
-            .thenReturn(Optional.of(usuario));
+                .thenReturn(Optional.of(usuario));
 
         // Act
         useCase.run(1);
@@ -232,17 +239,17 @@ class ObterUsuarioPorIdUseCaseTest {
     void testObterUsuarioInativoPorId() {
         // Arrange
         Usuario usuarioInativo = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(false)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(false)
+                .build();
 
         when(usuarioRepository.obterPorId(1))
-            .thenReturn(Optional.of(usuarioInativo));
+                .thenReturn(Optional.of(usuarioInativo));
 
         // Act
         Optional<Usuario> resultado = useCase.run(1);
@@ -257,7 +264,7 @@ class ObterUsuarioPorIdUseCaseTest {
     void testRetornarOptionalComUsuarioValido() {
         // Arrange
         when(usuarioRepository.obterPorId(1))
-            .thenReturn(Optional.of(usuario));
+                .thenReturn(Optional.of(usuario));
 
         // Act
         Optional<Usuario> resultado = useCase.run(1);

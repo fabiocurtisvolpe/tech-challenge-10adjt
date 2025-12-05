@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 
 import lombok.NoArgsConstructor;
 
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public abstract class UsuarioFactory {
 
     public static Usuario criar(String nome, String email, String senha,
-        TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos) throws IllegalArgumentException {
+        TipoUsuario tipoUsuario, List<Endereco> enderecos) throws IllegalArgumentException {
 
         return Usuario.builder()
                 .dataCriacao(LocalDateTime.now())
@@ -28,7 +28,7 @@ public abstract class UsuarioFactory {
     }
 
     public static Usuario atualizar(Integer id, String nome, String email, String senha,
-        TipoUsuarioEnum tipoUsuario, List<Endereco> enderecos, Boolean ativo) throws IllegalArgumentException {
+        TipoUsuario tipoUsuario, List<Endereco> enderecos, Boolean ativo) throws IllegalArgumentException {
 
         return Usuario.builder()
                 .id(id)

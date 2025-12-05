@@ -1,14 +1,13 @@
 package com.postech.adjt.domain.validators;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 
 /**
@@ -23,6 +22,7 @@ import com.postech.adjt.domain.exception.NotificacaoException;
 public class UsuarioValidator {
     
     private static final int NOME_MINIMO_LENGTH = 3;
+    private static final int NOME_MAXIMO_LENGTH = 50;
     private static final int SENHA_MINIMA_LENGTH = 6;
 
     /**
@@ -96,8 +96,12 @@ public class UsuarioValidator {
             throw new NotificacaoException(MensagemUtil.NOME_EM_BRANCO);
         }
 
-        if (nome.trim().length() < NOME_MINIMO_LENGTH) {
+        if (nome.length() < NOME_MINIMO_LENGTH) {
             throw new NotificacaoException("Nome deve ter no mínimo " + NOME_MINIMO_LENGTH + " caracteres");
+        }
+
+        if (nome.length() > NOME_MAXIMO_LENGTH) {
+            throw new NotificacaoException("Nome deve ter no máximo " + NOME_MAXIMO_LENGTH + " caracteres");
         }
     }
 
@@ -141,16 +145,9 @@ public class UsuarioValidator {
      * @param tipoUsuario Tipo de usuário a ser validado
      * @throws NotificacaoException se tipo for nulo ou inválido
      */
-    private static void validarTipoUsuario(TipoUsuarioEnum tipoUsuario) throws NotificacaoException {
+    private static void validarTipoUsuario(TipoUsuario tipoUsuario) throws NotificacaoException {
         if (tipoUsuario == null) {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NULO);
-        }
-
-        boolean existe = Arrays.stream(TipoUsuarioEnum.values())
-                .anyMatch(tp -> tp.equals(tipoUsuario));
-
-        if (!existe) {
-            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
         }
     }
 

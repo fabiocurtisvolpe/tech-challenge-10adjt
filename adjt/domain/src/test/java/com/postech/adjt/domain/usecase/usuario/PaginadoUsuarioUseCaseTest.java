@@ -1,6 +1,8 @@
 package com.postech.adjt.domain.usecase.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -17,8 +19,8 @@ import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
@@ -41,6 +43,7 @@ class PaginadoUsuarioUseCaseTest {
 
     private List<Usuario> usuarios;
     private List<Endereco> enderecos;
+    private TipoUsuario tipoUsuarioValido;
 
     @BeforeEach
     void setUp() {
@@ -49,38 +52,48 @@ class PaginadoUsuarioUseCaseTest {
         // Preparar endereços
         enderecos = new ArrayList<>();
         enderecos.add(Endereco.builder()
-            .logradouro("Rua Teste")
-            .numero("123")
-            .complemento("Apto 101")
-            .bairro("Centro")
-            .pontoReferencia("Perto da praça")
-            .cep("12345-678")
-            .municipio("São Paulo")
-            .uf("SP")
-            .principal(true)
-            .build());
+                .logradouro("Rua Teste")
+                .numero("123")
+                .complemento("Apto 101")
+                .bairro("Centro")
+                .pontoReferencia("Perto da praça")
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
+
+        tipoUsuarioValido = TipoUsuario.builder()
+                .id(1)
+                .descricao("CLIENTE")
+                .build();
 
         // Preparar lista de usuários
         usuarios = new ArrayList<>();
         usuarios.add(Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build());
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build());
+
+        TipoUsuario tipoUsuarioFornecedor = TipoUsuario.builder()
+                .id(2)
+                .descricao("FORNECEDOR")
+                .build();
 
         usuarios.add(Usuario.builder()
-            .id(2)
-            .nome("Maria Silva")
-            .email("maria@email.com")
-            .senha("senha456")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build());
+                .id(2)
+                .nome("Maria Silva")
+                .email("maria@email.com")
+                .senha("senha456")
+                .tipoUsuario(tipoUsuarioFornecedor)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build());
     }
 
     @Test
@@ -88,14 +101,13 @@ class PaginadoUsuarioUseCaseTest {
     void testListarComPaginacaoPadrao() {
         // Arrange
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            usuarios,
-            0,
-            10,
-            2
-        );
+                usuarios,
+                0,
+                10,
+                2);
 
         when(usuarioRepository.listarPaginado(0, 10, null, null))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
@@ -149,14 +161,13 @@ class PaginadoUsuarioUseCaseTest {
         filtros.add(new FilterDTO("tipoUsuario", "CLIENTE"));
 
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            usuarios.stream().filter(u -> u.getTipoUsuario() == TipoUsuarioEnum.CLIENTE).toList(),
-            0,
-            10,
-            1
-        );
+                usuarios.stream().filter(u -> u.getTipoUsuario() == tipoUsuarioValido).toList(),
+                0,
+                10,
+                1);
 
         when(usuarioRepository.listarPaginado(0, 10, filtros, null))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, null);
@@ -174,14 +185,13 @@ class PaginadoUsuarioUseCaseTest {
         sorts.add(new SortDTO("nome", SortDTO.Direction.ASC));
 
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            usuarios,
-            0,
-            10,
-            2
-        );
+                usuarios,
+                0,
+                10,
+                2);
 
         when(usuarioRepository.listarPaginado(0, 10, null, sorts))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, sorts);
@@ -202,14 +212,13 @@ class PaginadoUsuarioUseCaseTest {
         sorts.add(new SortDTO("email", SortDTO.Direction.ASC));
 
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            usuarios,
-            0,
-            10,
-            2
-        );
+                usuarios,
+                0,
+                10,
+                2);
 
         when(usuarioRepository.listarPaginado(0, 10, filtros, sorts))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, sorts);
@@ -224,14 +233,13 @@ class PaginadoUsuarioUseCaseTest {
     void testListarSegundaPagina() {
         // Arrange
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            new ArrayList<>(),
-            1,
-            10,
-            0
-        );
+                new ArrayList<>(),
+                1,
+                10,
+                0);
 
         when(usuarioRepository.listarPaginado(1, 10, null, null))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(1, 10, null, null);
@@ -247,14 +255,13 @@ class PaginadoUsuarioUseCaseTest {
     void testListarComTamanhCustomizado() {
         // Arrange
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            usuarios,
-            0,
-            5,
-            2
-        );
+                usuarios,
+                0,
+                5,
+                2);
 
         when(usuarioRepository.listarPaginado(0, 5, null, null))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 5, null, null);
@@ -280,14 +287,13 @@ class PaginadoUsuarioUseCaseTest {
     void testRetornarResultadoComInfoPaginacao() {
         // Arrange
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            usuarios,
-            0,
-            10,
-            2
-        );
+                usuarios,
+                0,
+                10,
+                2);
 
         when(usuarioRepository.listarPaginado(0, 10, null, null))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
@@ -304,14 +310,13 @@ class PaginadoUsuarioUseCaseTest {
     void testRetornarListaVaziaQuandoNenhumResultado() {
         // Arrange
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-            new ArrayList<>(),
-            0,
-            10,
-            0
-        );
+                new ArrayList<>(),
+                0,
+                10,
+                0);
 
         when(usuarioRepository.listarPaginado(0, 10, null, null))
-            .thenReturn(resultado);
+                .thenReturn(resultado);
 
         // Act
         ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);

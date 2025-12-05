@@ -1,6 +1,7 @@
 package com.postech.adjt.domain.usecase.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.dto.NovoUsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
@@ -38,6 +39,7 @@ class CadastrarUsuarioUseCaseTest {
 
     private CadastrarUsuarioUseCase useCase;
 
+    private TipoUsuario tipoUsuarioValido;
     private NovoUsuarioDTO novoUsuarioDTO;
     private List<Endereco> enderecos;
 
@@ -48,25 +50,29 @@ class CadastrarUsuarioUseCaseTest {
         // Preparar endereços para o novo usuário
         enderecos = new ArrayList<>();
         enderecos.add(Endereco.builder()
-            .logradouro("Rua Principal")
-            .numero("456")
-            .complemento("Apto 202")
-            .bairro("Bairro Centro")
-            .pontoReferencia("Próximo à estação")
-            .cep("98765-432")
-            .municipio("Rio de Janeiro")
-            .uf("RJ")
-            .principal(true)
-            .build());
+                .logradouro("Rua Principal")
+                .numero("456")
+                .complemento("Apto 202")
+                .bairro("Bairro Centro")
+                .pontoReferencia("Próximo à estação")
+                .cep("98765-432")
+                .municipio("Rio de Janeiro")
+                .uf("RJ")
+                .principal(true)
+                .build());
+
+        tipoUsuarioValido = TipoUsuario.builder()
+                .id(1)
+                .descricao("CLIENTE")
+                .build();
 
         // Preparar DTO de novo usuário
         novoUsuarioDTO = new NovoUsuarioDTO(
-            "Novo Usuário",
-            "novo.usuario@email.com",
-            "senha123Segura",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
+                "Novo Usuário",
+                "novo.usuario@email.com",
+                "senha123Segura",
+                tipoUsuarioValido,
+                enderecos);
     }
 
     @Test
@@ -74,20 +80,20 @@ class CadastrarUsuarioUseCaseTest {
     void testCadastrarNovoUsuarioComSucesso() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(1)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         Usuario resultado = useCase.run(novoUsuarioDTO);
@@ -106,17 +112,17 @@ class CadastrarUsuarioUseCaseTest {
     void testCadastrarComEmailExistente() {
         // Arrange
         Usuario usuarioExistente = Usuario.builder()
-            .id(1)
-            .nome("Usuário Existente")
-            .email("novo.usuario@email.com")
-            .senha("senhaExistente")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(new ArrayList<>())
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Usuário Existente")
+                .email("novo.usuario@email.com")
+                .senha("senhaExistente")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(new ArrayList<>())
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
@@ -132,20 +138,20 @@ class CadastrarUsuarioUseCaseTest {
     void testValidacaoAntesDeCriar() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(1)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         Usuario resultado = useCase.run(novoUsuarioDTO);
@@ -161,52 +167,51 @@ class CadastrarUsuarioUseCaseTest {
         // Arrange
         List<Endereco> multiplosEnderecos = new ArrayList<>();
         multiplosEnderecos.add(Endereco.builder()
-            .logradouro("Rua A")
-            .numero("100")
-            .complemento("Casa")
-            .bairro("Bairro A")
-            .pontoReferencia("Próximo A")
-            .cep("11111-111")
-            .municipio("São Paulo")
-            .uf("SP")
-            .principal(true)
-            .build());
+                .logradouro("Rua A")
+                .numero("100")
+                .complemento("Casa")
+                .bairro("Bairro A")
+                .pontoReferencia("Próximo A")
+                .cep("11111-111")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
 
         multiplosEnderecos.add(Endereco.builder()
-            .logradouro("Rua B")
-            .numero("200")
-            .complemento("Apto")
-            .bairro("Bairro B")
-            .pontoReferencia("Próximo B")
-            .cep("22222-222")
-            .municipio("Rio de Janeiro")
-            .uf("RJ")
-            .principal(false)
-            .build());
+                .logradouro("Rua B")
+                .numero("200")
+                .complemento("Apto")
+                .bairro("Bairro B")
+                .pontoReferencia("Próximo B")
+                .cep("22222-222")
+                .municipio("Rio de Janeiro")
+                .uf("RJ")
+                .principal(false)
+                .build());
 
         NovoUsuarioDTO dtoMultiplosEnderecos = new NovoUsuarioDTO(
-            "Usuário Multi",
-            "usuario.multi@email.com",
-            "senha456",
-            TipoUsuarioEnum.FORNECEDOR,
-            multiplosEnderecos
-        );
+                "Usuário Multi",
+                "usuario.multi@email.com",
+                "senha456",
+                tipoUsuarioValido,
+                multiplosEnderecos);
 
         when(usuarioRepository.obterPorEmail("usuario.multi@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(2)
-            .nome("Usuário Multi")
-            .email("usuario.multi@email.com")
-            .senha("senha456")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
-            .enderecos(multiplosEnderecos)
-            .ativo(true)
-            .build();
+                .id(2)
+                .nome("Usuário Multi")
+                .email("usuario.multi@email.com")
+                .senha("senha456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(multiplosEnderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         Usuario resultado = useCase.run(dtoMultiplosEnderecos);
@@ -222,20 +227,20 @@ class CadastrarUsuarioUseCaseTest {
     void testNovoUsuarioCriadoComAtivo() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(3)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(3)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         Usuario resultado = useCase.run(novoUsuarioDTO);
@@ -249,63 +254,61 @@ class CadastrarUsuarioUseCaseTest {
     void testCadastrarUsuariosDiferentesTipos() {
         // Arrange - Usuário Cliente
         NovoUsuarioDTO dtoCliente = new NovoUsuarioDTO(
-            "Cliente",
-            "cliente@email.com",
-            "senha1",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
+                "Cliente",
+                "cliente@email.com",
+                "senha1",
+                tipoUsuarioValido,
+                enderecos);
 
         Usuario usuarioCliente = Usuario.builder()
-            .id(1)
-            .nome("Cliente")
-            .email("cliente@email.com")
-            .senha("senha1")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Cliente")
+                .email("cliente@email.com")
+                .senha("senha1")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("cliente@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCliente);
+                .thenReturn(usuarioCliente);
 
         // Act - Criar Cliente
         Usuario resultadoCliente = useCase.run(dtoCliente);
 
         // Assert - Validar Cliente
-        assertEquals(TipoUsuarioEnum.CLIENTE, resultadoCliente.getTipoUsuario());
+        assertEquals(tipoUsuarioValido, resultadoCliente.getTipoUsuario());
 
         // Arrange - Usuário Fornecedor
         NovoUsuarioDTO dtoFornecedor = new NovoUsuarioDTO(
-            "Fornecedor",
-            "fornecedor@email.com",
-            "senha2",
-            TipoUsuarioEnum.FORNECEDOR,
-            enderecos
-        );
+                "Fornecedor",
+                "fornecedor@email.com",
+                "senha2",
+                tipoUsuarioValido,
+                enderecos);
 
         Usuario usuarioFornecedor = Usuario.builder()
-            .id(2)
-            .nome("Fornecedor")
-            .email("fornecedor@email.com")
-            .senha("senha2")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(2)
+                .nome("Fornecedor")
+                .email("fornecedor@email.com")
+                .senha("senha2")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("fornecedor@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioFornecedor);
+                .thenReturn(usuarioFornecedor);
 
         // Act - Criar Fornecedor
         Usuario resultadoFornecedor = useCase.run(dtoFornecedor);
 
         // Assert - Validar Fornecedor
-        assertEquals(TipoUsuarioEnum.FORNECEDOR, resultadoFornecedor.getTipoUsuario());
+        assertEquals(tipoUsuarioValido, resultadoFornecedor.getTipoUsuario());
     }
 
     @Test
@@ -313,20 +316,20 @@ class CadastrarUsuarioUseCaseTest {
     void testUsandoDadosDoDTOParaCriar() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(1)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         Usuario resultado = useCase.run(novoUsuarioDTO);
@@ -342,20 +345,20 @@ class CadastrarUsuarioUseCaseTest {
     void testUsuarioComIDAposCriacao() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(999)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(999)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         Usuario resultado = useCase.run(novoUsuarioDTO);
@@ -370,20 +373,20 @@ class CadastrarUsuarioUseCaseTest {
     void testVerificacaoEmailAntesDeCriar() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(1)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         useCase.run(novoUsuarioDTO);
@@ -397,20 +400,20 @@ class CadastrarUsuarioUseCaseTest {
     void testMantendoDadosEnderecos() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(1)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         Usuario resultado = useCase.run(novoUsuarioDTO);
@@ -426,20 +429,20 @@ class CadastrarUsuarioUseCaseTest {
     void testRepositorioCriarChamadoApenasUmaVez() {
         // Arrange
         when(usuarioRepository.obterPorEmail("novo.usuario@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         Usuario usuarioCriado = Usuario.builder()
-            .id(1)
-            .nome("Novo Usuário")
-            .email("novo.usuario@email.com")
-            .senha("senha123Segura")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("Novo Usuário")
+                .email("novo.usuario@email.com")
+                .senha("senha123Segura")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.criar(any(Usuario.class)))
-            .thenReturn(usuarioCriado);
+                .thenReturn(usuarioCriado);
 
         // Act
         useCase.run(novoUsuarioDTO);

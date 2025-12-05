@@ -12,6 +12,7 @@ import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
 import com.postech.adjt.domain.dto.AtualizaUsuarioDTO;
 import com.postech.adjt.domain.dto.NovoUsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 
 @Component
@@ -33,11 +34,17 @@ public class UsuarioMapperApi {
                                                 .build())
                                 .collect(Collectors.toList());
 
+                TipoUsuario tipoUsuario = TipoUsuario.builder()
+                                .id(payload.getTipoUsuario().getId())
+                                .nome(payload.getTipoUsuario().getNome())
+                                .descricao(payload.getTipoUsuario().getDescricao())
+                                .build();
+
                 return new NovoUsuarioDTO(
                                 payload.getNome(),
                                 payload.getEmail(),
                                 senhaEncriptada,
-                                payload.getTipoUsuario(),
+                                tipoUsuario,
                                 enderecos);
         }
 

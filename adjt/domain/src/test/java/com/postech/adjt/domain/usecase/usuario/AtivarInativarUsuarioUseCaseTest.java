@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
@@ -38,6 +38,7 @@ class AtivarInativarUsuarioUseCaseTest {
     private AtivarInativarUsuarioUseCase useCase;
 
     private Usuario usuarioExistente;
+    private TipoUsuario tipoUsuarioValido;
     private List<Endereco> enderecos;
 
     @BeforeEach
@@ -58,12 +59,18 @@ class AtivarInativarUsuarioUseCaseTest {
             .principal(true)
             .build());
 
+        tipoUsuarioValido = TipoUsuario.builder()
+            .id(1)
+            .nome("CLIENTE")
+            .descricao("CLIENTE")
+            .build();
+
         usuarioExistente = Usuario.builder()
             .id(1)
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .ativo(true)
             .build();
@@ -78,7 +85,7 @@ class AtivarInativarUsuarioUseCaseTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .ativo(true)
             .build();
@@ -109,7 +116,7 @@ class AtivarInativarUsuarioUseCaseTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .ativo(false)
             .build();
@@ -171,7 +178,7 @@ class AtivarInativarUsuarioUseCaseTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .ativo(true)
             .build();
@@ -187,7 +194,7 @@ class AtivarInativarUsuarioUseCaseTest {
         // Assert
         assertEquals("João Silva", resultado.getNome());
         assertEquals("joao@email.com", resultado.getEmail());
-        assertEquals(TipoUsuarioEnum.CLIENTE, resultado.getTipoUsuario());
+        assertEquals(tipoUsuarioValido, resultado.getTipoUsuario());
         assertEquals(enderecos.size(), resultado.getEnderecos().size());
     }
 
@@ -200,7 +207,7 @@ class AtivarInativarUsuarioUseCaseTest {
             .nome("João")
             .email("joao@email.com")
             .senha("senha1")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(new ArrayList<>())
             .ativo(true)
             .build();
@@ -210,7 +217,7 @@ class AtivarInativarUsuarioUseCaseTest {
             .nome("Maria")
             .email("maria@email.com")
             .senha("senha2")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(new ArrayList<>())
             .ativo(true)
             .build();
@@ -245,7 +252,7 @@ class AtivarInativarUsuarioUseCaseTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .ativo(false)
             .build();
@@ -292,7 +299,7 @@ class AtivarInativarUsuarioUseCaseTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .ativo(true)
             .build();

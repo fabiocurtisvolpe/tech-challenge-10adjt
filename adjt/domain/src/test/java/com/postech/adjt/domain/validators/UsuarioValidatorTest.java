@@ -1,8 +1,8 @@
 package com.postech.adjt.domain.validators;
 
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,12 +32,20 @@ class UsuarioValidatorTest {
         return enderecos;
     }
 
+    private TipoUsuario criarTipoUsuarioValido() {
+        return TipoUsuario.builder()
+            .id(1)
+            .nome("CLIENTE")
+            .descricao("Cliente do sistema")
+            .build();
+    }
+
     private Usuario criarUsuarioValido() {
         return Usuario.builder()
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
     }
@@ -71,7 +79,7 @@ class UsuarioValidatorTest {
             .nome(null)
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -89,7 +97,7 @@ class UsuarioValidatorTest {
             .nome("  ")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -107,7 +115,25 @@ class UsuarioValidatorTest {
             .nome("Jo")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
+    }
+
+     @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com nome maior que 50 caracteres")
+    void testValidarParaCriacaoComNomeMuitoLongo() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Jooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooão")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -125,7 +151,7 @@ class UsuarioValidatorTest {
             .nome("João")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -141,7 +167,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email(null)
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -159,7 +185,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("  ")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -177,7 +203,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@invalido")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -195,7 +221,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha(null)
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -213,7 +239,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -231,7 +257,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senha")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -249,7 +275,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senha6")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -275,70 +301,6 @@ class UsuarioValidatorTest {
         });
     }
 
-    @Test
-    @DisplayName("Deve validar usuario com tipo CLIENTE para criação")
-    void testValidarParaCriacaoComTipoCliente() {
-        // Arrange
-        Usuario usuario = Usuario.builder()
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(criarEnderecos())
-            .build();
-
-        // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
-    }
-
-    @Test
-    @DisplayName("Deve validar usuario com tipo DONO_RESTAURANTE para criação")
-    void testValidarParaCriacaoComTipoDonoRestaurante() {
-        // Arrange
-        Usuario usuario = Usuario.builder()
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
-            .enderecos(criarEnderecos())
-            .build();
-
-        // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
-    }
-
-    @Test
-    @DisplayName("Deve validar usuario com tipo FORNECEDOR para criação")
-    void testValidarParaCriacaoComTipoFornecedor() {
-        // Arrange
-        Usuario usuario = Usuario.builder()
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
-            .enderecos(criarEnderecos())
-            .build();
-
-        // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
-    }
-
-    @Test
-    @DisplayName("Deve validar usuario com tipo PRESTADOR_SERVICO para criação")
-    void testValidarParaCriacaoComTipoPrestadorServico() {
-        // Arrange
-        Usuario usuario = Usuario.builder()
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO)
-            .enderecos(criarEnderecos())
-            .build();
-
-        // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
-    }
-
     // ===== TESTES: validarParaAtualizacao =====
 
     @Test
@@ -349,7 +311,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -375,7 +337,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -393,7 +355,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(0)
             .build();
@@ -412,7 +374,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(-5)
             .build();
@@ -431,7 +393,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(1)
             .build();
@@ -448,7 +410,7 @@ class UsuarioValidatorTest {
             .nome(null)
             .email("maria@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -467,7 +429,7 @@ class UsuarioValidatorTest {
             .nome("  ")
             .email("maria@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -486,7 +448,7 @@ class UsuarioValidatorTest {
             .nome("Ma")
             .email("maria@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -505,7 +467,7 @@ class UsuarioValidatorTest {
             .nome("Maria Silva Oliveira")
             .email("maria@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -522,7 +484,7 @@ class UsuarioValidatorTest {
             .nome("Maria Silva")
             .email(null)
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -541,7 +503,7 @@ class UsuarioValidatorTest {
             .nome("Maria Silva")
             .email("  ")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -560,7 +522,7 @@ class UsuarioValidatorTest {
             .nome("Maria Silva")
             .email("maria@invalido")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(5)
             .build();
@@ -579,7 +541,7 @@ class UsuarioValidatorTest {
             .nome("Pedro Oliveira Santos")
             .email("pedro@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(10)
             .build();
@@ -596,7 +558,7 @@ class UsuarioValidatorTest {
             .nome("Ana Silva")
             .email("ana.silva@empresa.com.br")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -612,7 +574,7 @@ class UsuarioValidatorTest {
             .nome("   João Silva   ")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .build();
 
@@ -628,7 +590,7 @@ class UsuarioValidatorTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senhaSegura123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(criarTipoUsuarioValido())
             .enderecos(criarEnderecos())
             .id(Integer.MAX_VALUE)
             .build();

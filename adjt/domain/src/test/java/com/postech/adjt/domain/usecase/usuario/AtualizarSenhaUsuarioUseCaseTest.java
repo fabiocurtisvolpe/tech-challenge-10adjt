@@ -1,6 +1,7 @@
 package com.postech.adjt.domain.usecase.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
@@ -40,6 +41,7 @@ class AtualizarSenhaUsuarioUseCaseTest {
     private AtualizarSenhaUsuarioUseCase useCase;
 
     private Usuario usuarioExistente;
+    private TipoUsuario tipoUsuarioValido;
     private List<Endereco> enderecos;
     private TrocarSenhaUsuarioDTO trocarSenhaDTO;
 
@@ -50,26 +52,32 @@ class AtualizarSenhaUsuarioUseCaseTest {
         // Preparar dados de teste
         enderecos = new ArrayList<>();
         enderecos.add(Endereco.builder()
-            .logradouro("Rua Teste")
-            .numero("123")
-            .complemento("Apto 101")
-            .bairro("Centro")
-            .pontoReferencia("Perto da praça")
-            .cep("12345-678")
-            .municipio("São Paulo")
-            .uf("SP")
-            .principal(true)
-            .build());
+                .logradouro("Rua Teste")
+                .numero("123")
+                .complemento("Apto 101")
+                .bairro("Centro")
+                .pontoReferencia("Perto da praça")
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
+
+        tipoUsuarioValido = TipoUsuario.builder()
+                .id(1)
+                .nome("CLIENTE")
+                .descricao("CLIENTE")
+                .build();
 
         usuarioExistente = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaAntiga123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaAntiga123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         trocarSenhaDTO = new TrocarSenhaUsuarioDTO("joao@email.com", "senhaAntiga123", "senhaCodificada456");
     }
@@ -79,19 +87,19 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testAtualizarSenhaComSucesso() {
         // Arrange
         Usuario usuarioComSenhaAtualizada = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaCodificada456")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaCodificada456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioComSenhaAtualizada);
+                .thenReturn(usuarioComSenhaAtualizada);
 
         // Act
         Usuario resultado = useCase.run(trocarSenhaDTO);
@@ -109,10 +117,11 @@ class AtualizarSenhaUsuarioUseCaseTest {
     @DisplayName("Deve lançar exceção quando usuário não encontrado")
     void testAtualizarSenhaUsuarioNaoEncontrado() {
         // Arrange
-        TrocarSenhaUsuarioDTO dtoInexistente = new TrocarSenhaUsuarioDTO("inexistente@email.com", "senhaAntiga", "novaSenha");
-        
+        TrocarSenhaUsuarioDTO dtoInexistente = new TrocarSenhaUsuarioDTO("inexistente@email.com", "senhaAntiga",
+                "novaSenha");
+
         when(usuarioRepository.obterPorEmail("inexistente@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
@@ -128,19 +137,19 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testMantendoDadosAoAtualizarSenha() {
         // Arrange
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaCodificada456")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaCodificada456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         Usuario resultado = useCase.run(trocarSenhaDTO);
@@ -149,7 +158,7 @@ class AtualizarSenhaUsuarioUseCaseTest {
         assertEquals(1, resultado.getId());
         assertEquals("João Silva", resultado.getNome());
         assertEquals("joao@email.com", resultado.getEmail());
-        assertEquals(TipoUsuarioEnum.CLIENTE, resultado.getTipoUsuario());
+        assertEquals(tipoUsuarioValido, resultado.getTipoUsuario());
         assertEquals(enderecos.size(), resultado.getEnderecos().size());
     }
 
@@ -158,19 +167,19 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testMantendoEnderecosAoAtualizarSenha() {
         // Arrange
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaCodificada456")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaCodificada456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         Usuario resultado = useCase.run(trocarSenhaDTO);
@@ -187,57 +196,63 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testAtualizarSenhaParaDiferentesUsuarios() {
         // Arrange
         Usuario usuario1 = Usuario.builder()
-            .id(1)
-            .nome("João")
-            .email("joao@email.com")
-            .senha("senhaAntigaJoao")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(new ArrayList<>())
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João")
+                .email("joao@email.com")
+                .senha("senhaAntigaJoao")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(new ArrayList<>())
+                .ativo(true)
+                .build();
+
+        TipoUsuario tipoUsuarioFornecedor = TipoUsuario.builder()
+                .id(2)
+                .nome("FORNECEDOR")
+                .descricao("FORNECEDOR")
+                .build();
 
         Usuario usuario2 = Usuario.builder()
-            .id(2)
-            .nome("Maria")
-            .email("maria@email.com")
-            .senha("senhaAntigaMaria")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
-            .enderecos(new ArrayList<>())
-            .ativo(true)
-            .build();
+                .id(2)
+                .nome("Maria")
+                .email("maria@email.com")
+                .senha("senhaAntigaMaria")
+                .tipoUsuario(tipoUsuarioFornecedor)
+                .enderecos(new ArrayList<>())
+                .ativo(true)
+                .build();
 
         Usuario usuario1Atualizado = Usuario.builder()
-            .id(1)
-            .nome("João")
-            .email("joao@email.com")
-            .senha("senhaNova123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(new ArrayList<>())
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João")
+                .email("joao@email.com")
+                .senha("senhaNova123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(new ArrayList<>())
+                .ativo(true)
+                .build();
 
         Usuario usuario2Atualizado = Usuario.builder()
-            .id(2)
-            .nome("Maria")
-            .email("maria@email.com")
-            .senha("senhaNova456")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
-            .enderecos(new ArrayList<>())
-            .ativo(true)
-            .build();
+                .id(2)
+                .nome("Maria")
+                .email("maria@email.com")
+                .senha("senhaNova456")
+                .tipoUsuario(tipoUsuarioFornecedor)
+                .enderecos(new ArrayList<>())
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuario1));
+                .thenReturn(Optional.of(usuario1));
         when(usuarioRepository.obterPorEmail("maria@email.com"))
-            .thenReturn(Optional.of(usuario2));
+                .thenReturn(Optional.of(usuario2));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuario1Atualizado)
-            .thenReturn(usuario2Atualizado);
+                .thenReturn(usuario1Atualizado)
+                .thenReturn(usuario2Atualizado);
 
         // Act
         TrocarSenhaUsuarioDTO dto1 = new TrocarSenhaUsuarioDTO("joao@email.com", "senhaAntigaJoao", "senhaNova123");
         TrocarSenhaUsuarioDTO dto2 = new TrocarSenhaUsuarioDTO("maria@email.com", "senhaAntigaMaria", "senhaNova456");
-        
+
         Usuario resultado1 = useCase.run(dto1);
         Usuario resultado2 = useCase.run(dto2);
 
@@ -252,9 +267,9 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testUsandoEmailDoDTOParaBuscaUsuario() {
         // Arrange
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioExistente);
+                .thenReturn(usuarioExistente);
 
         // Act
         useCase.run(trocarSenhaDTO);
@@ -269,19 +284,19 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testMantendoUsuarioAtivoAposProcesso() {
         // Arrange
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaCodificada456")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaCodificada456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         Usuario resultado = useCase.run(trocarSenhaDTO);
@@ -295,22 +310,23 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testProcessandoDTOComSenhaCodificada() {
         // Arrange
         String senhaCodificadaEsperada = "senhaCodificada456";
-        TrocarSenhaUsuarioDTO dto = new TrocarSenhaUsuarioDTO("joao@email.com", "senhaAntiga123", senhaCodificadaEsperada);
+        TrocarSenhaUsuarioDTO dto = new TrocarSenhaUsuarioDTO("joao@email.com", "senhaAntiga123",
+                senhaCodificadaEsperada);
 
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha(senhaCodificadaEsperada)
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha(senhaCodificadaEsperada)
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         Usuario resultado = useCase.run(dto);
@@ -324,19 +340,19 @@ class AtualizarSenhaUsuarioUseCaseTest {
     void testSequenciaDeChamsAoRepositorio() {
         // Arrange
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaCodificada456")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaCodificada456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         useCase.run(trocarSenhaDTO);
@@ -355,19 +371,19 @@ class AtualizarSenhaUsuarioUseCaseTest {
         assertEquals(senhaAnterior, usuarioExistente.getSenha());
 
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaCodificada456")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaCodificada456")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         useCase.run(trocarSenhaDTO);

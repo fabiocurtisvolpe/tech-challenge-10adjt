@@ -2,8 +2,6 @@ package com.postech.adjt.domain.entidade;
 
 import java.util.List;
 
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
-
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -14,7 +12,7 @@ public class Usuario extends Base {
     protected String nome;
     protected String email;
     protected String senha;
-    protected TipoUsuarioEnum tipoUsuario;
+    protected TipoUsuario tipoUsuario;
     protected List<Endereco> enderecos;
 
     @Override
@@ -40,10 +38,5 @@ public class Usuario extends Base {
         } else if (!email.equals(other.email))
             return false;
         return true;
-    }
-
-
-    public Boolean getEhDonoRestaurante() {
-        return this.tipoUsuario == TipoUsuarioEnum.DONO_RESTAURANTE;
     }
 }

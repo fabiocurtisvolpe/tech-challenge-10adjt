@@ -1,6 +1,7 @@
 package com.postech.adjt.api.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -19,10 +20,11 @@ import com.postech.adjt.api.dto.UsuarioRespostaDTO;
 import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.EnderecoPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
+import com.postech.adjt.api.payload.TipoUsuarioPayLoad;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
@@ -42,308 +44,321 @@ import com.postech.adjt.domain.usecase.usuario.PaginadoUsuarioUseCase;
 @DisplayName("UsuarioController - Testes Unitários")
 class UsuarioControllerTest {
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+        @Mock
+        private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
+        @Mock
+        private CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
 
-    @Mock
-    private AtualizarUsuarioUseCase atualizarUsuarioUseCase;
+        @Mock
+        private AtualizarUsuarioUseCase atualizarUsuarioUseCase;
 
-    @Mock
-    private AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase;
+        @Mock
+        private AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase;
 
-    @Mock
-    private ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
+        @Mock
+        private ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
 
-    @Mock
-    private PaginadoUsuarioUseCase paginadoUsuarioUseCase;
+        @Mock
+        private PaginadoUsuarioUseCase paginadoUsuarioUseCase;
 
-    @Mock
-    private AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
+        @Mock
+        private AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
 
-    private UsuarioController usuarioController;
+        private UsuarioController usuarioController;
+        private TipoUsuarioPayLoad tipoUsuarioValidoPayLoad;
+        private TipoUsuario tipoUsuarioValido;
 
-    @BeforeEach
-    void setUp() {
-        usuarioController = new UsuarioController(
-                passwordEncoder,
-                ativarInativarUsuarioUseCase,
-                cadastrarUsuarioUseCase,
-                atualizarUsuarioUseCase,
-                atualizarSenhaUsuarioUseCase,
-                obterUsuarioPorEmailUseCase,
-                paginadoUsuarioUseCase);
-    }
+        @BeforeEach
+        void setUp() {
+                usuarioController = new UsuarioController(
+                                passwordEncoder,
+                                ativarInativarUsuarioUseCase,
+                                cadastrarUsuarioUseCase,
+                                atualizarUsuarioUseCase,
+                                atualizarSenhaUsuarioUseCase,
+                                obterUsuarioPorEmailUseCase,
+                                paginadoUsuarioUseCase);
 
-    @Test
-    @DisplayName("Deve criar usuário com sucesso")
-    void testCriarUsuarioComSucesso() {
-        // Arrange
-        NovoUsuarioPayLoad payload = new NovoUsuarioPayLoad();
-        payload.setNome("João Silva");
-        payload.setEmail("joao@email.com");
-        payload.setSenha("senha123");
-        payload.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+                tipoUsuarioValidoPayLoad = TipoUsuarioPayLoad.builder()
+                                .id(1)
+                                .nome("CLIENTE")
+                                .descricao("CLIENTE")
+                                .build();
 
-        EnderecoPayLoad endereco = new EnderecoPayLoad();
-        endereco.setLogradouro("Rua A");
-        endereco.setNumero("123");
-        endereco.setBairro("Centro");
-        endereco.setCep("12345-678");
-        endereco.setMunicipio("São Paulo");
-        endereco.setUf("SP");
-        endereco.setPrincipal(true);
+                tipoUsuarioValido = TipoUsuario.builder()
+                                .id(1)
+                                .nome("CLIENTE")
+                                .descricao("CLIENTE")
+                                .build();
+        }
 
-        payload.setEnderecos(List.of(endereco));
+        @Test
+        @DisplayName("Deve criar usuário com sucesso")
+        void testCriarUsuarioComSucesso() {
+                // Arrange
+                NovoUsuarioPayLoad payload = new NovoUsuarioPayLoad();
+                payload.setNome("João Silva");
+                payload.setEmail("joao@email.com");
+                payload.setSenha("senha123");
+                payload.setTipoUsuario(tipoUsuarioValidoPayLoad);
 
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(Endereco.builder()
-                .logradouro("Rua A")
-                .numero("123")
-                .complemento(null)
-                .bairro("Centro")
-                .pontoReferencia(null)
-                .cep("12345-678")
-                .municipio("São Paulo")
-                .uf("SP")
-                .principal(true)
-                .build());
+                EnderecoPayLoad endereco = new EnderecoPayLoad();
+                endereco.setLogradouro("Rua A");
+                endereco.setNumero("123");
+                endereco.setBairro("Centro");
+                endereco.setCep("12345-678");
+                endereco.setMunicipio("São Paulo");
+                endereco.setUf("SP");
+                endereco.setPrincipal(true);
 
-        Usuario usuarioCriado = Usuario.builder()
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-                .enderecos(enderecos)
-                .build();
+                payload.setEnderecos(List.of(endereco));
 
-        when(passwordEncoder.encode("senha123")).thenReturn("senha_encriptada");
-        when(cadastrarUsuarioUseCase.run(any())).thenReturn(usuarioCriado);
+                List<Endereco> enderecos = new ArrayList<>();
+                enderecos.add(Endereco.builder()
+                                .logradouro("Rua A")
+                                .numero("123")
+                                .complemento(null)
+                                .bairro("Centro")
+                                .pontoReferencia(null)
+                                .cep("12345-678")
+                                .municipio("São Paulo")
+                                .uf("SP")
+                                .principal(true)
+                                .build());
 
-        // Act
-        UsuarioRespostaDTO resultado = usuarioController.criar(payload);
+                Usuario usuarioCriado = Usuario.builder()
+                                .nome("João Silva")
+                                .email("joao@email.com")
+                                .senha("senha123")
+                                .tipoUsuario(tipoUsuarioValido)
+                                .enderecos(enderecos)
+                                .build();
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("João Silva", resultado.getNome());
-        assertEquals("joao@email.com", resultado.getEmail());
-        verify(cadastrarUsuarioUseCase, times(1)).run(any());
-    }
+                when(passwordEncoder.encode("senha123")).thenReturn("senha_encriptada");
+                when(cadastrarUsuarioUseCase.run(any())).thenReturn(usuarioCriado);
 
-    @Test
-    @DisplayName("Deve buscar usuário por email com sucesso")
-    void testBuscarUsuarioPorEmailComSucesso() {
-        // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(Endereco.builder()
-                .logradouro("Rua A")
-                .numero("123")
-                .complemento(null)
-                .bairro("Centro")
-                .pontoReferencia(null)
-                .cep("12345-678")
-                .municipio("São Paulo")
-                .uf("SP")
-                .principal(true)
-                .build());
+                // Act
+                UsuarioRespostaDTO resultado = usuarioController.criar(payload);
 
-        Usuario usuario = Usuario.builder()
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-                .enderecos(enderecos)
-                .build();
+                // Assert
+                assertNotNull(resultado);
+                assertEquals("João Silva", resultado.getNome());
+                assertEquals("joao@email.com", resultado.getEmail());
+                verify(cadastrarUsuarioUseCase, times(1)).run(any());
+        }
 
-        when(obterUsuarioPorEmailUseCase.run("joao@email.com")).thenReturn(Optional.of(usuario));
+        @Test
+        @DisplayName("Deve buscar usuário por email com sucesso")
+        void testBuscarUsuarioPorEmailComSucesso() {
+                // Arrange
+                List<Endereco> enderecos = new ArrayList<>();
+                enderecos.add(Endereco.builder()
+                                .logradouro("Rua A")
+                                .numero("123")
+                                .complemento(null)
+                                .bairro("Centro")
+                                .pontoReferencia(null)
+                                .cep("12345-678")
+                                .municipio("São Paulo")
+                                .uf("SP")
+                                .principal(true)
+                                .build());
 
-        // Act
-        UsuarioRespostaDTO resultado = usuarioController.buscar("joao@email.com");
+                Usuario usuario = Usuario.builder()
+                                .nome("João Silva")
+                                .email("joao@email.com")
+                                .senha("senha123")
+                                .tipoUsuario(tipoUsuarioValido)
+                                .enderecos(enderecos)
+                                .build();
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("João Silva", resultado.getNome());
-        assertEquals("joao@email.com", resultado.getEmail());
-        verify(obterUsuarioPorEmailUseCase, times(1)).run("joao@email.com");
-    }
+                when(obterUsuarioPorEmailUseCase.run("joao@email.com")).thenReturn(Optional.of(usuario));
 
-    @Test
-    @DisplayName("Deve retornar nulo quando usuário não existe")
-    void testBuscarUsuarioNaoEncontrado() {
-        // Arrange
-        when(obterUsuarioPorEmailUseCase.run("inexistente@email.com")).thenReturn(Optional.empty());
+                // Act
+                UsuarioRespostaDTO resultado = usuarioController.buscar("joao@email.com");
 
-        // Act
-        UsuarioRespostaDTO resultado = usuarioController.buscar("inexistente@email.com");
+                // Assert
+                assertNotNull(resultado);
+                assertEquals("João Silva", resultado.getNome());
+                assertEquals("joao@email.com", resultado.getEmail());
+                verify(obterUsuarioPorEmailUseCase, times(1)).run("joao@email.com");
+        }
 
-        // Assert
-        assertNull(resultado);
-        verify(obterUsuarioPorEmailUseCase, times(1)).run("inexistente@email.com");
-    }
+        @Test
+        @DisplayName("Deve retornar nulo quando usuário não existe")
+        void testBuscarUsuarioNaoEncontrado() {
+                // Arrange
+                when(obterUsuarioPorEmailUseCase.run("inexistente@email.com")).thenReturn(Optional.empty());
 
-    @Test
-    @DisplayName("Deve atualizar usuário com sucesso")
-    void testAtualizarUsuarioComSucesso() {
-        // Arrange
-        AtualizaUsuarioPayLoad payload = new AtualizaUsuarioPayLoad();
-        payload.setNome("João Silva Atualizado");
-        payload.setEmail("joao.atualizado@email.com");
+                // Act
+                UsuarioRespostaDTO resultado = usuarioController.buscar("inexistente@email.com");
 
-        EnderecoPayLoad endereco = new EnderecoPayLoad();
-        endereco.setLogradouro("Rua B");
-        endereco.setNumero("456");
-        endereco.setBairro("Zona Sul");
-        endereco.setCep("98765-432");
-        endereco.setMunicipio("São Paulo");
-        endereco.setUf("SP");
-        endereco.setPrincipal(true);
+                // Assert
+                assertNull(resultado);
+                verify(obterUsuarioPorEmailUseCase, times(1)).run("inexistente@email.com");
+        }
 
-        payload.setEnderecos(List.of(endereco));
+        @Test
+        @DisplayName("Deve atualizar usuário com sucesso")
+        void testAtualizarUsuarioComSucesso() {
+                // Arrange
+                AtualizaUsuarioPayLoad payload = new AtualizaUsuarioPayLoad();
+                payload.setNome("João Silva Atualizado");
+                payload.setEmail("joao.atualizado@email.com");
 
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(Endereco.builder()
-                .logradouro("Rua B")
-                .numero("456")
-                .complemento(null)
-                .bairro("Zona Sul")
-                .pontoReferencia(null)
-                .cep("98765-432")
-                .municipio("São Paulo")
-                .uf("SP")
-                .principal(true)
-                .build());
+                EnderecoPayLoad endereco = new EnderecoPayLoad();
+                endereco.setLogradouro("Rua B");
+                endereco.setNumero("456");
+                endereco.setBairro("Zona Sul");
+                endereco.setCep("98765-432");
+                endereco.setMunicipio("São Paulo");
+                endereco.setUf("SP");
+                endereco.setPrincipal(true);
 
-        Usuario usuarioAtualizado = Usuario.builder()
-                .nome("João Silva Atualizado")
-                .email("joao.atualizado@email.com")
-                .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-                .enderecos(enderecos)
-                .build();
+                payload.setEnderecos(List.of(endereco));
 
-        when(atualizarUsuarioUseCase.run(any())).thenReturn(usuarioAtualizado);
+                List<Endereco> enderecos = new ArrayList<>();
+                enderecos.add(Endereco.builder()
+                                .logradouro("Rua B")
+                                .numero("456")
+                                .complemento(null)
+                                .bairro("Zona Sul")
+                                .pontoReferencia(null)
+                                .cep("98765-432")
+                                .municipio("São Paulo")
+                                .uf("SP")
+                                .principal(true)
+                                .build());
 
-        // Act
-        UsuarioRespostaDTO resultado = usuarioController.atualizar(payload);
+                Usuario usuarioAtualizado = Usuario.builder()
+                                .nome("João Silva Atualizado")
+                                .email("joao.atualizado@email.com")
+                                .senha("senha123")
+                                .tipoUsuario(tipoUsuarioValido)
+                                .enderecos(enderecos)
+                                .build();
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("João Silva Atualizado", resultado.getNome());
-        assertEquals("joao.atualizado@email.com", resultado.getEmail());
-        verify(atualizarUsuarioUseCase, times(1)).run(any());
-    }
+                when(atualizarUsuarioUseCase.run(any())).thenReturn(usuarioAtualizado);
 
-    @Test
-    @DisplayName("Deve atualizar senha com sucesso")
-    void testAtualizarSenhaComSucesso() {
-        // Arrange
-        com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad payload = 
-            new com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad();
-        payload.setEmail("joao@email.com");
-        payload.setSenha("novaSenha123");
+                // Act
+                UsuarioRespostaDTO resultado = usuarioController.atualizar(payload);
 
-        List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuarioAtualizado = Usuario.builder()
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("novaSenha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-                .enderecos(enderecos)
-                .build();
+                // Assert
+                assertNotNull(resultado);
+                assertEquals("João Silva Atualizado", resultado.getNome());
+                assertEquals("joao.atualizado@email.com", resultado.getEmail());
+                verify(atualizarUsuarioUseCase, times(1)).run(any());
+        }
 
-        when(passwordEncoder.encode("novaSenha123")).thenReturn("novaSenha_encriptada");
-        when(atualizarSenhaUsuarioUseCase.run(any())).thenReturn(usuarioAtualizado);
+        @Test
+        @DisplayName("Deve atualizar senha com sucesso")
+        void testAtualizarSenhaComSucesso() {
+                // Arrange
+                com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad payload = new com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad();
+                payload.setEmail("joao@email.com");
+                payload.setSenha("novaSenha123");
 
-        // Act
-        UsuarioRespostaDTO resultado = usuarioController.atualizarSenha(payload);
+                List<Endereco> enderecos = new ArrayList<>();
+                Usuario usuarioAtualizado = Usuario.builder()
+                                .nome("João Silva")
+                                .email("joao@email.com")
+                                .senha("novaSenha123")
+                                .tipoUsuario(tipoUsuarioValido)
+                                .enderecos(enderecos)
+                                .build();
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("joao@email.com", resultado.getEmail());
-        verify(atualizarSenhaUsuarioUseCase, times(1)).run(any());
-    }
+                when(passwordEncoder.encode("novaSenha123")).thenReturn("novaSenha_encriptada");
+                when(atualizarSenhaUsuarioUseCase.run(any())).thenReturn(usuarioAtualizado);
 
-    @Test
-    @DisplayName("Deve ativar usuário com sucesso")
-    void testAtivarUsuarioComSucesso() {
-        // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuarioAtivado = Usuario.builder()
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-                .enderecos(enderecos)
-                .build();
+                // Act
+                UsuarioRespostaDTO resultado = usuarioController.atualizarSenha(payload);
 
-        when(ativarInativarUsuarioUseCase.run("joao@email.com", true)).thenReturn(usuarioAtivado);
+                // Assert
+                assertNotNull(resultado);
+                assertEquals("joao@email.com", resultado.getEmail());
+                verify(atualizarSenhaUsuarioUseCase, times(1)).run(any());
+        }
 
-        // Act
-        UsuarioRespostaDTO resultado = usuarioController.ativar("joao@email.com");
+        @Test
+        @DisplayName("Deve ativar usuário com sucesso")
+        void testAtivarUsuarioComSucesso() {
+                // Arrange
+                List<Endereco> enderecos = new ArrayList<>();
+                Usuario usuarioAtivado = Usuario.builder()
+                                .nome("João Silva")
+                                .email("joao@email.com")
+                                .senha("senha123")
+                                .tipoUsuario(tipoUsuarioValido)
+                                .enderecos(enderecos)
+                                .build();
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("joao@email.com", resultado.getEmail());
-        verify(ativarInativarUsuarioUseCase, times(1)).run("joao@email.com", true);
-    }
+                when(ativarInativarUsuarioUseCase.run("joao@email.com", true)).thenReturn(usuarioAtivado);
 
-    @Test
-    @DisplayName("Deve desativar usuário com sucesso")
-    void testDesativarUsuarioComSucesso() {
-        // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuarioDesativado = Usuario.builder()
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-                .enderecos(enderecos)
-                .build();
+                // Act
+                UsuarioRespostaDTO resultado = usuarioController.ativar("joao@email.com");
 
-        when(ativarInativarUsuarioUseCase.run("joao@email.com", false)).thenReturn(usuarioDesativado);
+                // Assert
+                assertNotNull(resultado);
+                assertEquals("joao@email.com", resultado.getEmail());
+                verify(ativarInativarUsuarioUseCase, times(1)).run("joao@email.com", true);
+        }
 
-        // Act
-        UsuarioRespostaDTO resultado = usuarioController.desativar("joao@email.com");
+        @Test
+        @DisplayName("Deve desativar usuário com sucesso")
+        void testDesativarUsuarioComSucesso() {
+                // Arrange
+                List<Endereco> enderecos = new ArrayList<>();
+                Usuario usuarioDesativado = Usuario.builder()
+                                .nome("João Silva")
+                                .email("joao@email.com")
+                                .senha("senha123")
+                                .tipoUsuario(tipoUsuarioValido)
+                                .enderecos(enderecos)
+                                .build();
 
-        // Assert
-        assertNotNull(resultado);
-        assertEquals("joao@email.com", resultado.getEmail());
-        verify(ativarInativarUsuarioUseCase, times(1)).run("joao@email.com", false);
-    }
+                when(ativarInativarUsuarioUseCase.run("joao@email.com", false)).thenReturn(usuarioDesativado);
 
-    @Test
-    @DisplayName("Deve listar usuários paginados com sucesso")
-    void testListarUsuariosPaginadosComSucesso() {
-        // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuario = Usuario.builder()
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
-                .enderecos(enderecos)
-                .build();
+                // Act
+                UsuarioRespostaDTO resultado = usuarioController.desativar("joao@email.com");
 
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                List.of(usuario),
-                0,
-                10,
-                1);
+                // Assert
+                assertNotNull(resultado);
+                assertEquals("joao@email.com", resultado.getEmail());
+                verify(ativarInativarUsuarioUseCase, times(1)).run("joao@email.com", false);
+        }
 
-        com.postech.adjt.api.payload.PaginacaoPayLoad paginacao = new com.postech.adjt.api.payload.PaginacaoPayLoad();
-        paginacao.setPage(0);
-        paginacao.setSize(10);
+        @Test
+        @DisplayName("Deve listar usuários paginados com sucesso")
+        void testListarUsuariosPaginadosComSucesso() {
+                // Arrange
+                List<Endereco> enderecos = new ArrayList<>();
+                Usuario usuario = Usuario.builder()
+                                .nome("João Silva")
+                                .email("joao@email.com")
+                                .senha("senha123")
+                                .tipoUsuario(tipoUsuarioValido)
+                                .enderecos(enderecos)
+                                .build();
 
-        when(paginadoUsuarioUseCase.run(0, 10, null, null)).thenReturn(resultado);
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                List.of(usuario),
+                                0,
+                                10,
+                                1);
 
-        // Act
-        ResultadoPaginacaoDTO<UsuarioRespostaDTO> resultadoPaginado = usuarioController.paginado(paginacao);
+                com.postech.adjt.api.payload.PaginacaoPayLoad paginacao = new com.postech.adjt.api.payload.PaginacaoPayLoad();
+                paginacao.setPage(0);
+                paginacao.setSize(10);
 
-        // Assert
-        assertNotNull(resultadoPaginado);
-        assertEquals(1, resultadoPaginado.getContent().size());
-        verify(paginadoUsuarioUseCase, times(1)).run(0, 10, null, null);
-    }
+                when(paginadoUsuarioUseCase.run(0, 10, null, null)).thenReturn(resultado);
+
+                // Act
+                ResultadoPaginacaoDTO<UsuarioRespostaDTO> resultadoPaginado = usuarioController.paginado(paginacao);
+
+                // Assert
+                assertNotNull(resultadoPaginado);
+                assertEquals(1, resultadoPaginado.getContent().size());
+                verify(paginadoUsuarioUseCase, times(1)).run(0, 10, null, null);
+        }
 }
