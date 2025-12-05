@@ -34,12 +34,13 @@ public class UsuarioMapper {
         if (usuario == null)
             return null;
 
+
         UsuarioEntidade entidade = new UsuarioEntidade();
         entidade.setId(usuario.getId());
         entidade.setNome(usuario.getNome());
         entidade.setEmail(usuario.getEmail());
         entidade.setSenha(usuario.getSenha());
-        entidade.setTipoUsuario(usuario.getTipoUsuario());
+        entidade.setTipoUsuario(TipoUsuarioMapper.toEntity(usuario.getTipoUsuario()));
         entidade.setAtivo(usuario.getAtivo());
         entidade.setDataCriacao(usuario.getDataCriacao());
         entidade.setDataAlteracao(usuario.getDataAlteracao());
@@ -86,7 +87,7 @@ public class UsuarioMapper {
                 .nome(entidade.getNome())
                 .email(entidade.getEmail())
                 .senha(entidade.getSenha())
-                .tipoUsuario(entidade.getTipoUsuario())
+                .tipoUsuario(TipoUsuarioMapper.toDomain(entidade.getTipoUsuario()))
                 .enderecos(entidade.getEnderecos() != null
                         ? entidade.getEnderecos().stream()
                                 .map(UsuarioMapper::toDomainEndereco)

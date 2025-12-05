@@ -1,10 +1,11 @@
 package com.postech.adjt.data.mapper;
 
 import com.postech.adjt.data.entidade.EnderecoEntidade;
+import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.data.entidade.UsuarioEntidade;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,10 @@ class UsuarioMapperTest {
 
     private List<Endereco> enderecos;
     private Endereco endereco;
+    
+    private TipoUsuario tipoUsuarioValido;
+    private TipoUsuarioEntidade tipoUsuarioValidoEntidade;
+
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAlteracao;
 
@@ -41,6 +46,15 @@ class UsuarioMapperTest {
             .principal(false)
             .build();
         enderecos.add(endereco);
+
+        tipoUsuarioValido = TipoUsuario.builder()
+                .id(1)
+                .descricao("CLIENTE")
+                .build();
+
+        tipoUsuarioValidoEntidade = new TipoUsuarioEntidade();
+        tipoUsuarioValidoEntidade.setId(1);
+        tipoUsuarioValidoEntidade.setDescricao("CLIENTE");
     }
 
     @Test
@@ -51,7 +65,7 @@ class UsuarioMapperTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .id(1)
             .dataCriacao(dataCriacao)
@@ -67,7 +81,9 @@ class UsuarioMapperTest {
         assertEquals("João Silva", entidade.getNome());
         assertEquals("joao@email.com", entidade.getEmail());
         assertEquals("senha123", entidade.getSenha());
-        assertEquals(TipoUsuarioEnum.CLIENTE, entidade.getTipoUsuario());
+        assertNotNull(entidade.getTipoUsuario());
+        assertEquals(tipoUsuarioValidoEntidade.getId(), entidade.getTipoUsuario().getId());
+        assertEquals(tipoUsuarioValidoEntidade.getDescricao(), entidade.getTipoUsuario().getDescricao());
         assertEquals(dataCriacao, entidade.getDataCriacao());
         assertEquals(dataAlteracao, entidade.getDataAlteracao());
     }
@@ -90,7 +106,7 @@ class UsuarioMapperTest {
             .nome("Maria Santos")
             .email("maria@email.com")
             .senha("senha456")
-            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .id(2)
             .build();
@@ -112,6 +128,7 @@ class UsuarioMapperTest {
     void testMapearMultiplosEnderecosParaEntidade() {
         // Arrange
         List<Endereco> multiploEnderecos = new ArrayList<>();
+
         Endereco endereco1 = Endereco.builder()
             .logradouro("Rua A")
             .numero("123")
@@ -123,6 +140,7 @@ class UsuarioMapperTest {
             .uf("SP")
             .principal(true)
             .build();
+
         Endereco endereco2 = Endereco.builder()
             .logradouro("Rua B")
             .numero("456")
@@ -134,6 +152,7 @@ class UsuarioMapperTest {
             .uf("RJ")
             .principal(false)
             .build();
+
         multiploEnderecos.add(endereco1);
         multiploEnderecos.add(endereco2);
 
@@ -141,7 +160,7 @@ class UsuarioMapperTest {
             .nome("Pedro Costa")
             .email("pedro@email.com")
             .senha("senha789")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(multiploEnderecos)
             .id(3)
             .build();
@@ -164,7 +183,7 @@ class UsuarioMapperTest {
             .nome("Ana Silva")
             .email("ana@email.com")
             .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(new ArrayList<>())
             .id(4)
             .build();
@@ -186,7 +205,7 @@ class UsuarioMapperTest {
             .nome("José Silva")
             .email("jose@email.com")
             .senha("senha456")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .id(5)
             .build();
@@ -210,7 +229,7 @@ class UsuarioMapperTest {
         entidade.setNome("João Silva");
         entidade.setEmail("joao@email.com");
         entidade.setSenha("senha123");
-        entidade.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+        entidade.setTipoUsuario(tipoUsuarioValidoEntidade);
         entidade.setAtivo(true);
         entidade.setDataCriacao(dataCriacao);
         entidade.setDataAlteracao(dataAlteracao);
@@ -224,7 +243,9 @@ class UsuarioMapperTest {
         assertEquals("João Silva", usuario.getNome());
         assertEquals("joao@email.com", usuario.getEmail());
         assertEquals("senha123", usuario.getSenha());
-        assertEquals(TipoUsuarioEnum.CLIENTE, usuario.getTipoUsuario());
+        assertNotNull(usuario.getTipoUsuario());
+        assertEquals(tipoUsuarioValidoEntidade.getId(), usuario.getTipoUsuario().getId());
+        assertEquals(tipoUsuarioValidoEntidade.getDescricao(), usuario.getTipoUsuario().getDescricao());
         assertTrue(usuario.getAtivo());
         assertEquals(dataCriacao, usuario.getDataCriacao());
         assertEquals(dataAlteracao, usuario.getDataAlteracao());
@@ -249,7 +270,7 @@ class UsuarioMapperTest {
         entidade.setNome("Maria Santos");
         entidade.setEmail("maria@email.com");
         entidade.setSenha("senha456");
-        entidade.setTipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE);
+        entidade.setTipoUsuario(tipoUsuarioValidoEntidade);
         entidade.setAtivo(true);
 
         EnderecoEntidade enderecoEntidade = new EnderecoEntidade();
@@ -286,7 +307,7 @@ class UsuarioMapperTest {
         entidade.setNome("Pedro Costa");
         entidade.setEmail("pedro@email.com");
         entidade.setSenha("senha789");
-        entidade.setTipoUsuario(TipoUsuarioEnum.FORNECEDOR);
+        entidade.setTipoUsuario(tipoUsuarioValidoEntidade);
         entidade.setAtivo(true);
 
         EnderecoEntidade endereco1 = new EnderecoEntidade();
@@ -325,7 +346,7 @@ class UsuarioMapperTest {
         entidade.setNome("Ana Silva");
         entidade.setEmail("ana@email.com");
         entidade.setSenha("senha123");
-        entidade.setTipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO);
+        entidade.setTipoUsuario(tipoUsuarioValidoEntidade);
         entidade.setAtivo(true);
         entidade.setEnderecos(null);
 
@@ -346,7 +367,7 @@ class UsuarioMapperTest {
         entidade.setNome("José Silva");
         entidade.setEmail("jose@email.com");
         entidade.setSenha("senha456");
-        entidade.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+        entidade.setTipoUsuario(tipoUsuarioValidoEntidade);
         entidade.setAtivo(true);
         entidade.setEnderecos(new ArrayList<>());
 
@@ -367,7 +388,7 @@ class UsuarioMapperTest {
             .nome("Lucas Silva")
             .email("lucas@email.com")
             .senha("senha789")
-            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .id(10)
             .dataCriacao(dataCriacao)
@@ -383,7 +404,9 @@ class UsuarioMapperTest {
         assertEquals(usuarioOriginal.getNome(), usuarioMapeado.getNome());
         assertEquals(usuarioOriginal.getEmail(), usuarioMapeado.getEmail());
         assertEquals(usuarioOriginal.getSenha(), usuarioMapeado.getSenha());
-        assertEquals(usuarioOriginal.getTipoUsuario(), usuarioMapeado.getTipoUsuario());
+        assertNotNull(usuarioMapeado.getTipoUsuario());
+        assertEquals(usuarioOriginal.getTipoUsuario().getId(), usuarioMapeado.getTipoUsuario().getId());
+        assertEquals(usuarioOriginal.getTipoUsuario().getDescricao(), usuarioMapeado.getTipoUsuario().getDescricao());
         assertEquals(usuarioOriginal.getDataCriacao(), usuarioMapeado.getDataCriacao());
         assertEquals(usuarioOriginal.getDataAlteracao(), usuarioMapeado.getDataAlteracao());
     }
@@ -396,7 +419,7 @@ class UsuarioMapperTest {
             .nome("Restaurante Silva")
             .email("restaurante@email.com")
             .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .id(6)
             .build();
@@ -405,7 +428,7 @@ class UsuarioMapperTest {
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
 
         // Assert
-        assertEquals(TipoUsuarioEnum.DONO_RESTAURANTE, entidade.getTipoUsuario());
+        assertEquals(tipoUsuarioValidoEntidade.getId(), entidade.getTipoUsuario().getId());
     }
 
     @Test
@@ -416,7 +439,7 @@ class UsuarioMapperTest {
             .nome("João Silva")
             .email("joao@email.com")
             .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .id(7)
             .ativo(false)
@@ -437,7 +460,7 @@ class UsuarioMapperTest {
             .nome("Teste Silva")
             .email("teste@email.com")
             .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(enderecos)
             .id(8)
             .build();
@@ -460,7 +483,7 @@ class UsuarioMapperTest {
             .nome("Sem Endereço")
             .email("semendereco@email.com")
             .senha("senha123")
-            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .tipoUsuario(tipoUsuarioValido)
             .enderecos(new ArrayList<>())
             .id(9)
             .build();

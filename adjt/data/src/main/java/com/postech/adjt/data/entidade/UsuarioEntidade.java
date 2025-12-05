@@ -5,17 +5,19 @@ import java.util.List;
 
 import org.hibernate.envers.Audited;
 
-import com.postech.adjt.data.converter.TipoUsuarioEnumConverter;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Audited
 @Table(schema = "public", name = "usuario")
@@ -30,52 +32,13 @@ public class UsuarioEntidade extends BaseEntidade {
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
 
-    @Column(name = "tipo_usuario", nullable = false, length = 1)
-    @Convert(converter = TipoUsuarioEnumConverter.class)
-    private TipoUsuarioEnum tipoUsuario;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tipo_usuario_id", nullable = false)
+    private TipoUsuarioEntidade tipoUsuario;
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnderecoEntidade> enderecos = new ArrayList<>();
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public void setTipoUsuario(TipoUsuarioEnum tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
-
-    public TipoUsuarioEnum getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public List<EnderecoEntidade> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<EnderecoEntidade> enderecos) {
-        this.enderecos = enderecos;
-    }
 
     public void adicionarEndereco(EnderecoEntidade endereco) {
         endereco.setUsuario(this);

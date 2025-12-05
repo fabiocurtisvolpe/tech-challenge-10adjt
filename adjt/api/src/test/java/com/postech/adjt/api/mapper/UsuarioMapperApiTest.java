@@ -108,7 +108,7 @@ class UsuarioMapperApiTest {
         payload.setNome("Maria Santos");
         payload.setEmail("maria@email.com");
         payload.setSenha("senhaOriginal");
-        payload.setTipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE);
+        payload.setTipoUsuario(tipoUsuarioValidoPayLoad);
 
         EnderecoPayLoad endereco1 = new EnderecoPayLoad();
         endereco1.setLogradouro("Rua A");
@@ -483,7 +483,7 @@ class UsuarioMapperApiTest {
         assertEquals("Juliana Costa", dto.nome());
         assertEquals("juliana@email.com", dto.email());
         assertEquals(senhaEncriptada, dto.senha());
-        assertEquals(tipoUsuarioValidoPayLoad.getId(), dto.tipoUsuario());
+        assertEquals(tipoUsuarioValidoPayLoad.getId(), dto.tipoUsuario().getId());
         assertEquals(1, dto.enderecos().size());
     }
 

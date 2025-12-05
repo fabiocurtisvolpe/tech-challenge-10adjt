@@ -18,10 +18,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import com.postech.adjt.data.entidade.UsuarioEntidade;
+import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
+import com.postech.adjt.domain.entidade.TipoUsuario;
 
 /**
  * Testes unitários para UsuarioRepositoryAdapter
@@ -40,10 +41,22 @@ class UsuarioRepositoryAdapterTest {
     private SpringDataUsuarioRepository springDataUsuarioRepository;
 
     private UsuarioRepositoryAdapter usuarioRepositoryAdapter;
+    
+    private TipoUsuario tipoUsuario;
+    private TipoUsuarioEntidade tipoUsuarioEntidade;
 
     @BeforeEach
     void setUp() {
         usuarioRepositoryAdapter = new UsuarioRepositoryAdapter(springDataUsuarioRepository);
+        
+        tipoUsuario = TipoUsuario.builder()
+                .id(1)
+                .descricao("CLIENTE")
+                .build();
+                
+        tipoUsuarioEntidade = new TipoUsuarioEntidade();
+        tipoUsuarioEntidade.setId(1);
+        tipoUsuarioEntidade.setDescricao("CLIENTE");
     }
 
     @Test
@@ -67,7 +80,7 @@ class UsuarioRepositoryAdapterTest {
                 .nome("João Silva")
                 .email("joao@email.com")
                 .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .tipoUsuario(tipoUsuario)
                 .enderecos(enderecos)
                 .build();
 
@@ -76,7 +89,7 @@ class UsuarioRepositoryAdapterTest {
         entidade.setNome("João Silva");
         entidade.setEmail("joao@email.com");
         entidade.setSenha("senha123");
-        entidade.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+        entidade.setTipoUsuario(tipoUsuarioEntidade);
         entidade.setAtivo(true);
 
         when(springDataUsuarioRepository.save(any(UsuarioEntidade.class))).thenReturn(entidade);
@@ -99,7 +112,7 @@ class UsuarioRepositoryAdapterTest {
         entidade.setId(1);
         entidade.setNome("João Silva");
         entidade.setEmail("joao@email.com");
-        entidade.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+        entidade.setTipoUsuario(tipoUsuarioEntidade);
         entidade.setAtivo(true);
 
         when(springDataUsuarioRepository.findById(1)).thenReturn(Optional.of(entidade));
@@ -135,7 +148,7 @@ class UsuarioRepositoryAdapterTest {
         entidade.setId(1);
         entidade.setNome("João Silva");
         entidade.setEmail("joao@email.com");
-        entidade.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+        entidade.setTipoUsuario(tipoUsuarioEntidade);
         entidade.setAtivo(true);
 
         when(springDataUsuarioRepository.findByEmail("joao@email.com")).thenReturn(Optional.of(entidade));
@@ -185,7 +198,7 @@ class UsuarioRepositoryAdapterTest {
                 .nome("João Silva Atualizado")
                 .email("joao.atualizado@email.com")
                 .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .tipoUsuario(tipoUsuario)
                 .enderecos(enderecos)
                 .ativo(true)
                 .build();
@@ -194,7 +207,7 @@ class UsuarioRepositoryAdapterTest {
         entidade.setId(1);
         entidade.setNome("João Silva Atualizado");
         entidade.setEmail("joao.atualizado@email.com");
-        entidade.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+        entidade.setTipoUsuario(tipoUsuarioEntidade);
         entidade.setAtivo(true);
 
         when(springDataUsuarioRepository.save(any(UsuarioEntidade.class))).thenReturn(entidade);
@@ -217,7 +230,7 @@ class UsuarioRepositoryAdapterTest {
         entidade.setId(1);
         entidade.setNome("João Silva");
         entidade.setEmail("joao@email.com");
-        entidade.setTipoUsuario(TipoUsuarioEnum.CLIENTE);
+        entidade.setTipoUsuario(tipoUsuarioEntidade);
         entidade.setAtivo(true);
 
         Page<UsuarioEntidade> page = new PageImpl<>(
@@ -253,7 +266,7 @@ class UsuarioRepositoryAdapterTest {
                 .nome("João Silva")
                 .email("joao@email.com")
                 .senha("senha123")
-                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .tipoUsuario(tipoUsuario)
                 .enderecos(enderecos)
                 .ativo(false)
                 .build();
