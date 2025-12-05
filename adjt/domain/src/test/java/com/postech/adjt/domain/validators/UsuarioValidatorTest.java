@@ -1,243 +1,639 @@
 package com.postech.adjt.domain.validators;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.validators.UsuarioValidator; // Necessário para acesso aos métodos estáticos
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * Testes unitários para UsuarioValidator
- * 
- * Testa validações de regras de negócio para usuários
- * 
- * @author Fabio
- * @since 2025-12-03
- */
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @DisplayName("UsuarioValidator - Testes Unitários")
-@SuppressWarnings("unused")
 class UsuarioValidatorTest {
 
+    private List<Endereco> criarEnderecos() {
+        List<Endereco> enderecos = new ArrayList<>();
+        Endereco endereco = Endereco.builder()
+            .logradouro("Rua Teste")
+            .numero("123")
+            .complemento("Apto 101")
+            .bairro("Bairro Teste")
+            .pontoReferencia("Perto de algo")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build();
+        enderecos.add(endereco);
+        return enderecos;
+    }
+
+    private Usuario criarUsuarioValido() {
+        return Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+    }
+
+    // ===== TESTES: validarParaCriacao =====
+
     @Test
-    @DisplayName("Deve validar usuário com sucesso para criação quando dados são válidos")
+    @DisplayName("Deve validar usuario válido para criação com sucesso")
     void testValidarParaCriacaoComSucesso() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
+        Usuario usuario = criarUsuarioValido();
 
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
-
-        // Act & Assert - Não deve lançar exceção
+        // Act & Assert
         assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando email é inválido")
+    @DisplayName("Deve lançar exceção ao validar usuario nulo para criação")
+    void testValidarParaCriacaoComUsuarioNulo() {
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(null);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com nome nulo para criação")
+    void testValidarParaCriacaoComNomeNulo() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome(null)
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com nome vazio para criação")
+    void testValidarParaCriacaoComNomeVazio() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("  ")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com nome menor que 3 caracteres")
+    void testValidarParaCriacaoComNomeMuitoCurto() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Jo")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com nome exatamente 3 caracteres")
+    void testValidarParaCriacaoComNomeExatamente3Caracteres() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com email nulo para criação")
+    void testValidarParaCriacaoComEmailNulo() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email(null)
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com email vazio para criação")
+    void testValidarParaCriacaoComEmailVazio() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("  ")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com email inválido para criação")
     void testValidarParaCriacaoComEmailInvalido() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "emailinvalido",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@invalido")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaCriacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando senha tem menos de 6 caracteres")
-    void testValidarParaCriacaoComSenhaInvalida() {
+    @DisplayName("Deve lançar exceção ao validar usuario com senha nula para criação")
+    void testValidarParaCriacaoComSenhaNula() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha(null)
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaCriacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando nome tem menos de 3 caracteres")
-    void testValidarParaCriacaoComNomeInvalido() {
+    @DisplayName("Deve lançar exceção ao validar usuario com senha vazia para criação")
+    void testValidarParaCriacaoComSenhaVazia() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                "Jo",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaCriacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando tipo de usuário é inválido")
-    void testValidarParaCriacaoComTipoUsuarioInvalido() {
+    @DisplayName("Deve lançar exceção ao validar usuario com senha menor que 6 caracteres")
+    void testValidarParaCriacaoComSenhaMuitoCurta() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                null,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senha")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaCriacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
     }
 
     @Test
-    @DisplayName("Deve validar usuário para atualização com sucesso quando dados são válidos")
+    @DisplayName("Deve validar usuario com senha exatamente 6 caracteres")
+    void testValidarParaCriacaoComSenhaExatamente6Caracteres() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senha6")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com tipo nulo para criação")
+    void testValidarParaCriacaoComTipoNulo() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(null)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaCriacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com tipo CLIENTE para criação")
+    void testValidarParaCriacaoComTipoCliente() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com tipo DONO_RESTAURANTE para criação")
+    void testValidarParaCriacaoComTipoDonoRestaurante() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com tipo FORNECEDOR para criação")
+    void testValidarParaCriacaoComTipoFornecedor() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com tipo PRESTADOR_SERVICO para criação")
+    void testValidarParaCriacaoComTipoPrestadorServico() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    // ===== TESTES: validarParaAtualizacao =====
+
+    @Test
+    @DisplayName("Deve validar usuario válido para atualização com sucesso")
     void testValidarParaAtualizacaoComSucesso() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
 
-        Usuario usuario = new Usuario(
-                1,
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos,
-                true);
-
-        // Act & Assert - Não deve lançar exceção
+        // Act & Assert
         assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando ID é nulo na atualização")
+    @DisplayName("Deve lançar exceção ao validar usuario nulo para atualização")
+    void testValidarParaAtualizacaoComUsuarioNulo() {
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(null);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com ID nulo para atualização")
     void testValidarParaAtualizacaoComIdNulo() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                null,
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos,
-                true);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaAtualizacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando ID é menor ou igual a zero na atualização")
-    void testValidarParaAtualizacaoComIdInvalido() {
+    @DisplayName("Deve lançar exceção ao validar usuario com ID zero para atualização")
+    void testValidarParaAtualizacaoComIdZero() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                0,
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos,
-                true);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(0)
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaAtualizacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando email é nulo")
-    void testValidarParaCriacaoComEmailNulo() {
+    @DisplayName("Deve lançar exceção ao validar usuario com ID negativo para atualização")
+    void testValidarParaAtualizacaoComIdNegativo() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                "João Silva",
-                null,
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(-5)
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaCriacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando senha é nula")
-    void testValidarParaCriacaoComSenhaNula() {
+    @DisplayName("Deve validar usuario com ID válido para atualização")
+    void testValidarParaAtualizacaoComIdValido() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                null,
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(1)
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaCriacao(usuario));
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando nome é nulo")
-    void testValidarParaCriacaoComNomeNulo() {
+    @DisplayName("Deve lançar exceção ao validar usuario com nome nulo para atualização")
+    void testValidarParaAtualizacaoComNomeNulo() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuario = new Usuario(
-                null,
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+            .nome(null)
+            .email("maria@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> UsuarioValidator.validarParaCriacao(usuario));
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com nome vazio para atualização")
+    void testValidarParaAtualizacaoComNomeVazio() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("  ")
+            .email("maria@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com nome menor que 3 caracteres para atualização")
+    void testValidarParaAtualizacaoComNomeMuitoCurto() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Ma")
+            .email("maria@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com nome válido para atualização")
+    void testValidarParaAtualizacaoComNomeValido() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Maria Silva Oliveira")
+            .email("maria@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com email nulo para atualização")
+    void testValidarParaAtualizacaoComEmailNulo() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Maria Silva")
+            .email(null)
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com email vazio para atualização")
+    void testValidarParaAtualizacaoComEmailVazio() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Maria Silva")
+            .email("  ")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao validar usuario com email inválido para atualização")
+    void testValidarParaAtualizacaoComEmailInvalido() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Maria Silva")
+            .email("maria@invalido")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(5)
+            .build();
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            UsuarioValidator.validarParaAtualizacao(usuario);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com todos os parâmetros válidos para atualização")
+    void testValidarParaAtualizacaoComTodosParametrosValidos() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Pedro Oliveira Santos")
+            .email("pedro@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .enderecos(criarEnderecos())
+            .id(10)
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve validar email com domínio complexo")
+    void testValidarEmailComDominioComplexo() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("Ana Silva")
+            .email("ana.silva@empresa.com.br")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com nome contendo espaços")
+    void testValidarNomeComEspacos() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("   João Silva   ")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaCriacao(usuario));
+    }
+
+    @Test
+    @DisplayName("Deve validar usuario com ID máximo para atualização")
+    void testValidarParaAtualizacaoComIdMaximo() {
+        // Arrange
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(criarEnderecos())
+            .id(Integer.MAX_VALUE)
+            .build();
+
+        // Act & Assert
+        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
     }
 }

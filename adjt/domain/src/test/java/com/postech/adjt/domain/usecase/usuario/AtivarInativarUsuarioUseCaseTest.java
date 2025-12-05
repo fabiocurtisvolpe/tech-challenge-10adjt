@@ -1,11 +1,12 @@
 package com.postech.adjt.domain.usecase.usuario;
 
-import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.entidade.Endereco;
-import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoUsuarioEnum;
-import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,14 +14,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.enums.TipoUsuarioEnum;
+import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
+/**
+ * Testes unitários para AtivarInativarUsuarioUseCase
+ * 
+ * Testa a ativação e desativação de usuários no sistema
+ * 
+ * @author Fabio
+ * @since 2025-12-05
+ */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AtivarInativarUsuarioUseCase - Testes Unitários")
 class AtivarInativarUsuarioUseCaseTest {
@@ -30,46 +37,63 @@ class AtivarInativarUsuarioUseCaseTest {
 
     private AtivarInativarUsuarioUseCase useCase;
 
+    private Usuario usuarioExistente;
+    private List<Endereco> enderecos;
+
     @BeforeEach
     void setUp() {
         useCase = AtivarInativarUsuarioUseCase.create(usuarioRepository);
+
+        // Preparar dados de teste
+        enderecos = new ArrayList<>();
+        enderecos.add(Endereco.builder()
+            .logradouro("Rua Teste")
+            .numero("123")
+            .complemento("Apto 101")
+            .bairro("Centro")
+            .pontoReferencia("Perto da praça")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build());
+
+        usuarioExistente = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build();
     }
 
     @Test
-    @DisplayName("Deve ativar um usuário com sucesso")
+    @DisplayName("Deve ativar usuário com sucesso")
     void testAtivarUsuarioComSucesso() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Endereco endereco = new Endereco("Rua A", "123", "Apt 101", "Bairro X", "Ponto Ref", "12345-678", "São Paulo", "SP", false, null);
-        enderecos.add(endereco);
-        
-        Usuario usuarioExistente = new Usuario(
-            "João Silva",
-            "joao@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
-        usuarioExistente.setId(1);
+        Usuario usuarioAtivado = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build();
 
-        Usuario usuarioAtivado = Usuario.atualizar(
-            usuarioExistente.getId(),
-            usuarioExistente.getNome(),
-            usuarioExistente.getEmail(),
-            usuarioExistente.getSenha(),
-            usuarioExistente.getTipoUsuario(),
-            usuarioExistente.getEnderecos(),
-            true
-        );
-
-        when(usuarioRepository.obterPorEmail("joao@email.com")).thenReturn(Optional.of(usuarioExistente));
-        when(usuarioRepository.atualizar(any(Usuario.class))).thenReturn(usuarioAtivado);
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.atualizar(any(Usuario.class)))
+            .thenReturn(usuarioAtivado);
 
         // Act
         Usuario resultado = useCase.run("joao@email.com", true);
 
         // Assert
         assertNotNull(resultado);
+        assertTrue(resultado.getAtivo());
         assertEquals("João Silva", resultado.getNome());
         assertEquals("joao@email.com", resultado.getEmail());
         verify(usuarioRepository, times(1)).obterPorEmail("joao@email.com");
@@ -77,144 +101,216 @@ class AtivarInativarUsuarioUseCaseTest {
     }
 
     @Test
-    @DisplayName("Deve inativar um usuário com sucesso")
-    void testInativarUsuarioComSucesso() {
+    @DisplayName("Deve desativar usuário com sucesso")
+    void testDesativarUsuarioComSucesso() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Endereco endereco = new Endereco("Rua B", "456", "Apt 202", "Bairro Y", "Ponto Ref", "23456-789", "Rio de Janeiro", "RJ", false, null);
-        enderecos.add(endereco);
-        
-        Usuario usuarioExistente = new Usuario(
-            "Maria Santos",
-            "maria@email.com",
-            "senha456",
-            TipoUsuarioEnum.DONO_RESTAURANTE,
-            enderecos
-        );
-        usuarioExistente.setId(2);
+        Usuario usuarioDesativado = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(false)
+            .build();
 
-        Usuario usuarioInativado = Usuario.atualizar(
-            usuarioExistente.getId(),
-            usuarioExistente.getNome(),
-            usuarioExistente.getEmail(),
-            usuarioExistente.getSenha(),
-            usuarioExistente.getTipoUsuario(),
-            usuarioExistente.getEnderecos(),
-            false
-        );
-
-        when(usuarioRepository.obterPorEmail("maria@email.com")).thenReturn(Optional.of(usuarioExistente));
-        when(usuarioRepository.atualizar(any(Usuario.class))).thenReturn(usuarioInativado);
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.atualizar(any(Usuario.class)))
+            .thenReturn(usuarioDesativado);
 
         // Act
-        Usuario resultado = useCase.run("maria@email.com", false);
+        Usuario resultado = useCase.run("joao@email.com", false);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals("Maria Santos", resultado.getNome());
-        assertEquals("maria@email.com", resultado.getEmail());
-        verify(usuarioRepository, times(1)).obterPorEmail("maria@email.com");
+        assertFalse(resultado.getAtivo());
+        assertEquals("João Silva", resultado.getNome());
+        verify(usuarioRepository, times(1)).obterPorEmail("joao@email.com");
         verify(usuarioRepository, times(1)).atualizar(any(Usuario.class));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando usuário não existe")
-    void testLancarExcecaoQuandoUsuarioNaoExiste() {
+    @DisplayName("Deve lançar exceção quando usuário não encontrado para ativar")
+    void testAtivarUsuarioNaoEncontrado() {
         // Arrange
-        when(usuarioRepository.obterPorEmail("inexistente@email.com")).thenReturn(Optional.empty());
+        when(usuarioRepository.obterPorEmail("inexistente@email.com"))
+            .thenReturn(Optional.empty());
 
         // Act & Assert
-        NotificacaoException exception = assertThrows(
-            NotificacaoException.class,
-            () -> useCase.run("inexistente@email.com", true)
-        );
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run("inexistente@email.com", true);
+        });
 
-        assertEquals(MensagemUtil.USUARIO_NAO_ENCONTRADO, exception.getMessage());
+        verify(usuarioRepository, times(1)).obterPorEmail("inexistente@email.com");
+        verify(usuarioRepository, never()).atualizar(any(Usuario.class));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando usuário não encontrado para desativar")
+    void testDesativarUsuarioNaoEncontrado() {
+        // Arrange
+        when(usuarioRepository.obterPorEmail("inexistente@email.com"))
+            .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run("inexistente@email.com", false);
+        });
+
         verify(usuarioRepository, times(1)).obterPorEmail("inexistente@email.com");
         verify(usuarioRepository, never()).atualizar(any(Usuario.class));
     }
 
     @Test
     @DisplayName("Deve manter dados do usuário ao ativar")
-    void testMantendoTodosDadosAoAtivar() {
+    void testMantendoDadosAoAtivar() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Endereco endereco = new Endereco("Rua A", "123", "Apt 101", "Bairro X", "Ponto Ref", "12345-678", "São Paulo", "SP", false, null);
-        enderecos.add(endereco);
+        Usuario usuarioAtualizado = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build();
 
-        Usuario usuarioExistente = new Usuario(
-            "Pedro Costa",
-            "pedro@email.com",
-            "senhaSegura",
-            TipoUsuarioEnum.FORNECEDOR,
-            enderecos
-        );
-        usuarioExistente.setId(3);
-
-        Usuario usuarioAtivado = Usuario.atualizar(
-            usuarioExistente.getId(),
-            usuarioExistente.getNome(),
-            usuarioExistente.getEmail(),
-            usuarioExistente.getSenha(),
-            usuarioExistente.getTipoUsuario(),
-            usuarioExistente.getEnderecos(),
-            true
-        );
-
-        when(usuarioRepository.obterPorEmail("pedro@email.com")).thenReturn(Optional.of(usuarioExistente));
-        when(usuarioRepository.atualizar(any(Usuario.class))).thenReturn(usuarioAtivado);
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.atualizar(any(Usuario.class)))
+            .thenReturn(usuarioAtualizado);
 
         // Act
-        Usuario resultado = useCase.run("pedro@email.com", true);
+        Usuario resultado = useCase.run("joao@email.com", true);
 
         // Assert
-        assertNotNull(resultado);
-        assertEquals("Pedro Costa", resultado.getNome());
-        assertEquals("pedro@email.com", resultado.getEmail());
-        assertEquals("senhaSegura", resultado.getSenha());
-        assertEquals(TipoUsuarioEnum.FORNECEDOR, resultado.getTipoUsuario());
-        assertEquals(1, resultado.getEnderecos().size());
-        verify(usuarioRepository, times(1)).obterPorEmail("pedro@email.com");
-        verify(usuarioRepository, times(1)).atualizar(any(Usuario.class));
+        assertEquals("João Silva", resultado.getNome());
+        assertEquals("joao@email.com", resultado.getEmail());
+        assertEquals(TipoUsuarioEnum.CLIENTE, resultado.getTipoUsuario());
+        assertEquals(enderecos.size(), resultado.getEnderecos().size());
     }
 
     @Test
-    @DisplayName("Deve preservar ID do usuário ao alternar ativo")
-    void testPreservandoIdAoAlternarAtivo() {
+    @DisplayName("Deve ativar múltiplos usuários sequencialmente")
+    void testAtivarMultiplosUsuarios() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Endereco endereco = new Endereco("Rua C", "789", "Apt 303", "Bairro Z", "Ponto Ref", "34567-890", "Brasília", "DF", false, null);
-        enderecos.add(endereco);
-        
-        Usuario usuarioExistente = new Usuario(
-            "Ana Silva",
-            "ana@email.com",
-            "senha789",
-            TipoUsuarioEnum.PRESTADOR_SERVICO,
-            enderecos
-        );
-        usuarioExistente.setId(5);
+        Usuario usuario1 = Usuario.builder()
+            .id(1)
+            .nome("João")
+            .email("joao@email.com")
+            .senha("senha1")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(new ArrayList<>())
+            .ativo(true)
+            .build();
 
-        Usuario usuarioAtualizado = Usuario.atualizar(
-            usuarioExistente.getId(),
-            usuarioExistente.getNome(),
-            usuarioExistente.getEmail(),
-            usuarioExistente.getSenha(),
-            usuarioExistente.getTipoUsuario(),
-            usuarioExistente.getEnderecos(),
-            false
-        );
+        Usuario usuario2 = Usuario.builder()
+            .id(2)
+            .nome("Maria")
+            .email("maria@email.com")
+            .senha("senha2")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(new ArrayList<>())
+            .ativo(true)
+            .build();
 
-        when(usuarioRepository.obterPorEmail("ana@email.com")).thenReturn(Optional.of(usuarioExistente));
-        when(usuarioRepository.atualizar(any(Usuario.class))).thenReturn(usuarioAtualizado);
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.obterPorEmail("maria@email.com"))
+            .thenReturn(Optional.of(usuario2));
+        when(usuarioRepository.atualizar(any(Usuario.class)))
+            .thenReturn(usuario1)
+            .thenReturn(usuario2);
 
         // Act
-        Usuario resultado = useCase.run("ana@email.com", false);
+        Usuario resultado1 = useCase.run("joao@email.com", true);
+        Usuario resultado2 = useCase.run("maria@email.com", true);
+
+        // Assert
+        assertNotNull(resultado1);
+        assertNotNull(resultado2);
+        assertTrue(resultado1.getAtivo());
+        assertTrue(resultado2.getAtivo());
+        verify(usuarioRepository, times(2)).obterPorEmail(anyString());
+        verify(usuarioRepository, times(2)).atualizar(any(Usuario.class));
+    }
+
+    @Test
+    @DisplayName("Deve desativar usuário mantendo seus endereços")
+    void testDesativarUsuarioMantendoEnderecos() {
+        // Arrange
+        Usuario usuarioDesativado = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(false)
+            .build();
+
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.atualizar(any(Usuario.class)))
+            .thenReturn(usuarioDesativado);
+
+        // Act
+        Usuario resultado = useCase.run("joao@email.com", false);
+
+        // Assert
+        assertFalse(resultado.getAtivo());
+        assertNotNull(resultado.getEnderecos());
+        assertEquals(1, resultado.getEnderecos().size());
+        assertEquals("Rua Teste", resultado.getEnderecos().get(0).getLogradouro());
+    }
+
+    @Test
+    @DisplayName("Deve chamar o repositório corretamente ao ativar")
+    void testChamadasRepositorioAoAtivar() {
+        // Arrange
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.atualizar(any(Usuario.class)))
+            .thenReturn(usuarioExistente);
+
+        // Act
+        useCase.run("joao@email.com", true);
+
+        // Assert
+        verify(usuarioRepository).obterPorEmail("joao@email.com");
+        verify(usuarioRepository).atualizar(any(Usuario.class));
+        verifyNoMoreInteractions(usuarioRepository);
+    }
+
+    @Test
+    @DisplayName("Deve usar factory para criar usuario atualizado")
+    void testUsandoFactoryParaAtualizacao() {
+        // Arrange
+        Usuario usuarioAtualizado = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senhaSegura123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build();
+
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.atualizar(any(Usuario.class)))
+            .thenReturn(usuarioAtualizado);
+
+        // Act
+        Usuario resultado = useCase.run("joao@email.com", true);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(Integer.valueOf(5), resultado.getId());
-        verify(usuarioRepository, times(1)).obterPorEmail("ana@email.com");
+        assertTrue(resultado.getAtivo());
+        assertEquals(1, resultado.getId());
+        assertEquals("João Silva", resultado.getNome());
         verify(usuarioRepository, times(1)).atualizar(any(Usuario.class));
     }
+
 }

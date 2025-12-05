@@ -51,15 +51,25 @@ class UsuarioRepositoryAdapterTest {
     void testCriarUsuarioComSucesso() {
         // Arrange
         List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
+        enderecos.add(Endereco.builder()
+                .logradouro("Rua A")
+                .numero("123")
+                .complemento("Apto 10")
+                .bairro("Centro")
+                .pontoReferencia("Perto da padaria")
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
 
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         UsuarioEntidade entidade = new UsuarioEntidade();
         entidade.setId(1);
@@ -158,17 +168,27 @@ class UsuarioRepositoryAdapterTest {
     void testAtualizarUsuarioComSucesso() {
         // Arrange
         List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
+        enderecos.add(Endereco.builder()
+                .logradouro("Rua A")
+                .numero("123")
+                .complemento("Apto 10")
+                .bairro("Centro")
+                .pontoReferencia("Perto da padaria")
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
 
-        Usuario usuario = new Usuario(
-                1,
-                "João Silva Atualizado",
-                "joao.atualizado@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos,
-                true);
+        Usuario usuario = Usuario.builder()
+                .id(1)
+                .nome("João Silva Atualizado")
+                .email("joao.atualizado@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         UsuarioEntidade entidade = new UsuarioEntidade();
         entidade.setId(1);
@@ -228,14 +248,15 @@ class UsuarioRepositoryAdapterTest {
     void testAtivarDesativarUsuarioComSucesso() {
         // Arrange
         List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuario = new Usuario(
-                1,
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos,
-                false);
+        Usuario usuario = Usuario.builder()
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .ativo(false)
+                .build();
 
         UsuarioEntidade entidade = new UsuarioEntidade();
         entidade.setId(1);

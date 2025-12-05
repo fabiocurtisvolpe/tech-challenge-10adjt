@@ -81,38 +81,38 @@ public class UsuarioMapper {
         if (entidade == null)
             return null;
 
-        Usuario usuario = new Usuario(
-                entidade.getId(),
-                entidade.getNome(),
-                entidade.getEmail(),
-                entidade.getSenha(),
-                entidade.getTipoUsuario(),
-                entidade.getEnderecos() != null
+        Usuario usuario = Usuario.builder()
+                .id(entidade.getId())
+                .nome(entidade.getNome())
+                .email(entidade.getEmail())
+                .senha(entidade.getSenha())
+                .tipoUsuario(entidade.getTipoUsuario())
+                .enderecos(entidade.getEnderecos() != null
                         ? entidade.getEnderecos().stream()
                                 .map(UsuarioMapper::toDomainEndereco)
                                 .collect(Collectors.toList())
-                        : null,
-                entidade.getAtivo());
-
-        usuario.setDataCriacao(entidade.getDataCriacao());
-        usuario.setDataAlteracao(entidade.getDataAlteracao());
+                        : null)
+                .ativo(entidade.getAtivo())
+                .dataCriacao(entidade.getDataCriacao())
+                .dataAlteracao(entidade.getDataAlteracao())
+                .build();
 
         return usuario;
     }
 
     private static Endereco toDomainEndereco(EnderecoEntidade entidade) {
-        return new Endereco(
-                entidade.getId(),
-                entidade.getLogradouro(),
-                entidade.getNumero(),
-                entidade.getComplemento(),
-                entidade.getBairro(),
-                entidade.getPontoReferencia(),
-                entidade.getCep(),
-                entidade.getMunicipio(),
-                entidade.getUf(),
-                entidade.getPrincipal(),
-                entidade.getAtivo(),
-                null);
+        return Endereco.builder()
+                .id(entidade.getId())
+                .logradouro(entidade.getLogradouro())
+                .numero(entidade.getNumero())
+                .complemento(entidade.getComplemento())
+                .bairro(entidade.getBairro())
+                .pontoReferencia(entidade.getPontoReferencia())
+                .cep(entidade.getCep())
+                .municipio(entidade.getMunicipio())
+                .uf(entidade.getUf())
+                .principal(entidade.getPrincipal())
+                .ativo(entidade.getAtivo())
+                .build();
     }
 }

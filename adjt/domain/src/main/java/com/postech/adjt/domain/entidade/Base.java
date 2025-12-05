@@ -3,42 +3,17 @@ package com.postech.adjt.domain.entidade;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@SuperBuilder
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Base implements Serializable {
-
-    private Integer id;
-    private LocalDateTime dataCriacao;
-    private LocalDateTime dataAlteracao;
-    private Boolean ativo;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public LocalDateTime getDataAlteracao() {
-        return dataAlteracao;
-    }
-
-    public void setDataAlteracao(LocalDateTime dataAlteracao) {
-        this.dataAlteracao = dataAlteracao;
-    }
-
-    public Boolean getAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
-    }
+    
+    protected Integer id;
+    protected LocalDateTime dataCriacao;
+    protected LocalDateTime dataAlteracao;
+    protected Boolean ativo;
 }

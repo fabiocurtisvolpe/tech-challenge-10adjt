@@ -1,10 +1,12 @@
 package com.postech.adjt.domain.validators;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
@@ -38,6 +40,11 @@ public class UsuarioValidator {
         validarFormatoEmail(usuario.getEmail());
         validarSenha(usuario.getSenha());
         validarTipoUsuario(usuario.getTipoUsuario());
+        validarEndereco(usuario.getEnderecos());
+
+        usuario.getEnderecos().forEach(endereco -> {
+            EnderecoValidator.validarCep(endereco.getCep());
+        });
     }
 
     /**
@@ -54,6 +61,12 @@ public class UsuarioValidator {
         validarId(usuario.getId());
         validarNome(usuario.getNome());
         validarFormatoEmail(usuario.getEmail());
+        validarTipoUsuario(usuario.getTipoUsuario());
+        validarEndereco(usuario.getEnderecos());
+
+        usuario.getEnderecos().forEach(endereco -> {
+            EnderecoValidator.validarCep(endereco.getCep());
+        });
     }
 
     /**
@@ -138,6 +151,12 @@ public class UsuarioValidator {
 
         if (!existe) {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+        }
+    }
+
+    private static void validarEndereco(List<Endereco> enderecos) {
+        if (enderecos == null || enderecos.isEmpty()) {
+            throw new IllegalArgumentException(MensagemUtil.ENDERECO_EM_BRANCO);
         }
     }
 }

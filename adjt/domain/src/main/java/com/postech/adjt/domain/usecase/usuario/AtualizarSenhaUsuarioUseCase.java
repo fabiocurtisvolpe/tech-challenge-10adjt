@@ -4,6 +4,7 @@ import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
 public class AtualizarSenhaUsuarioUseCase {
@@ -26,15 +27,9 @@ public class AtualizarSenhaUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
-        final Usuario usuario = Usuario.atualizar(
-            usuarioExistente.getId(),
-            usuarioExistente.getNome(),
-            usuarioExistente.getEmail(),
-            dto.senhaCodificada(),
-            usuarioExistente.getTipoUsuario(),
-            usuarioExistente.getEnderecos(),
-            true
-        );
+        final Usuario usuario = UsuarioFactory.atualizar(usuarioExistente.getId(), usuarioExistente.getNome(), 
+        usuarioExistente.getEmail(),  dto.senhaCodificada(), 
+        usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), true);
 
         return usuarioRepository.atualizar(usuario);
     }

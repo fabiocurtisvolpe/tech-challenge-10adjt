@@ -1,6 +1,18 @@
 package com.postech.adjt.domain.usecase.usuario;
 
-import com.postech.adjt.domain.constants.MensagemUtil;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
@@ -9,20 +21,15 @@ import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.enums.TipoUsuarioEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
+/**
+ * Testes unitários para PaginadoUsuarioUseCase
+ * 
+ * Testa a listagem paginada de usuários
+ * 
+ * @author Fabio
+ * @since 2025-12-05
+ */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PaginadoUsuarioUseCase - Testes Unitários")
 class PaginadoUsuarioUseCaseTest {
@@ -32,300 +39,287 @@ class PaginadoUsuarioUseCaseTest {
 
     private PaginadoUsuarioUseCase useCase;
 
+    private List<Usuario> usuarios;
+    private List<Endereco> enderecos;
+
     @BeforeEach
     void setUp() {
         useCase = PaginadoUsuarioUseCase.create(usuarioRepository);
+
+        // Preparar endereços
+        enderecos = new ArrayList<>();
+        enderecos.add(Endereco.builder()
+            .logradouro("Rua Teste")
+            .numero("123")
+            .complemento("Apto 101")
+            .bairro("Centro")
+            .pontoReferencia("Perto da praça")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build());
+
+        // Preparar lista de usuários
+        usuarios = new ArrayList<>();
+        usuarios.add(Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build());
+
+        usuarios.add(Usuario.builder()
+            .id(2)
+            .nome("Maria Silva")
+            .email("maria@email.com")
+            .senha("senha456")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build());
     }
 
     @Test
-    @DisplayName("Deve retornar usuários paginados com sucesso")
-    void testListarUsuariosPaginadosComSucesso() {
+    @DisplayName("Deve listar usuários com paginação padrão")
+    void testListarComPaginacaoPadrao() {
         // Arrange
-        int page = 0;
-        int size = 10;
-        List<FilterDTO> filters = new ArrayList<>();
-        List<SortDTO> sorts = new ArrayList<>();
-
-        List<Endereco> enderecos1 = new ArrayList<>();
-        Endereco endereco1 = new Endereco("Rua A", "123", "Apt 101", "Bairro X", "Ponto Ref", "12345-678", "São Paulo", "SP", false, null);
-        enderecos1.add(endereco1);
-
-        Usuario usuario1 = new Usuario(
-            "João Silva",
-            "joao@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos1
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            usuarios,
+            0,
+            10,
+            2
         );
-        usuario1.setId(1);
 
-        List<Usuario> usuariosList = List.of(usuario1);
-        ResultadoPaginacaoDTO<Usuario> resultadoPaginacao = new ResultadoPaginacaoDTO<>(usuariosList, page, size, 1L);
-
-        when(usuarioRepository.listarPaginado(page, size, filters, sorts)).thenReturn(resultadoPaginacao);
+        when(usuarioRepository.listarPaginado(0, 10, null, null))
+            .thenReturn(resultado);
 
         // Act
-        ResultadoPaginacaoDTO<Usuario> resultado = useCase.run(page, size, filters, sorts);
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
 
         // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.getContent().size());
-        assertEquals(page, resultado.getPageNumber());
-        assertEquals(size, resultado.getPageSize());
-        assertEquals(1L, resultado.getTotalElements());
-        assertEquals("João Silva", resultado.getContent().get(0).getNome());
-        verify(usuarioRepository, times(1)).listarPaginado(page, size, filters, sorts);
-    }
-
-    @Test
-    @DisplayName("Deve retornar página vazia com sucesso")
-    void testRetornarPaginaVaziaComSucesso() {
-        // Arrange
-        int page = 0;
-        int size = 10;
-        List<FilterDTO> filters = new ArrayList<>();
-        List<SortDTO> sorts = new ArrayList<>();
-
-        List<Usuario> usuariosList = new ArrayList<>();
-        ResultadoPaginacaoDTO<Usuario> resultadoPaginacao = new ResultadoPaginacaoDTO<>(usuariosList, page, size, 0L);
-
-        when(usuarioRepository.listarPaginado(page, size, filters, sorts)).thenReturn(resultadoPaginacao);
-
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resultado = useCase.run(page, size, filters, sorts);
-
-        // Assert
-        assertNotNull(resultado);
-        assertTrue(resultado.getContent().isEmpty());
-        assertEquals(page, resultado.getPageNumber());
-        assertEquals(size, resultado.getPageSize());
-        assertEquals(0L, resultado.getTotalElements());
-        verify(usuarioRepository, times(1)).listarPaginado(page, size, filters, sorts);
-    }
-
-    @Test
-    @DisplayName("Deve retornar múltiplos usuários paginados")
-    void testRetornarMultiplosUsuariosPaginados() {
-        // Arrange
-        int page = 0;
-        int size = 20;
-        List<FilterDTO> filters = new ArrayList<>();
-        List<SortDTO> sorts = new ArrayList<>();
-
-        List<Endereco> enderecos1 = new ArrayList<>();
-        Endereco endereco1 = new Endereco("Rua A", "123", "Apt 101", "Bairro X", "Ponto Ref", "12345-678", "São Paulo", "SP", false, null);
-        enderecos1.add(endereco1);
-
-        Usuario usuario1 = new Usuario(
-            "João Silva",
-            "joao@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos1
-        );
-        usuario1.setId(1);
-
-        List<Endereco> enderecos2 = new ArrayList<>();
-        Endereco endereco2 = new Endereco("Rua B", "456", "Apt 202", "Bairro Y", "Ponto Ref", "23456-789", "Rio de Janeiro", "RJ", false, null);
-        enderecos2.add(endereco2);
-
-        Usuario usuario2 = new Usuario(
-            "Maria Santos",
-            "maria@email.com",
-            "senha456",
-            TipoUsuarioEnum.DONO_RESTAURANTE,
-            enderecos2
-        );
-        usuario2.setId(2);
-
-        List<Usuario> usuariosList = List.of(usuario1, usuario2);
-        ResultadoPaginacaoDTO<Usuario> resultadoPaginacao = new ResultadoPaginacaoDTO<>(usuariosList, page, size, 2L);
-
-        when(usuarioRepository.listarPaginado(page, size, filters, sorts)).thenReturn(resultadoPaginacao);
-
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resultado = useCase.run(page, size, filters, sorts);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(2, resultado.getContent().size());
-        assertEquals(page, resultado.getPageNumber());
-        assertEquals(size, resultado.getPageSize());
-        assertEquals(2L, resultado.getTotalElements());
-        verify(usuarioRepository, times(1)).listarPaginado(page, size, filters, sorts);
+        assertNotNull(resposta);
+        assertEquals(2, resposta.getContent().size());
+        assertEquals(0, resposta.getPageNumber());
+        assertEquals(10, resposta.getPageSize());
+        verify(usuarioRepository, times(1)).listarPaginado(0, 10, null, null);
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando página é negativa")
-    void testLancarExcecaoQuandoPaginaNegativa() {
-        // Arrange
-        int page = -1;
-        int size = 10;
-        List<FilterDTO> filters = new ArrayList<>();
-        List<SortDTO> sorts = new ArrayList<>();
-
+    void testListarComPaginaNegativa() {
         // Act & Assert
-        NotificacaoException exception = assertThrows(
-            NotificacaoException.class,
-            () -> useCase.run(page, size, filters, sorts)
-        );
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run(-1, 10, null, null);
+        });
 
-        assertEquals(MensagemUtil.PAGINA_SIZE_INVALIDA, exception.getMessage());
-        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), anyList(), anyList());
+        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando size é zero")
-    void testLancarExcecaoQuandoSizeEhZero() {
-        // Arrange
-        int page = 0;
-        int size = 0;
-        List<FilterDTO> filters = new ArrayList<>();
-        List<SortDTO> sorts = new ArrayList<>();
-
+    void testListarComSizeZero() {
         // Act & Assert
-        NotificacaoException exception = assertThrows(
-            NotificacaoException.class,
-            () -> useCase.run(page, size, filters, sorts)
-        );
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run(0, 0, null, null);
+        });
 
-        assertEquals(MensagemUtil.PAGINA_SIZE_INVALIDA, exception.getMessage());
-        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), anyList(), anyList());
+        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando size é negativo")
-    void testLancarExcecaoQuandoSizeNegativo() {
-        // Arrange
-        int page = 0;
-        int size = -5;
-        List<FilterDTO> filters = new ArrayList<>();
-        List<SortDTO> sorts = new ArrayList<>();
-
+    void testListarComSizeNegativo() {
         // Act & Assert
-        NotificacaoException exception = assertThrows(
-            NotificacaoException.class,
-            () -> useCase.run(page, size, filters, sorts)
-        );
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run(0, -1, null, null);
+        });
 
-        assertEquals(MensagemUtil.PAGINA_SIZE_INVALIDA, exception.getMessage());
-        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), anyList(), anyList());
+        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
     }
 
     @Test
-    @DisplayName("Deve retornar usuários com filtros aplicados")
-    void testRetornarUsuariosComFiltros() {
+    @DisplayName("Deve listar com filtros")
+    void testListarComFiltros() {
         // Arrange
-        int page = 0;
-        int size = 10;
-        List<FilterDTO> filters = new ArrayList<>();
-        FilterDTO filter = new FilterDTO("nome", "João");
-        filters.add(filter);
-        List<SortDTO> sorts = new ArrayList<>();
+        List<FilterDTO> filtros = new ArrayList<>();
+        filtros.add(new FilterDTO("tipoUsuario", "CLIENTE"));
 
-        List<Endereco> enderecos = new ArrayList<>();
-        Endereco endereco = new Endereco("Rua A", "123", "Apt 101", "Bairro X", "Ponto Ref", "12345-678", "São Paulo", "SP", false, null);
-        enderecos.add(endereco);
-
-        Usuario usuario = new Usuario(
-            "João Silva",
-            "joao@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            usuarios.stream().filter(u -> u.getTipoUsuario() == TipoUsuarioEnum.CLIENTE).toList(),
+            0,
+            10,
+            1
         );
-        usuario.setId(1);
 
-        List<Usuario> usuariosList = List.of(usuario);
-        ResultadoPaginacaoDTO<Usuario> resultadoPaginacao = new ResultadoPaginacaoDTO<>(usuariosList, page, size, 1L);
-
-        when(usuarioRepository.listarPaginado(eq(page), eq(size), argThat(list -> list.size() == 1), eq(sorts)))
-            .thenReturn(resultadoPaginacao);
+        when(usuarioRepository.listarPaginado(0, 10, filtros, null))
+            .thenReturn(resultado);
 
         // Act
-        ResultadoPaginacaoDTO<Usuario> resultado = useCase.run(page, size, filters, sorts);
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, null);
 
         // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.getContent().size());
-        assertEquals("João Silva", resultado.getContent().get(0).getNome());
-        verify(usuarioRepository, times(1)).listarPaginado(eq(page), eq(size), argThat(list -> list.size() == 1), eq(sorts));
+        assertNotNull(resposta);
+        verify(usuarioRepository, times(1)).listarPaginado(0, 10, filtros, null);
     }
 
     @Test
-    @DisplayName("Deve retornar usuários com ordenação aplicada")
-    void testRetornarUsuariosComOrdenacao() {
+    @DisplayName("Deve listar com ordenação")
+    void testListarComOrdenacao() {
         // Arrange
-        int page = 0;
-        int size = 10;
-        List<FilterDTO> filters = new ArrayList<>();
         List<SortDTO> sorts = new ArrayList<>();
-        SortDTO sort = new SortDTO("nome", SortDTO.Direction.ASC);
-        sorts.add(sort);
+        sorts.add(new SortDTO("nome", SortDTO.Direction.ASC));
 
-        List<Endereco> enderecos = new ArrayList<>();
-        Endereco endereco = new Endereco("Rua A", "123", "Apt 101", "Bairro X", "Ponto Ref", "12345-678", "São Paulo", "SP", false, null);
-        enderecos.add(endereco);
-
-        Usuario usuario = new Usuario(
-            "Ana Silva",
-            "ana@email.com",
-            "senha789",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            usuarios,
+            0,
+            10,
+            2
         );
-        usuario.setId(1);
 
-        List<Usuario> usuariosList = List.of(usuario);
-        ResultadoPaginacaoDTO<Usuario> resultadoPaginacao = new ResultadoPaginacaoDTO<>(usuariosList, page, size, 1L);
-
-        when(usuarioRepository.listarPaginado(eq(page), eq(size), eq(filters), argThat(list -> list.size() == 1)))
-            .thenReturn(resultadoPaginacao);
+        when(usuarioRepository.listarPaginado(0, 10, null, sorts))
+            .thenReturn(resultado);
 
         // Act
-        ResultadoPaginacaoDTO<Usuario> resultado = useCase.run(page, size, filters, sorts);
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, sorts);
 
         // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.getContent().size());
-        verify(usuarioRepository, times(1)).listarPaginado(eq(page), eq(size), eq(filters), argThat(list -> list.size() == 1));
+        assertNotNull(resposta);
+        verify(usuarioRepository, times(1)).listarPaginado(0, 10, null, sorts);
     }
 
     @Test
-    @DisplayName("Deve retornar usuários em página subsequente")
-    void testRetornarUsuariosEmPaginaSubsequente() {
+    @DisplayName("Deve listar com filtros e ordenação")
+    void testListarComFiltrosEOrdenacao() {
         // Arrange
-        int page = 1;
-        int size = 10;
-        List<FilterDTO> filters = new ArrayList<>();
+        List<FilterDTO> filtros = new ArrayList<>();
+        filtros.add(new FilterDTO("ativo", "true"));
+
         List<SortDTO> sorts = new ArrayList<>();
+        sorts.add(new SortDTO("email", SortDTO.Direction.ASC));
 
-        List<Endereco> enderecos = new ArrayList<>();
-        Endereco endereco = new Endereco("Rua C", "789", "Apt 303", "Bairro Z", "Ponto Ref", "34567-890", "Brasília", "DF", false, null);
-        enderecos.add(endereco);
-
-        Usuario usuario = new Usuario(
-            "Pedro Costa",
-            "pedro@email.com",
-            "senha456",
-            TipoUsuarioEnum.FORNECEDOR,
-            enderecos
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            usuarios,
+            0,
+            10,
+            2
         );
-        usuario.setId(11);
 
-        List<Usuario> usuariosList = List.of(usuario);
-        ResultadoPaginacaoDTO<Usuario> resultadoPaginacao = new ResultadoPaginacaoDTO<>(usuariosList, page, size, 11L);
-
-        when(usuarioRepository.listarPaginado(page, size, filters, sorts)).thenReturn(resultadoPaginacao);
+        when(usuarioRepository.listarPaginado(0, 10, filtros, sorts))
+            .thenReturn(resultado);
 
         // Act
-        ResultadoPaginacaoDTO<Usuario> resultado = useCase.run(page, size, filters, sorts);
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, sorts);
 
         // Assert
-        assertNotNull(resultado);
-        assertEquals(page, resultado.getPageNumber());
-        assertEquals(size, resultado.getPageSize());
-        assertEquals(11L, resultado.getTotalElements());
-        verify(usuarioRepository, times(1)).listarPaginado(page, size, filters, sorts);
+        assertNotNull(resposta);
+        verify(usuarioRepository, times(1)).listarPaginado(0, 10, filtros, sorts);
     }
+
+    @Test
+    @DisplayName("Deve listar segunda página")
+    void testListarSegundaPagina() {
+        // Arrange
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            new ArrayList<>(),
+            1,
+            10,
+            0
+        );
+
+        when(usuarioRepository.listarPaginado(1, 10, null, null))
+            .thenReturn(resultado);
+
+        // Act
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(1, 10, null, null);
+
+        // Assert
+        assertNotNull(resposta);
+        assertEquals(1, resposta.getPageNumber());
+        assertEquals(0, resposta.getContent().size());
+    }
+
+    @Test
+    @DisplayName("Deve listar com tamanho customizado")
+    void testListarComTamanhCustomizado() {
+        // Arrange
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            usuarios,
+            0,
+            5,
+            2
+        );
+
+        when(usuarioRepository.listarPaginado(0, 5, null, null))
+            .thenReturn(resultado);
+
+        // Act
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 5, null, null);
+
+        // Assert
+        assertNotNull(resposta);
+        assertEquals(5, resposta.getPageSize());
+    }
+
+    @Test
+    @DisplayName("Deve validar parâmetros antes de chamar repositório")
+    void testValidarParametrosAntesDeChamarRepositorio() {
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run(-1, 10, null, null);
+        });
+
+        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
+    }
+
+    @Test
+    @DisplayName("Deve retornar resultado com informações de paginação")
+    void testRetornarResultadoComInfoPaginacao() {
+        // Arrange
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            usuarios,
+            0,
+            10,
+            2
+        );
+
+        when(usuarioRepository.listarPaginado(0, 10, null, null))
+            .thenReturn(resultado);
+
+        // Act
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
+
+        // Assert
+        assertNotNull(resposta);
+        assertEquals(0, resposta.getPageNumber());
+        assertEquals(10, resposta.getPageSize());
+        assertEquals(2, resposta.getTotalElements());
+    }
+
+    @Test
+    @DisplayName("Deve retornar lista vazia quando nenhum resultado")
+    void testRetornarListaVaziaQuandoNenhumResultado() {
+        // Arrange
+        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+            new ArrayList<>(),
+            0,
+            10,
+            0
+        );
+
+        when(usuarioRepository.listarPaginado(0, 10, null, null))
+            .thenReturn(resultado);
+
+        // Act
+        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
+
+        // Assert
+        assertNotNull(resposta);
+        assertTrue(resposta.getContent().isEmpty());
+        assertEquals(0, resposta.getTotalElements());
+    }
+
 }

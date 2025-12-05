@@ -3,6 +3,7 @@ package com.postech.adjt.domain.usecase.usuario;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 
 public class AtivarInativarUsuarioUseCase {
@@ -25,16 +26,10 @@ public class AtivarInativarUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
-        final Usuario novoUsuario = Usuario.atualizar(
-            usuarioExistente.getId(),
-            usuarioExistente.getNome(),
-            usuarioExistente.getEmail(),
-            usuarioExistente.getSenha(),
-            usuarioExistente.getTipoUsuario(),
-            usuarioExistente.getEnderecos(),
-            ativo
-        );
-
+        final Usuario novoUsuario = UsuarioFactory.atualizar(usuarioExistente.getId(), usuarioExistente.getNome(), 
+        usuarioExistente.getEmail(), usuarioExistente.getSenha(), 
+        usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), ativo);
+    
         return usuarioRepository.atualizar(novoUsuario);
     }
  

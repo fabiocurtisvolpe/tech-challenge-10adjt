@@ -29,19 +29,17 @@ class UsuarioMapperApiTest {
     @BeforeEach
     void setUp() {
         dataAlteracao = LocalDateTime.of(2023, 6, 20, 14, 45, 30);
-
-        endereco = new Endereco(
-            "Rua A",
-            "123",
-            "Apt 101",
-            "Bairro X",
-            "Ponto Ref",
-            "12345-678",
-            "São Paulo",
-            "SP",
-            true,
-            null
-        );
+        endereco = Endereco.builder()
+            .logradouro("Rua A")
+            .numero("123")
+            .complemento("Apt 101")
+            .bairro("Bairro X")
+            .pontoReferencia("Ponto Ref")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build();
 
         enderecos = new ArrayList<>();
         enderecos.add(endereco);
@@ -215,16 +213,16 @@ class UsuarioMapperApiTest {
     @DisplayName("Deve mapear Usuario para UsuarioRespostaDTO com sucesso")
     void testMapearUsuarioParaRespostaComSucesso() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Lucas Oliveira",
-            "lucas@email.com",
-            "senhaSecreta",
-            TipoUsuarioEnum.FORNECEDOR,
-            enderecos
-        );
-        usuario.setId(5);
-        usuario.setAtivo(true);
-        usuario.setDataAlteracao(dataAlteracao);
+        Usuario usuario = Usuario.builder()
+            .nome("Lucas Oliveira")
+            .email("lucas@email.com")
+            .senha("senhaSecreta")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(enderecos)
+            .id(5)
+            .ativo(true)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioRespostaDTO dto = UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -243,45 +241,43 @@ class UsuarioMapperApiTest {
         // Arrange
         List<Endereco> enderecosList = new ArrayList<>();
         
-        Endereco endereco1 = new Endereco(
-            "Rua A",
-            "123",
-            "Apt 101",
-            "Bairro X",
-            "Ponto Ref",
-            "12345-678",
-            "São Paulo",
-            "SP",
-            true,
-            null
-        );
+        Endereco endereco1 = Endereco.builder()
+            .logradouro("Rua A")
+            .numero("123")
+            .complemento("Apt 101")
+            .bairro("Bairro X")
+            .pontoReferencia("Ponto Ref")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build();
         
-        Endereco endereco2 = new Endereco(
-            "Rua B",
-            "456",
-            "Apt 202",
-            "Bairro Y",
-            "Outro Ponto",
-            "87654-321",
-            "Rio de Janeiro",
-            "RJ",
-            false,
-            null
-        );
+        Endereco endereco2 = Endereco.builder()
+            .logradouro("Rua B")
+            .numero("456")
+            .complemento("Apt 202")
+            .bairro("Bairro Y")
+            .pontoReferencia("Outro Ponto")
+            .cep("87654-321")
+            .municipio("Rio de Janeiro")
+            .uf("RJ")
+            .principal(false)
+            .build();
         
         enderecosList.add(endereco1);
         enderecosList.add(endereco2);
 
-        Usuario usuario = new Usuario(
-            "Paulo Mendes",
-            "paulo@email.com",
-            "senhaSecreta",
-            TipoUsuarioEnum.PRESTADOR_SERVICO,
-            enderecosList
-        );
-        usuario.setId(10);
-        usuario.setAtivo(true);
-        usuario.setDataAlteracao(dataAlteracao);
+        Usuario usuario = Usuario.builder()
+            .nome("Paulo Mendes")
+            .email("paulo@email.com")
+            .senha("senhaSecreta")
+            .tipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO)
+            .enderecos(enderecosList)
+            .id(10)
+            .ativo(true)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioRespostaDTO dto = UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -325,16 +321,16 @@ class UsuarioMapperApiTest {
     @DisplayName("Deve filtrar campos sensíveis na resposta (sem getId/getSenha)")
     void testFiltrarCamposSensiveisDoUsuario() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Fernanda Silva",
-            "fernanda@email.com",
-            "senhaSecretaOcultada",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
-        usuario.setId(7);
-        usuario.setAtivo(true);
-        usuario.setDataAlteracao(dataAlteracao);
+        Usuario usuario = Usuario.builder()
+            .nome("Fernanda Silva")
+            .email("fernanda@email.com")
+            .senha("senhaSecretaOcultada")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .id(7)
+            .ativo(true)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioRespostaDTO dto = UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -350,16 +346,16 @@ class UsuarioMapperApiTest {
     @DisplayName("Deve manter dados corretos na resposta")
     void testMantendoDadosCorretos() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Camila Santos",
-            "camila@email.com",
-            "senhaSecreta",
-            TipoUsuarioEnum.FORNECEDOR,
-            enderecos
-        );
-        usuario.setId(9);
-        usuario.setAtivo(true);
-        usuario.setDataAlteracao(dataAlteracao);
+        Usuario usuario = Usuario.builder()
+            .nome("Camila Santos")
+            .email("camila@email.com")
+            .senha("senhaSecreta")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(enderecos)
+            .id(9)
+            .ativo(true)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioRespostaDTO dto = UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -375,16 +371,16 @@ class UsuarioMapperApiTest {
     @DisplayName("Deve mapear Usuario com endereços vazios para UsuarioRespostaDTO")
     void testMapearUsuarioComEnderecosVazios() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Marcelo Junior",
-            "marcelo@email.com",
-            "senhaSecreta",
-            TipoUsuarioEnum.PRESTADOR_SERVICO,
-            new ArrayList<>()
-        );
-        usuario.setId(11);
-        usuario.setAtivo(true);
-        usuario.setDataAlteracao(dataAlteracao);
+        Usuario usuario = Usuario.builder()
+            .nome("Marcelo Junior")
+            .email("marcelo@email.com")
+            .senha("senhaSecreta")
+            .tipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO)
+            .enderecos(new ArrayList<>())
+            .id(11)
+            .ativo(true)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioRespostaDTO dto = UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -401,31 +397,30 @@ class UsuarioMapperApiTest {
         // Arrange
         List<Endereco> enderecosList = new ArrayList<>();
         
-        Endereco endereco = new Endereco(
-            "Rua Principal",
-            "789",
-            "Apt 505",
-            "Bairro Centro",
-            "Perto da praça",
-            "12345-678",
-            "São Paulo",
-            "SP",
-            true,
-            null
-        );
+        Endereco endereco = Endereco.builder()
+            .logradouro("Rua Principal")
+            .numero("789")
+            .complemento("Apt 505")
+            .bairro("Bairro Centro")
+            .pontoReferencia("Perto da praça")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build();
         
         enderecosList.add(endereco);
 
-        Usuario usuario = new Usuario(
-            "Victor Manuel",
-            "victor@email.com",
-            "senhaSecreta",
-            TipoUsuarioEnum.DONO_RESTAURANTE,
-            enderecosList
-        );
-        usuario.setId(13);
-        usuario.setAtivo(true);
-        usuario.setDataAlteracao(dataAlteracao);
+        Usuario usuario = Usuario.builder()
+            .nome("Victor Manuel")
+            .email("victor@email.com")
+            .senha("senhaSecreta")
+            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .enderecos(enderecosList)
+            .id(13)
+            .ativo(true)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioRespostaDTO dto = UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -480,46 +475,46 @@ class UsuarioMapperApiTest {
     @DisplayName("Deve validar tipos de usuário diferentes na resposta")
     void testValidarTiposUsuarioDiferentes() {
         // Test CLIENTE
-        Usuario usuario1 = new Usuario(
-            "Cliente Teste",
-            "cliente@email.com",
-            "senha",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
+        Usuario usuario1 = Usuario.builder()
+            .nome("Cliente Teste")
+            .email("cliente@email.com")
+            .senha("senha")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .build();
         UsuarioRespostaDTO dto1 = UsuarioMapperApi.toUsuarioRespostaDTO(usuario1);
         assertEquals(TipoUsuarioEnum.CLIENTE, dto1.getTipoUsuario());
 
         // Test DONO_RESTAURANTE
-        Usuario usuario2 = new Usuario(
-            "Dono Teste",
-            "dono@email.com",
-            "senha",
-            TipoUsuarioEnum.DONO_RESTAURANTE,
-            enderecos
-        );
+        Usuario usuario2 = Usuario.builder()
+            .nome("Dono Teste")
+            .email("dono@email.com")
+            .senha("senha")
+            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .enderecos(enderecos)
+            .build();
         UsuarioRespostaDTO dto2 = UsuarioMapperApi.toUsuarioRespostaDTO(usuario2);
         assertEquals(TipoUsuarioEnum.DONO_RESTAURANTE, dto2.getTipoUsuario());
 
         // Test FORNECEDOR
-        Usuario usuario3 = new Usuario(
-            "Fornecedor Teste",
-            "fornecedor@email.com",
-            "senha",
-            TipoUsuarioEnum.FORNECEDOR,
-            enderecos
-        );
+        Usuario usuario3 = Usuario.builder()
+            .nome("Fornecedor Teste")
+            .email("fornecedor@email.com")
+            .senha("senha")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(enderecos)
+            .build();
         UsuarioRespostaDTO dto3 = UsuarioMapperApi.toUsuarioRespostaDTO(usuario3);
         assertEquals(TipoUsuarioEnum.FORNECEDOR, dto3.getTipoUsuario());
 
         // Test PRESTADOR_SERVICO
-        Usuario usuario4 = new Usuario(
-            "Prestador Teste",
-            "prestador@email.com",
-            "senha",
-            TipoUsuarioEnum.PRESTADOR_SERVICO,
-            enderecos
-        );
+        Usuario usuario4 = Usuario.builder()
+            .nome("Prestador Teste")
+            .email("prestador@email.com")
+            .senha("senha")
+            .tipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO)
+            .enderecos(enderecos)
+            .build();
         UsuarioRespostaDTO dto4 = UsuarioMapperApi.toUsuarioRespostaDTO(usuario4);
         assertEquals(TipoUsuarioEnum.PRESTADOR_SERVICO, dto4.getTipoUsuario());
     }

@@ -29,18 +29,17 @@ class UsuarioMapperTest {
         dataAlteracao = LocalDateTime.of(2023, 6, 20, 14, 45, 30);
 
         enderecos = new ArrayList<>();
-        endereco = new Endereco(
-            "Rua A",
-            "123",
-            "Apt 101",
-            "Bairro X",
-            "Ponto Ref",
-            "12345-678",
-            "São Paulo",
-            "SP",
-            false,
-            null
-        );
+        endereco = Endereco.builder()
+            .logradouro("Rua A")
+            .numero("123")
+            .complemento("Apt 101")
+            .bairro("Bairro X")
+            .pontoReferencia("Ponto Ref")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(false)
+            .build();
         enderecos.add(endereco);
     }
 
@@ -48,16 +47,16 @@ class UsuarioMapperTest {
     @DisplayName("Deve mapear Usuario para UsuarioEntidade com sucesso")
     void testMapearUsuarioParaEntidade() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "João Silva",
-            "joao@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
-        usuario.setId(1);
-        usuario.setDataCriacao(dataCriacao);
-        usuario.setDataAlteracao(dataAlteracao);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .id(1)
+            .dataCriacao(dataCriacao)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -87,14 +86,14 @@ class UsuarioMapperTest {
     @DisplayName("Deve mapear endereços do Usuario para endereços da entidade")
     void testMapearEnderecosParaEntidade() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Maria Santos",
-            "maria@email.com",
-            "senha456",
-            TipoUsuarioEnum.DONO_RESTAURANTE,
-            enderecos
-        );
-        usuario.setId(2);
+        Usuario usuario = Usuario.builder()
+            .nome("Maria Santos")
+            .email("maria@email.com")
+            .senha("senha456")
+            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .enderecos(enderecos)
+            .id(2)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -113,19 +112,39 @@ class UsuarioMapperTest {
     void testMapearMultiplosEnderecosParaEntidade() {
         // Arrange
         List<Endereco> multiploEnderecos = new ArrayList<>();
-        Endereco endereco1 = new Endereco("Rua A", "123", "Apt 101", "Bairro X", "Ponto Ref", "12345-678", "São Paulo", "SP", true, null);
-        Endereco endereco2 = new Endereco("Rua B", "456", "Apt 202", "Bairro Y", "Ponto Ref", "23456-789", "Rio de Janeiro", "RJ", false, null);
+        Endereco endereco1 = Endereco.builder()
+            .logradouro("Rua A")
+            .numero("123")
+            .complemento("Apt 101")
+            .bairro("Bairro X")
+            .pontoReferencia("Ponto Ref")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build();
+        Endereco endereco2 = Endereco.builder()
+            .logradouro("Rua B")
+            .numero("456")
+            .complemento("Apt 202")
+            .bairro("Bairro Y")
+            .pontoReferencia("Ponto Ref")
+            .cep("23456-789")
+            .municipio("Rio de Janeiro")
+            .uf("RJ")
+            .principal(false)
+            .build();
         multiploEnderecos.add(endereco1);
         multiploEnderecos.add(endereco2);
 
-        Usuario usuario = new Usuario(
-            "Pedro Costa",
-            "pedro@email.com",
-            "senha789",
-            TipoUsuarioEnum.FORNECEDOR,
-            multiploEnderecos
-        );
-        usuario.setId(3);
+        Usuario usuario = Usuario.builder()
+            .nome("Pedro Costa")
+            .email("pedro@email.com")
+            .senha("senha789")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(multiploEnderecos)
+            .id(3)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -141,14 +160,14 @@ class UsuarioMapperTest {
     @DisplayName("Deve mapear Usuario com endereços null para entidade")
     void testMapearUsuarioComEnderecosNulParaEntidade() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Ana Silva",
-            "ana@email.com",
-            "senha123",
-            TipoUsuarioEnum.PRESTADOR_SERVICO,
-            new ArrayList<>()
-        );
-        usuario.setId(4);
+        Usuario usuario = Usuario.builder()
+            .nome("Ana Silva")
+            .email("ana@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.PRESTADOR_SERVICO)
+            .enderecos(new ArrayList<>())
+            .id(4)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -163,14 +182,14 @@ class UsuarioMapperTest {
     @DisplayName("Deve vincular usuarioEntidade aos endereços mapeados")
     void testVincularUsuarioEntidadeAosEnderecos() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "José Silva",
-            "jose@email.com",
-            "senha456",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
-        usuario.setId(5);
+        Usuario usuario = Usuario.builder()
+            .nome("José Silva")
+            .email("jose@email.com")
+            .senha("senha456")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .id(5)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -344,16 +363,16 @@ class UsuarioMapperTest {
     @DisplayName("Deve preservar dados ao mapear bidirecional (Usuario -> Entidade -> Usuario)")
     void testMapearBidirecional() {
         // Arrange
-        Usuario usuarioOriginal = new Usuario(
-            "Lucas Silva",
-            "lucas@email.com",
-            "senha789",
-            TipoUsuarioEnum.FORNECEDOR,
-            enderecos
-        );
-        usuarioOriginal.setId(10);
-        usuarioOriginal.setDataCriacao(dataCriacao);
-        usuarioOriginal.setDataAlteracao(dataAlteracao);
+        Usuario usuarioOriginal = Usuario.builder()
+            .nome("Lucas Silva")
+            .email("lucas@email.com")
+            .senha("senha789")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(enderecos)
+            .id(10)
+            .dataCriacao(dataCriacao)
+            .dataAlteracao(dataAlteracao)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuarioOriginal);
@@ -373,14 +392,14 @@ class UsuarioMapperTest {
     @DisplayName("Deve mapear Usuario com tipo DONO_RESTAURANTE para entidade")
     void testMapearUsuarioDonoRestauranteParaEntidade() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Restaurante Silva",
-            "restaurante@email.com",
-            "senha123",
-            TipoUsuarioEnum.DONO_RESTAURANTE,
-            enderecos
-        );
-        usuario.setId(6);
+        Usuario usuario = Usuario.builder()
+            .nome("Restaurante Silva")
+            .email("restaurante@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.DONO_RESTAURANTE)
+            .enderecos(enderecos)
+            .id(6)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -393,15 +412,15 @@ class UsuarioMapperTest {
     @DisplayName("Deve mapear Usuario com ativo false para entidade")
     void testMapearUsuarioInativoParaEntidade() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "João Silva",
-            "joao@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
-        usuario.setId(7);
-        usuario.setAtivo(false);
+        Usuario usuario = Usuario.builder()
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .id(7)
+            .ativo(false)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -414,14 +433,14 @@ class UsuarioMapperTest {
     @DisplayName("Deve manter relacionamento entre EnderecoEntidade e UsuarioEntidade")
     void testMantendoRelacionamentoEnderecoUsuario() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Teste Silva",
-            "teste@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            enderecos
-        );
-        usuario.setId(8);
+        Usuario usuario = Usuario.builder()
+            .nome("Teste Silva")
+            .email("teste@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .id(8)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
@@ -437,14 +456,14 @@ class UsuarioMapperTest {
     @DisplayName("Deve mapear Usuario sem endereços para entidade")
     void testMapearUsuarioSemEnderecosParaEntidade() {
         // Arrange
-        Usuario usuario = new Usuario(
-            "Sem Endereço",
-            "semendereco@email.com",
-            "senha123",
-            TipoUsuarioEnum.CLIENTE,
-            new ArrayList<>()
-        );
-        usuario.setId(9);
+        Usuario usuario = Usuario.builder()
+            .nome("Sem Endereço")
+            .email("semendereco@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(new ArrayList<>())
+            .id(9)
+            .build();
 
         // Act
         UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);

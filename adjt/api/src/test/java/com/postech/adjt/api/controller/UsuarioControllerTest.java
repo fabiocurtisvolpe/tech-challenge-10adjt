@@ -99,15 +99,25 @@ class UsuarioControllerTest {
         payload.setEnderecos(List.of(endereco));
 
         List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", null, "Centro", null,
-                "12345-678", "São Paulo", "SP", true, null));
+        enderecos.add(Endereco.builder()
+                .logradouro("Rua A")
+                .numero("123")
+                .complemento(null)
+                .bairro("Centro")
+                .pontoReferencia(null)
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
 
-        Usuario usuarioCriado = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuarioCriado = Usuario.builder()
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         when(passwordEncoder.encode("senha123")).thenReturn("senha_encriptada");
         when(cadastrarUsuarioUseCase.run(any())).thenReturn(usuarioCriado);
@@ -127,15 +137,25 @@ class UsuarioControllerTest {
     void testBuscarUsuarioPorEmailComSucesso() {
         // Arrange
         List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", null, "Centro", null,
-                "12345-678", "São Paulo", "SP", true, null));
+        enderecos.add(Endereco.builder()
+                .logradouro("Rua A")
+                .numero("123")
+                .complemento(null)
+                .bairro("Centro")
+                .pontoReferencia(null)
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
 
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         when(obterUsuarioPorEmailUseCase.run("joao@email.com")).thenReturn(Optional.of(usuario));
 
@@ -183,15 +203,25 @@ class UsuarioControllerTest {
         payload.setEnderecos(List.of(endereco));
 
         List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua B", "456", null, "Zona Sul", null,
-                "98765-432", "São Paulo", "SP", true, null));
+        enderecos.add(Endereco.builder()
+                .logradouro("Rua B")
+                .numero("456")
+                .complemento(null)
+                .bairro("Zona Sul")
+                .pontoReferencia(null)
+                .cep("98765-432")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
 
-        Usuario usuarioAtualizado = new Usuario(
-                "João Silva Atualizado",
-                "joao.atualizado@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuarioAtualizado = Usuario.builder()
+                .nome("João Silva Atualizado")
+                .email("joao.atualizado@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         when(atualizarUsuarioUseCase.run(any())).thenReturn(usuarioAtualizado);
 
@@ -215,12 +245,13 @@ class UsuarioControllerTest {
         payload.setSenha("novaSenha123");
 
         List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuarioAtualizado = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "novaSenha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuarioAtualizado = Usuario.builder()
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("novaSenha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         when(passwordEncoder.encode("novaSenha123")).thenReturn("novaSenha_encriptada");
         when(atualizarSenhaUsuarioUseCase.run(any())).thenReturn(usuarioAtualizado);
@@ -239,12 +270,13 @@ class UsuarioControllerTest {
     void testAtivarUsuarioComSucesso() {
         // Arrange
         List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuarioAtivado = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuarioAtivado = Usuario.builder()
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         when(ativarInativarUsuarioUseCase.run("joao@email.com", true)).thenReturn(usuarioAtivado);
 
@@ -262,12 +294,13 @@ class UsuarioControllerTest {
     void testDesativarUsuarioComSucesso() {
         // Arrange
         List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuarioDesativado = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuarioDesativado = Usuario.builder()
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         when(ativarInativarUsuarioUseCase.run("joao@email.com", false)).thenReturn(usuarioDesativado);
 
@@ -285,12 +318,13 @@ class UsuarioControllerTest {
     void testListarUsuariosPaginadosComSucesso() {
         // Arrange
         List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuario = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
+        Usuario usuario = Usuario.builder()
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senha123")
+                .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+                .enderecos(enderecos)
+                .build();
 
         ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
                 List.of(usuario),

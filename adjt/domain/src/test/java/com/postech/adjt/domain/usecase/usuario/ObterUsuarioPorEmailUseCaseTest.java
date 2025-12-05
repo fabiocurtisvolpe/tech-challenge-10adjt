@@ -1,13 +1,7 @@
 package com.postech.adjt.domain.usecase.usuario;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,107 +23,263 @@ import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 /**
  * Testes unitários para ObterUsuarioPorEmailUseCase
  * 
- * Testa os cenários de busca de usuário por email
+ * Testa a recuperação de usuários pelo email
  * 
  * @author Fabio
- * @since 2025-12-03
+ * @since 2025-12-05
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ObterUsuarioPorEmailUseCase - Testes Unitários")
 class ObterUsuarioPorEmailUseCaseTest {
 
     @Mock
-    private UsuarioRepositoryPort usuarioRepositoryPort;
+    private UsuarioRepositoryPort usuarioRepository;
 
-    private ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
+    private ObterUsuarioPorEmailUseCase useCase;
+
+    private Usuario usuario;
+    private List<Endereco> enderecos;
 
     @BeforeEach
     void setUp() {
-        obterUsuarioPorEmailUseCase = ObterUsuarioPorEmailUseCase.create(usuarioRepositoryPort);
+        useCase = ObterUsuarioPorEmailUseCase.create(usuarioRepository);
+
+        // Preparar endereços
+        enderecos = new ArrayList<>();
+        enderecos.add(Endereco.builder()
+            .logradouro("Rua Teste")
+            .numero("123")
+            .complemento("Apto 101")
+            .bairro("Centro")
+            .pontoReferencia("Perto da praça")
+            .cep("12345-678")
+            .municipio("São Paulo")
+            .uf("SP")
+            .principal(true)
+            .build());
+
+        usuario = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build();
     }
 
     @Test
-    @DisplayName("Deve obter usuário com sucesso quando email existe")
+    @DisplayName("Deve obter usuário por email com sucesso")
     void testObterUsuarioPorEmailComSucesso() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(new Endereco("Rua A", "123", "Apto 10", "Centro", "Perto da padaria",
-                "12345-678", "São Paulo", "SP", true, null));
-
-        Usuario usuarioEsperado = new Usuario(
-                "João Silva",
-                "joao@email.com",
-                "senha123",
-                TipoUsuarioEnum.CLIENTE,
-                enderecos);
-
-        when(usuarioRepositoryPort.obterPorEmail("joao@email.com")).thenReturn(Optional.of(usuarioEsperado));
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuario));
 
         // Act
-        Optional<Usuario> resultado = obterUsuarioPorEmailUseCase.run("joao@email.com");
+        Optional<Usuario> resultado = useCase.run("joao@email.com");
 
         // Assert
         assertTrue(resultado.isPresent());
         assertEquals("João Silva", resultado.get().getNome());
         assertEquals("joao@email.com", resultado.get().getEmail());
-        verify(usuarioRepositoryPort, times(1)).obterPorEmail("joao@email.com");
+        verify(usuarioRepository, times(1)).obterPorEmail("joao@email.com");
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando email é nulo")
     void testObterUsuarioPorEmailNulo() {
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> obterUsuarioPorEmailUseCase.run(null));
-        verify(usuarioRepositoryPort, never()).obterPorEmail(any());
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run(null);
+        });
+
+        verify(usuarioRepository, never()).obterPorEmail(any());
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando email é vazio")
+    @DisplayName("Deve lançar exceção quando email está vazio")
     void testObterUsuarioPorEmailVazio() {
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> obterUsuarioPorEmailUseCase.run(""));
-        verify(usuarioRepositoryPort, never()).obterPorEmail(any());
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run("");
+        });
+
+        verify(usuarioRepository, never()).obterPorEmail(any());
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando email contém apenas espaços")
     void testObterUsuarioPorEmailApenasEspacos() {
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> obterUsuarioPorEmailUseCase.run("   "));
-        verify(usuarioRepositoryPort, never()).obterPorEmail(any());
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run("   ");
+        });
+
+        verify(usuarioRepository, never()).obterPorEmail(any());
     }
 
     @Test
-    @DisplayName("Deve lançar exceção quando usuário não existe")
-    void testObterUsuarioPorEmailNaoExistente() {
+    @DisplayName("Deve lançar exceção quando usuário não encontrado")
+    void testObterUsuarioPorEmailNaoEncontrado() {
         // Arrange
-        when(usuarioRepositoryPort.obterPorEmail("naoexiste@email.com")).thenReturn(Optional.empty());
+        when(usuarioRepository.obterPorEmail("inexistente@email.com"))
+            .thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(NotificacaoException.class, () -> obterUsuarioPorEmailUseCase.run("naoexiste@email.com"));
-        verify(usuarioRepositoryPort, times(1)).obterPorEmail("naoexiste@email.com");
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run("inexistente@email.com");
+        });
+
+        verify(usuarioRepository, times(1)).obterPorEmail("inexistente@email.com");
     }
 
     @Test
-    @DisplayName("Deve retornar Optional com usuário quando encontrado")
-    void testObterUsuarioPorEmailRetornaOptional() {
+    @DisplayName("Deve retornar usuário com dados completos")
+    void testRetornarUsuarioComDadosCompletos() {
         // Arrange
-        List<Endereco> enderecos = new ArrayList<>();
-        Usuario usuario = new Usuario(
-                "Maria Silva",
-                "maria@email.com",
-                "senha456",
-                TipoUsuarioEnum.DONO_RESTAURANTE,
-                enderecos);
-
-        when(usuarioRepositoryPort.obterPorEmail("maria@email.com")).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuario));
 
         // Act
-        Optional<Usuario> resultado = obterUsuarioPorEmailUseCase.run("maria@email.com");
+        Optional<Usuario> resultado = useCase.run("joao@email.com");
 
         // Assert
         assertTrue(resultado.isPresent());
-        assertEquals("Maria Silva", resultado.get().getNome());
-        assertEquals(TipoUsuarioEnum.DONO_RESTAURANTE, resultado.get().getTipoUsuario());
+        assertEquals(1, resultado.get().getId());
+        assertEquals("João Silva", resultado.get().getNome());
+        assertEquals("joao@email.com", resultado.get().getEmail());
+        assertEquals("senha123", resultado.get().getSenha());
+        assertEquals(TipoUsuarioEnum.CLIENTE, resultado.get().getTipoUsuario());
+        assertTrue(resultado.get().getAtivo());
     }
+
+    @Test
+    @DisplayName("Deve retornar usuário com endereços")
+    void testRetornarUsuarioComEnderecos() {
+        // Arrange
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuario));
+
+        // Act
+        Optional<Usuario> resultado = useCase.run("joao@email.com");
+
+        // Assert
+        assertTrue(resultado.isPresent());
+        assertNotNull(resultado.get().getEnderecos());
+        assertEquals(1, resultado.get().getEnderecos().size());
+        assertEquals("Rua Teste", resultado.get().getEnderecos().get(0).getLogradouro());
+    }
+
+    @Test
+    @DisplayName("Deve obter usuários de diferentes emails")
+    void testObterUsuariosDiferentesEmails() {
+        // Arrange
+        Usuario usuario2 = Usuario.builder()
+            .id(2)
+            .nome("Maria Silva")
+            .email("maria@email.com")
+            .senha("senha456")
+            .tipoUsuario(TipoUsuarioEnum.FORNECEDOR)
+            .enderecos(enderecos)
+            .ativo(true)
+            .build();
+
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.obterPorEmail("maria@email.com"))
+            .thenReturn(Optional.of(usuario2));
+
+        // Act
+        Optional<Usuario> resultado1 = useCase.run("joao@email.com");
+        Optional<Usuario> resultado2 = useCase.run("maria@email.com");
+
+        // Assert
+        assertTrue(resultado1.isPresent());
+        assertTrue(resultado2.isPresent());
+        assertEquals("João Silva", resultado1.get().getNome());
+        assertEquals("Maria Silva", resultado2.get().getNome());
+    }
+
+    @Test
+    @DisplayName("Deve chamar repositório com email correto")
+    void testChamarRepositorioComEmailCorreto() {
+        // Arrange
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuario));
+
+        // Act
+        useCase.run("joao@email.com");
+
+        // Assert
+        verify(usuarioRepository).obterPorEmail("joao@email.com");
+    }
+
+    @Test
+    @DisplayName("Deve validar email antes de consultar repositório")
+    void testValidarEmailAntesDeChamarRepositorio() {
+        // Act & Assert
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run("");
+        });
+
+        verify(usuarioRepository, never()).obterPorEmail(any());
+    }
+
+    @Test
+    @DisplayName("Deve obter usuário inativo por email")
+    void testObterUsuarioInativoPorEmail() {
+        // Arrange
+        Usuario usuarioInativo = Usuario.builder()
+            .id(1)
+            .nome("João Silva")
+            .email("joao@email.com")
+            .senha("senha123")
+            .tipoUsuario(TipoUsuarioEnum.CLIENTE)
+            .enderecos(enderecos)
+            .ativo(false)
+            .build();
+
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuarioInativo));
+
+        // Act
+        Optional<Usuario> resultado = useCase.run("joao@email.com");
+
+        // Assert
+        assertTrue(resultado.isPresent());
+        assertFalse(resultado.get().getAtivo());
+    }
+
+    @Test
+    @DisplayName("Deve retornar Optional com usuário válido")
+    void testRetornarOptionalComUsuarioValido() {
+        // Arrange
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuario));
+
+        // Act
+        Optional<Usuario> resultado = useCase.run("joao@email.com");
+
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.isPresent());
+    }
+
+    @Test
+    @DisplayName("Deve ser case-sensitive para email")
+    void testEmailCaseSensitive() {
+        // Arrange
+        when(usuarioRepository.obterPorEmail("joao@email.com"))
+            .thenReturn(Optional.of(usuario));
+        when(usuarioRepository.obterPorEmail("JOAO@EMAIL.COM"))
+            .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertTrue(useCase.run("joao@email.com").isPresent());
+        assertThrows(NotificacaoException.class, () -> {
+            useCase.run("JOAO@EMAIL.COM");
+        });
+    }
+
 }
