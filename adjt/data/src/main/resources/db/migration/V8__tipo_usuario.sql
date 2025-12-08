@@ -35,6 +35,10 @@ ALTER TABLE public.usuario_aud ADD COLUMN tipo_usuario_id INT;
 
 -- 2. Inserir os tipos de usuário na tabela tipo_usuario (caso não existam)
 INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao)
+SELECT 'ADMINISTRADOR', 'ADMINISTRADOR', true, NOW()
+WHERE NOT EXISTS (SELECT 1 FROM public.tipo_usuario WHERE nome = 'ADMINISTRADOR')
+
+INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao)
 SELECT 'CLIENTE', 'CLIENTE', true, NOW()
 WHERE NOT EXISTS (SELECT 1 FROM public.tipo_usuario WHERE nome = 'CLIENTE');
 

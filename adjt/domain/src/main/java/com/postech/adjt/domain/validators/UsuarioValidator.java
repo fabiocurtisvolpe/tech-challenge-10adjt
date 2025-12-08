@@ -33,7 +33,7 @@ public class UsuarioValidator {
      */
     public static void validarParaCriacao(Usuario usuario) throws NotificacaoException {
         if (usuario == null) {
-            throw new NotificacaoException("Usuário não pode ser nulo");
+            throw new NotificacaoException(MensagemUtil.USUARIO_NULO);
         }
 
         validarNome(usuario.getNome());
@@ -55,7 +55,7 @@ public class UsuarioValidator {
      */
     public static void validarParaAtualizacao(Usuario usuario) throws NotificacaoException {
         if (usuario == null) {
-            throw new NotificacaoException("Usuário não pode ser nulo");
+            throw new NotificacaoException(MensagemUtil.USUARIO_NULO);
         }
 
         validarId(usuario.getId());
@@ -97,11 +97,11 @@ public class UsuarioValidator {
         }
 
         if (nome.length() < NOME_MINIMO_LENGTH) {
-            throw new NotificacaoException("Nome deve ter no mínimo " + NOME_MINIMO_LENGTH + " caracteres");
+            throw new NotificacaoException(MensagemUtil.NOME_MINIMO_CARACTERES);
         }
 
         if (nome.length() > NOME_MAXIMO_LENGTH) {
-            throw new NotificacaoException("Nome deve ter no máximo " + NOME_MAXIMO_LENGTH + " caracteres");
+            throw new NotificacaoException(MensagemUtil.NOME_MAXIMO_CARACTERES);
         }
     }
 
@@ -117,7 +117,7 @@ public class UsuarioValidator {
         }
 
         if (senha.length() < SENHA_MINIMA_LENGTH) {
-            throw new NotificacaoException("Senha deve ter no mínimo " + SENHA_MINIMA_LENGTH + " caracteres");
+            throw new NotificacaoException(MensagemUtil.SENHA_MINIMO_CARACTERES);
         }
     }
 

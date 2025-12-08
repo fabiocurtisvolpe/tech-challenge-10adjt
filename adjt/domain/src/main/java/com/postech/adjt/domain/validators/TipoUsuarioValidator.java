@@ -11,7 +11,7 @@ public class TipoUsuarioValidator {
 
     public static void validar(TipoUsuario tipoUsuario) throws NotificacaoException {
         if (tipoUsuario == null) {
-            throw new NotificacaoException("Tipo Usuario não pode ser nulo");
+            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NULO_VALIDACAO);
         }
 
         if (tipoUsuario.getNome() == null || tipoUsuario.getNome().trim().isEmpty()) {
@@ -19,11 +19,11 @@ public class TipoUsuarioValidator {
         }
 
         if (tipoUsuario.getNome().length() > NOME_MAXIMO_LENGTH) {
-            throw new NotificacaoException("Nome deve ter no máximo " + NOME_MAXIMO_LENGTH + " caracteres");
+            throw new NotificacaoException(MensagemUtil.NOME_MAXIMO_CARACTERES);
         }
 
         if (tipoUsuario.getDescricao() != null && tipoUsuario.getDescricao().length() > NOME_DESCRICAO_LENGTH) {
-            throw new NotificacaoException("Descrição deve ter no máximo " + NOME_DESCRICAO_LENGTH + " caracteres");
+            throw new NotificacaoException(MensagemUtil.DESCRICAO_MAXIMO_CARACTERES);
         }
     }
 }

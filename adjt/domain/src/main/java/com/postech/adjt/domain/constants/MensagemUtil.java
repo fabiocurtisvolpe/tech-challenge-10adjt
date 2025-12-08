@@ -9,6 +9,8 @@ public class MensagemUtil {
     public static final String USUARIO_EXISTENTE = "Usuário com esse email já existe.";
     public static final String TIPO_USUARIO_NULO = "Tipo de usuário é obrigatório";
     public static final String TIPO_USUARIO_NAO_ENCONTRADO = "Tipo de Usuário não encontrado.";
+    public static final String TIPO_COZINHA_NULO = "Tipo de cozinha não pode ser nulo";
+    public static final String TIPO_COZINHA_NAO_ENCONTRADO = "Tipo de Usuário não encontrado.";
     public static final String USUARIO_NAO_PERMITE_OPERACAO = "Usuário não permite a operação.";
     public static final String SENHA_ATUAL_INVALIDA = "Senha atual inválida.";
     public static final String NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO = "Não foi possível executar a operação.";
@@ -16,5 +18,18 @@ public class MensagemUtil {
     public static final String ENDERECO_EM_BRANCO = "Endereço do usuário é obrigatório.";
     public static final String NOME_EM_BRANCO = "Nome do usuário é obrigatório";
     public static final String PAGINA_SIZE_INVALIDA = "Página e tamanho devem ser positivos.";
+    public static final String USUARIO_NULO = "Usuário não pode ser nulo";
+    public static final String TIPO_USUARIO_NULO_VALIDACAO = "Tipo Usuario não pode ser nulo";
+    public static final String TIPO_COZINHA_NULO_VALIDACAO = "Tipo Cozinha não pode ser nulo";
+    public static final String NOME_MINIMO_CARACTERES = "Nome deve ter no mínimo 3 caracteres";
+    public static final String NOME_MAXIMO_CARACTERES = "Nome deve ter no máximo 50 caracteres";
+    public static final String SENHA_MINIMO_CARACTERES = "Senha deve ter no mínimo 6 caracteres";
+    public static final String DESCRICAO_MAXIMO_CARACTERES = "Descrição deve ter no máximo 200 caracteres";
+    public static final String RESTAURANTE_NULO = "Restaurante não pode ser nulo";
+    public static final String NOME_RESTAURANTE_OBRIGATORIO = "Nome do restaurante é obrigatório";
+    public static final String HORARIO_FUNCIONAMENTO_OBRIGATORIO = "Horário de funcionamento é obrigatório";
+    public static final String TIPO_COZINHA_OBRIGATORIO = "Tipo de cozinha é obrigatório";
+    public static final String ENDERECO_OBRIGATORIO = "Endereço é obrigatório";
+    public static final String DONO_RESTAURANTE_OBRIGATORIO = "Proprietário do restaurante é obrigatório";
 
 }
