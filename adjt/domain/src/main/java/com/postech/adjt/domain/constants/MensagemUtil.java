@@ -31,5 +31,10 @@ public class MensagemUtil {
     public static final String TIPO_COZINHA_OBRIGATORIO = "Tipo de cozinha é obrigatório";
     public static final String ENDERECO_OBRIGATORIO = "Endereço é obrigatório";
     public static final String DONO_RESTAURANTE_OBRIGATORIO = "Proprietário do restaurante é obrigatório";
+    public static final String CARDAPIO_NULO = "Cardápio não pode ser nulo";
+    public static final String NOME_CARDAPIO_OBRIGATORIO = "Nome do cardápio é obrigatório";
+    public static final String RESTAURANTE_OBRIGATORIO_CARDAPIO = "Restaurante é obrigatório para o cardápio";
+    public static final String DONO_RESTAURANTE_CARDAPIO = "Somente o dono do restaurante pode criar o cardápio";
+    public static final String PRECO_CARDAPIO_INVALIDO = "Preço do cardápio deve ser maior que zero";
 
 }

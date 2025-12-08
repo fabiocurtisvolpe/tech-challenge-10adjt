@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.constants.TamanhoUtil;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -21,10 +22,6 @@ import com.postech.adjt.domain.exception.NotificacaoException;
  */
 public class UsuarioValidator {
     
-    private static final int NOME_MINIMO_LENGTH = 3;
-    private static final int NOME_MAXIMO_LENGTH = 50;
-    private static final int SENHA_MINIMA_LENGTH = 6;
-
     /**
      * Valida usuário para criação
      * 
@@ -96,11 +93,11 @@ public class UsuarioValidator {
             throw new NotificacaoException(MensagemUtil.NOME_EM_BRANCO);
         }
 
-        if (nome.length() < NOME_MINIMO_LENGTH) {
+        if (nome.length() < TamanhoUtil.NOME_MINIMO_LENGTH) {
             throw new NotificacaoException(MensagemUtil.NOME_MINIMO_CARACTERES);
         }
 
-        if (nome.length() > NOME_MAXIMO_LENGTH) {
+        if (nome.length() > TamanhoUtil.NOME_MAXIMO_LENGTH) {
             throw new NotificacaoException(MensagemUtil.NOME_MAXIMO_CARACTERES);
         }
     }
@@ -116,7 +113,7 @@ public class UsuarioValidator {
             throw new NotificacaoException(MensagemUtil.SENHA_EM_BRANCO);
         }
 
-        if (senha.length() < SENHA_MINIMA_LENGTH) {
+        if (senha.length() < TamanhoUtil.SENHA_MINIMA_LENGTH) {
             throw new NotificacaoException(MensagemUtil.SENHA_MINIMO_CARACTERES);
         }
     }
