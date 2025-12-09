@@ -47,8 +47,9 @@ public class EnderecoEntidade extends BaseEntidade {
     @Column(name = "principal", nullable = false)
     private Boolean principal = false;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id", nullable = true)
     @JsonIgnore
     private UsuarioEntidade usuario;
 }

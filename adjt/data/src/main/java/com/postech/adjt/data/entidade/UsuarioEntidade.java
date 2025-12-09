@@ -39,7 +39,6 @@ public class UsuarioEntidade extends BaseEntidade {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnderecoEntidade> enderecos = new ArrayList<>();
 
-
     public void adicionarEndereco(EnderecoEntidade endereco) {
         endereco.setUsuario(this);
         this.enderecos.add(endereco);
