@@ -1,49 +1,25 @@
 package com.postech.adjt.domain.validators;
 
-import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.entidade.TipoCozinha;
-import com.postech.adjt.domain.entidade.TipoUsuario;
-import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.exception.NotificacaoException;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.entidade.TipoCozinha;
+import com.postech.adjt.domain.exception.NotificacaoException;
 
 @DisplayName("TipoCozinhaValidator - Testes Unitários")
 class TipoCozinhaValidatorTest {
 
-    private Usuario usuarioDono;
-    private Usuario usuarioCliente;
     private TipoCozinha tipoCozinhaValido;
 
     @BeforeEach
     void setUp() {
-        TipoUsuario tipoUsuario = TipoUsuario.builder()
-                .id(1)
-                .nome("DONO")
-                .descricao("Dono de restaurante")
-                .build();
-
-        usuarioDono = Usuario.builder()
-                .id(1)
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(tipoUsuario)
-                .isDono(true)
-                .build();
-
-        usuarioCliente = Usuario.builder()
-                .id(2)
-                .nome("Maria Silva")
-                .email("maria@email.com")
-                .senha("senha123")
-                .tipoUsuario(tipoUsuario)
-                .isDono(false)
-                .build();
-
+    
         tipoCozinhaValido = TipoCozinha.builder()
                 .id(1)
                 .nome("Italiana")
@@ -55,7 +31,7 @@ class TipoCozinhaValidatorTest {
     @DisplayName("Deve validar TipoCozinha válido com sucesso")
     void testValidarTipoCozinhaValido() {
         // Act & Assert
-        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(usuarioDono, tipoCozinhaValido));
+        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(tipoCozinhaValido));
     }
 
     @Test
@@ -63,7 +39,7 @@ class TipoCozinhaValidatorTest {
     void testValidarTipoCozinhaNulo() {
         // Act & Assert
         NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioDono, null);
+            TipoCozinhaValidator.validar(null);
         });
         assertEquals(MensagemUtil.TIPO_COZINHA_NULO, exception.getMessage());
     }
@@ -80,7 +56,7 @@ class TipoCozinhaValidatorTest {
 
         // Act & Assert
         NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioDono, tipoCozinha);
+            TipoCozinhaValidator.validar(tipoCozinha);
         });
         assertEquals(MensagemUtil.TIPO_COZINHA_NULO_VALIDACAO, exception.getMessage());
     }
@@ -97,7 +73,7 @@ class TipoCozinhaValidatorTest {
 
         // Act & Assert
         NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioDono, tipoCozinha);
+            TipoCozinhaValidator.validar(tipoCozinha);
         });
         assertEquals(MensagemUtil.TIPO_COZINHA_NULO_VALIDACAO, exception.getMessage());
     }
@@ -114,7 +90,7 @@ class TipoCozinhaValidatorTest {
 
         // Act & Assert
         NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioDono, tipoCozinha);
+            TipoCozinhaValidator.validar(tipoCozinha);
         });
         assertEquals(MensagemUtil.NOME_MINIMO_CARACTERES, exception.getMessage());
     }
@@ -132,30 +108,11 @@ class TipoCozinhaValidatorTest {
 
         // Act & Assert
         NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioDono, tipoCozinha);
+            TipoCozinhaValidator.validar(tipoCozinha);
         });
         assertEquals(MensagemUtil.NOME_MAXIMO_CARACTERES, exception.getMessage());
     }
 
-    @Test
-    @DisplayName("Deve lançar exceção ao validar TipoCozinha com usuário nulo")
-    void testValidarTipoCozinhaComUsuarioNulo() {
-        // Act & Assert
-        NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(null, tipoCozinhaValido);
-        });
-        assertEquals(MensagemUtil.USUARIO_NULO, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao validar TipoCozinha com usuário que não é dono")
-    void testValidarTipoCozinhaComUsuarioNaoDono() {
-        // Act & Assert
-        NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioCliente, tipoCozinhaValido);
-        });
-        assertEquals(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO, exception.getMessage());
-    }
 
     @Test
     @DisplayName("Deve lançar exceção ao validar TipoCozinha com descrição maior que 1000 caracteres")
@@ -170,7 +127,7 @@ class TipoCozinhaValidatorTest {
 
         // Act & Assert
         NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioDono, tipoCozinha);
+            TipoCozinhaValidator.validar(tipoCozinha);
         });
         assertEquals(MensagemUtil.DESCRICAO_MAXIMO_CARACTERES, exception.getMessage());
     }
@@ -186,7 +143,7 @@ class TipoCozinhaValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(usuarioDono, tipoCozinha));
+        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(tipoCozinha));
     }
 
     @Test
@@ -201,7 +158,7 @@ class TipoCozinhaValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(usuarioDono, tipoCozinha));
+        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(tipoCozinha));
     }
 
     @Test
@@ -216,7 +173,7 @@ class TipoCozinhaValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(usuarioDono, tipoCozinha));
+        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(tipoCozinha));
     }
 
     @Test
@@ -230,26 +187,6 @@ class TipoCozinhaValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(usuarioDono, tipoCozinha));
-    }
-
-    @Test
-    @DisplayName("Deve validar TipoCozinha com usuário que tem isDono null (deve falhar)")
-    void testValidarTipoCozinhaComUsuarioDononNull() {
-        // Arrange
-        Usuario usuarioComDonoNull = Usuario.builder()
-                .id(3)
-                .nome("Pedro Silva")
-                .email("pedro@email.com")
-                .senha("senha123")
-                .tipoUsuario(usuarioDono.getTipoUsuario())
-                .isDono(null)
-                .build();
-
-        // Act & Assert
-        NotificacaoException exception = assertThrows(NotificacaoException.class, () -> {
-            TipoCozinhaValidator.validar(usuarioComDonoNull, tipoCozinhaValido);
-        });
-        assertEquals(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO, exception.getMessage());
+        assertDoesNotThrow(() -> TipoCozinhaValidator.validar(tipoCozinha));
     }
 }

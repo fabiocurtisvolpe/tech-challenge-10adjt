@@ -4,7 +4,8 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.Usuario;
 
-public record RestauranteDTO(String nome,
+public record RestauranteDTO(Integer id, 
+    String nome,
     String descricao,
     String horarioFuncionamento,
     TipoCozinha tipoCozinha,

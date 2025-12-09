@@ -13,6 +13,7 @@ public interface CardapioRepositoryPort {
     Cardapio criar(Cardapio cardapio);
 
     Optional<Cardapio> obterPorId(Integer id);
+    Optional<Cardapio> obterPorNome(String nome);
 
     Cardapio atualizar(Cardapio cardapio);
 

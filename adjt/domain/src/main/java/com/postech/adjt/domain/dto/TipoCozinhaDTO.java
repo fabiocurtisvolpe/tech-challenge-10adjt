@@ -1,5 +1,5 @@
 package com.postech.adjt.domain.dto;
 
-public record TipoCozinhaDTO(String nome, String descricao) {
+public record TipoCozinhaDTO(Integer id, String nome, String descricao) {
 
 }

@@ -10,7 +10,7 @@ public class MensagemUtil {
     public static final String TIPO_USUARIO_NULO = "Tipo de usuário é obrigatório";
     public static final String TIPO_USUARIO_NAO_ENCONTRADO = "Tipo de Usuário não encontrado.";
     public static final String TIPO_COZINHA_NULO = "Tipo de cozinha não pode ser nulo";
-    public static final String TIPO_COZINHA_NAO_ENCONTRADO = "Tipo de Usuário não encontrado.";
+    public static final String TIPO_COZINHA_NAO_ENCONTRADO = "Tipo de cozinha não encontrado.";
     public static final String USUARIO_NAO_PERMITE_OPERACAO = "Usuário não permite a operação.";
     public static final String SENHA_ATUAL_INVALIDA = "Senha atual inválida.";
     public static final String NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO = "Não foi possível executar a operação.";
@@ -33,8 +33,12 @@ public class MensagemUtil {
     public static final String DONO_RESTAURANTE_OBRIGATORIO = "Proprietário do restaurante é obrigatório";
     public static final String CARDAPIO_NULO = "Cardápio não pode ser nulo";
     public static final String NOME_CARDAPIO_OBRIGATORIO = "Nome do cardápio é obrigatório";
+    public static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante não encontrado.";
     public static final String RESTAURANTE_OBRIGATORIO_CARDAPIO = "Restaurante é obrigatório para o cardápio";
     public static final String DONO_RESTAURANTE_CARDAPIO = "Somente o dono do restaurante pode criar o cardápio";
     public static final String PRECO_CARDAPIO_INVALIDO = "Preço do cardápio deve ser maior que zero";
-
+    public static final String RESTAURANTE_JA_CADASTRADO = "Restaurante com esse nome já está cadastrado.";
+    public static final String CARDAPIO_NAO_ENCONTRADO = "Cardápio não encontrado.";
+    public static final String CARDAPIO_JA_CADASTRADO = "Cardápio com esse nome já está cadastrado.";
+    public static final String USUARIO_NAO_E_DONO_RESTAURANTE = "Usuário logado não é o dono do restaurante.";
 }

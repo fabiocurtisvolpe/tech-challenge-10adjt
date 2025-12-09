@@ -18,6 +18,7 @@ class CardapioValidatorTest {
 
     private Restaurante restaurante;
     private Cardapio cardapioValido;
+    private Integer idUsuarioLogado;
 
     @BeforeEach
     void setUp() {
@@ -35,6 +36,8 @@ class CardapioValidatorTest {
                 .tipoUsuario(tipoUsuario)
                 .isDono(true)
                 .build();
+
+        idUsuarioLogado = 1;
 
         TipoCozinha tipoCozinha = TipoCozinha.builder()
                 .id(1)
@@ -72,7 +75,7 @@ class CardapioValidatorTest {
     @DisplayName("Deve validar cardápio válido com sucesso")
     void testValidarCardapioValido() {
         // Act & Assert
-        assertDoesNotThrow(() -> CardapioValidator.validar(cardapioValido));
+        assertDoesNotThrow(() -> CardapioValidator.validar(cardapioValido, idUsuarioLogado));
     }
 
     @Test
@@ -80,7 +83,7 @@ class CardapioValidatorTest {
     void testValidarCardapioNulo() {
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(null);
+            CardapioValidator.validar(null, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.CARDAPIO_NULO, exception.getMessage());
     }
@@ -98,7 +101,7 @@ class CardapioValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio);
+            CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.NOME_CARDAPIO_OBRIGATORIO, exception.getMessage());
     }
@@ -116,7 +119,7 @@ class CardapioValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio);
+            CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.NOME_CARDAPIO_OBRIGATORIO, exception.getMessage());
     }
@@ -134,7 +137,7 @@ class CardapioValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio);
+            CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.RESTAURANTE_OBRIGATORIO_CARDAPIO, exception.getMessage());
     }
@@ -160,7 +163,7 @@ class CardapioValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio);
+            CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.DONO_RESTAURANTE_CARDAPIO, exception.getMessage());
     }
@@ -178,7 +181,7 @@ class CardapioValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio);
+            CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.PRECO_CARDAPIO_INVALIDO, exception.getMessage());
     }
@@ -196,7 +199,7 @@ class CardapioValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio);
+            CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.PRECO_CARDAPIO_INVALIDO, exception.getMessage());
     }
@@ -214,7 +217,7 @@ class CardapioValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio);
+            CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.PRECO_CARDAPIO_INVALIDO, exception.getMessage());
     }
@@ -231,7 +234,7 @@ class CardapioValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> CardapioValidator.validar(cardapio));
+        assertDoesNotThrow(() -> CardapioValidator.validar(cardapio, idUsuarioLogado));
     }
 
     @Test
@@ -246,6 +249,6 @@ class CardapioValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> CardapioValidator.validar(cardapio));
+        assertDoesNotThrow(() -> CardapioValidator.validar(cardapio, idUsuarioLogado));
     }
 }

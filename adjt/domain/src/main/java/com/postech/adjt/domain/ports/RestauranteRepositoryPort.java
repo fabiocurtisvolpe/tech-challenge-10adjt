@@ -13,6 +13,7 @@ public interface RestauranteRepositoryPort {
     Restaurante criar(Restaurante restaurante);
 
     Optional<Restaurante> obterPorId(Integer id);
+    Optional<Restaurante> obterPorNome(String nome);
 
     Restaurante atualizar(Restaurante restaurante);
 

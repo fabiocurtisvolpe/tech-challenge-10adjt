@@ -5,7 +5,7 @@ import com.postech.adjt.domain.entidade.Cardapio;
 
 public class CardapioValidator {
 
-    public static void validar(Cardapio cardapio) {
+    public static void validar(Cardapio cardapio, Integer idUsuarioLogado) {
         
         if (cardapio == null) {
             throw new IllegalArgumentException(MensagemUtil.CARDAPIO_NULO);
@@ -21,6 +21,10 @@ public class CardapioValidator {
 
         if (cardapio.getRestaurante().getDono() == null) {
             throw new IllegalArgumentException(MensagemUtil.DONO_RESTAURANTE_CARDAPIO);
+        }
+
+        if (!cardapio.getRestaurante().getDono().getId().equals(idUsuarioLogado)) {
+            throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_E_DONO_RESTAURANTE);
         }
 
         if (cardapio.getPreco() == null || cardapio.getPreco() <= 0) {
