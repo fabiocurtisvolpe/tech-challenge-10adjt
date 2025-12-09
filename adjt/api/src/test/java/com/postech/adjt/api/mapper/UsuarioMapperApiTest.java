@@ -5,8 +5,7 @@ import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.EnderecoPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
 import com.postech.adjt.api.payload.TipoUsuarioPayLoad;
-import com.postech.adjt.domain.dto.AtualizaUsuarioDTO;
-import com.postech.adjt.domain.dto.NovoUsuarioDTO;
+import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -88,7 +87,7 @@ class UsuarioMapperApiTest {
         payload.setEnderecos(enderecos);
 
         // Act
-        NovoUsuarioDTO dto = UsuarioMapperApi.toNovoUsuarioDTO(payload, senhaEncriptada);
+        UsuarioDTO dto = UsuarioMapperApi.toNovoUsuarioDTO(payload, senhaEncriptada);
 
         // Assert
         assertNotNull(dto);
@@ -138,7 +137,7 @@ class UsuarioMapperApiTest {
         payload.setEnderecos(enderecos);
 
         // Act
-        NovoUsuarioDTO dto = UsuarioMapperApi.toNovoUsuarioDTO(payload, senhaEncriptada);
+        UsuarioDTO dto = UsuarioMapperApi.toNovoUsuarioDTO(payload, senhaEncriptada);
 
         // Assert
         assertNotNull(dto);
@@ -148,7 +147,7 @@ class UsuarioMapperApiTest {
     }
 
     @Test
-    @DisplayName("Deve mapear AtualizaUsuarioPayLoad para AtualizaUsuarioDTO com sucesso")
+    @DisplayName("Deve mapear AtualizaUsuarioPayLoad para UsuarioDTO com sucesso")
     void testMapearAtualizaUsuarioPayLoadComSucesso() {
         // Arrange
         AtualizaUsuarioPayLoad payload = new AtualizaUsuarioPayLoad();
@@ -171,7 +170,7 @@ class UsuarioMapperApiTest {
         payload.setEnderecos(enderecos);
 
         // Act
-        AtualizaUsuarioDTO dto = UsuarioMapperApi.toAtualizaUsuarioDTO(payload);
+        UsuarioDTO dto = UsuarioMapperApi.toAtualizaUsuarioDTO(payload);
 
         // Assert
         assertNotNull(dto);
@@ -216,7 +215,7 @@ class UsuarioMapperApiTest {
         payload.setEnderecos(enderecos);
 
         // Act
-        AtualizaUsuarioDTO dto = UsuarioMapperApi.toAtualizaUsuarioDTO(payload);
+        UsuarioDTO dto = UsuarioMapperApi.toAtualizaUsuarioDTO(payload);
 
         // Assert
         assertNotNull(dto);
@@ -476,7 +475,7 @@ class UsuarioMapperApiTest {
         payload.setEnderecos(enderecos);
 
         // Act
-        NovoUsuarioDTO dto = UsuarioMapperApi.toNovoUsuarioDTO(payload, senhaEncriptada);
+        UsuarioDTO dto = UsuarioMapperApi.toNovoUsuarioDTO(payload, senhaEncriptada);
 
         // Assert
         assertNotNull(dto);

@@ -1,7 +1,7 @@
 package com.postech.adjt.domain.usecase.usuario;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.dto.NovoUsuarioDTO;
+import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.UsuarioFactory;
@@ -20,7 +20,7 @@ public class CadastrarUsuarioUseCase {
         return new CadastrarUsuarioUseCase(usuarioRepository);
     }
 
-    public Usuario run(NovoUsuarioDTO dto) {
+    public Usuario run(UsuarioDTO dto) {
         
 
         final Usuario usuarioExistente = this.usuarioRepository.obterPorEmail(dto.email()).orElse(null);

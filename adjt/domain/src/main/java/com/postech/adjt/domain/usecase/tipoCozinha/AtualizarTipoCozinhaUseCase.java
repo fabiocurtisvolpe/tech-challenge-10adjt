@@ -26,11 +26,11 @@ public class AtualizarTipoCozinhaUseCase {
         final TipoCozinha TipoCozinhaExistente = this.tipoCozinhaRepository.obterPorId(dto.id()).orElse(null);
         
         if (TipoCozinhaExistente == null) {
-            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+            throw new NotificacaoException(MensagemUtil.TIPO_COZINHA_NAO_ENCONTRADO);
         }
 
-        final TipoCozinha tipoCozinha = TipoCozinhaFactory.atualizar(TipoCozinhaExistente.getId(), TipoCozinhaExistente.getNome(), 
-        TipoCozinhaExistente.getDescricao(), true);
+        final TipoCozinha tipoCozinha = TipoCozinhaFactory.atualizar(TipoCozinhaExistente.getId(), 
+                dto.nome(), dto.descricao(), true);
 
         TipoCozinhaValidator.validar(tipoCozinha);
 

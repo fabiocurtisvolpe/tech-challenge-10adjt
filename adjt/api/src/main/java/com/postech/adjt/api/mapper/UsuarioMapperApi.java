@@ -9,8 +9,7 @@ import com.postech.adjt.api.dto.EnderecoRespostaDTO;
 import com.postech.adjt.api.dto.UsuarioRespostaDTO;
 import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
-import com.postech.adjt.domain.dto.AtualizaUsuarioDTO;
-import com.postech.adjt.domain.dto.NovoUsuarioDTO;
+import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -18,7 +17,7 @@ import com.postech.adjt.domain.entidade.Usuario;
 @Component
 public class UsuarioMapperApi {
 
-        public static NovoUsuarioDTO toNovoUsuarioDTO(NovoUsuarioPayLoad payload, String senhaEncriptada) {
+        public static UsuarioDTO toNovoUsuarioDTO(NovoUsuarioPayLoad payload, String senhaEncriptada) {
                 
                 List<Endereco> enderecos = payload.getEnderecos().stream()
                                 .map(dto -> Endereco.builder()
@@ -40,7 +39,7 @@ public class UsuarioMapperApi {
                                 .descricao(payload.getTipoUsuario().getDescricao())
                                 .build();
 
-                return new NovoUsuarioDTO(
+                return new UsuarioDTO(
                                 payload.getNome(),
                                 payload.getEmail(),
                                 senhaEncriptada,
@@ -48,7 +47,7 @@ public class UsuarioMapperApi {
                                 enderecos);
         }
 
-        public static AtualizaUsuarioDTO toAtualizaUsuarioDTO(AtualizaUsuarioPayLoad payload) {
+        public static UsuarioDTO toAtualizaUsuarioDTO(AtualizaUsuarioPayLoad payload) {
                 
                 List<Endereco> enderecos = payload.getEnderecos().stream()
                                 .map(dto -> Endereco.builder()
@@ -64,9 +63,11 @@ public class UsuarioMapperApi {
                                                 .build())
                                 .collect(Collectors.toList());
 
-                return new AtualizaUsuarioDTO(
+                return new UsuarioDTO(
                                 payload.getNome(),
                                 payload.getEmail(),
+                                null,
+                                null,
                                 enderecos);
         }
 

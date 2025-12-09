@@ -22,7 +22,7 @@ public class CadastrarCardapioUseCase {
 
     public Cardapio run(CardapioDTO dto) {
 
-        final Cardapio cardapioExistente = this.cardapioRepository.obterPorId(dto.id()).orElse(null);
+        final Cardapio cardapioExistente = this.cardapioRepository.obterPorNome(dto.nome()).orElse(null);
 
         if (cardapioExistente != null) {
             throw new NotificacaoException(MensagemUtil.CARDAPIO_JA_CADASTRADO);

@@ -3,35 +3,35 @@ package com.postech.adjt.domain.usecase.restaurante;
 import java.util.Optional;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
 
 public class ObterRestaurantePorIdUseCase {
 
-    private final TipoUsuarioRepositoryPort tipoUsuarioRepository;
+    private final RestauranteRepositoryPort restauranteRepository;
 
-    private ObterRestaurantePorIdUseCase(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
-        this.tipoUsuarioRepository = tipoUsuarioRepository;
+    private ObterRestaurantePorIdUseCase(RestauranteRepositoryPort restauranteRepository) {
+        this.restauranteRepository = restauranteRepository;
     }
 
-    public static ObterRestaurantePorIdUseCase create(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
-        return new ObterRestaurantePorIdUseCase(tipoUsuarioRepository);
+    public static ObterRestaurantePorIdUseCase create(RestauranteRepositoryPort restauranteRepository) {
+        return new ObterRestaurantePorIdUseCase(restauranteRepository);
     }
 
-    public Optional<TipoUsuario> run(Integer id) {
+    public Optional<Restaurante> run(Integer id) {
 
         if (id == null || id <= 0) {
             throw new NotificacaoException(MensagemUtil.ID_NULO);
         }
         
-        Optional<TipoUsuario> tipoUsuarioExistente = this.tipoUsuarioRepository.obterPorId(id);
+        Optional<Restaurante> restauranteExistente = this.restauranteRepository.obterPorId(id);
         
-        if (tipoUsuarioExistente.isEmpty()) {
-            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+        if (restauranteExistente.isEmpty()) {
+            throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
         }
 
-        return tipoUsuarioExistente;
+        return restauranteExistente;
     }
  
 }

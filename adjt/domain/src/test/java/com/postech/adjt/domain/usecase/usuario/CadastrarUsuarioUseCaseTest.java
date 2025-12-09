@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.postech.adjt.domain.dto.NovoUsuarioDTO;
+import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -40,7 +40,7 @@ class CadastrarUsuarioUseCaseTest {
     private CadastrarUsuarioUseCase useCase;
 
     private TipoUsuario tipoUsuarioValido;
-    private NovoUsuarioDTO novoUsuarioDTO;
+    private UsuarioDTO novoUsuarioDTO;
     private List<Endereco> enderecos;
 
     @BeforeEach
@@ -67,7 +67,7 @@ class CadastrarUsuarioUseCaseTest {
                 .build();
 
         // Preparar DTO de novo usuário
-        novoUsuarioDTO = new NovoUsuarioDTO(
+        novoUsuarioDTO = new UsuarioDTO(
                 "Novo Usuário",
                 "novo.usuario@email.com",
                 "senha123Segura",
@@ -190,7 +190,7 @@ class CadastrarUsuarioUseCaseTest {
                 .principal(false)
                 .build());
 
-        NovoUsuarioDTO dtoMultiplosEnderecos = new NovoUsuarioDTO(
+        UsuarioDTO dtoMultiplosEnderecos = new UsuarioDTO(
                 "Usuário Multi",
                 "usuario.multi@email.com",
                 "senha456",
@@ -253,7 +253,7 @@ class CadastrarUsuarioUseCaseTest {
     @DisplayName("Deve criar usuários de diferentes tipos")
     void testCadastrarUsuariosDiferentesTipos() {
         // Arrange - Usuário Cliente
-        NovoUsuarioDTO dtoCliente = new NovoUsuarioDTO(
+        UsuarioDTO dtoCliente = new UsuarioDTO(
                 "Cliente",
                 "cliente@email.com",
                 "senha1",
@@ -282,7 +282,7 @@ class CadastrarUsuarioUseCaseTest {
         assertEquals(tipoUsuarioValido, resultadoCliente.getTipoUsuario());
 
         // Arrange - Usuário Fornecedor
-        NovoUsuarioDTO dtoFornecedor = new NovoUsuarioDTO(
+        UsuarioDTO dtoFornecedor = new UsuarioDTO(
                 "Fornecedor",
                 "fornecedor@email.com",
                 "senha2",

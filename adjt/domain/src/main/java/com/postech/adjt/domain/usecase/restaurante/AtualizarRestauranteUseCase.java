@@ -29,14 +29,14 @@ public class AtualizarRestauranteUseCase {
             throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
         }
 
-        final Restaurante novoRestaurante = RestauranteFactory.atualizar(restauranteExistente.getId(),
+        final Restaurante restaurante = RestauranteFactory.atualizar(restauranteExistente.getId(),
                 dto.nome(), dto.descricao(), dto.horarioFuncionamento(),
-                dto.tipoCozinha(), dto.endereco(), dto.dono(),
+                dto.tipoCozinha(), dto.endereco(), restauranteExistente.getDono(),
                 true);
 
-        RestauranteValidator.validar(novoRestaurante);
+        RestauranteValidator.validar(restaurante, dto.idUsuarioLogado());
 
-        return restauranteRepository.atualizar(novoRestaurante);
+        return restauranteRepository.atualizar(restaurante);
     }
 
 }

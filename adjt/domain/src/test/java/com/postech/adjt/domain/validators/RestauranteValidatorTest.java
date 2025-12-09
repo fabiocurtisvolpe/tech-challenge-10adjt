@@ -19,6 +19,7 @@ class RestauranteValidatorTest {
     private TipoCozinha tipoCozinha;
     private Endereco endereco;
     private Restaurante restauranteValido;
+    private Integer idUsuarioLogado;
 
     @BeforeEach
     void setUp() {
@@ -36,6 +37,8 @@ class RestauranteValidatorTest {
                 .tipoUsuario(tipoUsuario)
                 .isDono(true)
                 .build();
+
+        idUsuarioLogado = 1;
 
         tipoCozinha = TipoCozinha.builder()
                 .id(1)
@@ -66,7 +69,7 @@ class RestauranteValidatorTest {
     @DisplayName("Deve validar restaurante válido com sucesso")
     void testValidarRestauranteValido() {
         // Act & Assert
-        assertDoesNotThrow(() -> RestauranteValidator.validar(restauranteValido));
+        assertDoesNotThrow(() -> RestauranteValidator.validar(restauranteValido, idUsuarioLogado));
     }
 
     @Test
@@ -74,7 +77,7 @@ class RestauranteValidatorTest {
     void testValidarRestauranteNulo() {
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(null);
+            RestauranteValidator.validar(null, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.RESTAURANTE_NULO, exception.getMessage());
     }
@@ -93,7 +96,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.NOME_RESTAURANTE_OBRIGATORIO, exception.getMessage());
     }
@@ -112,7 +115,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.NOME_RESTAURANTE_OBRIGATORIO, exception.getMessage());
     }
@@ -131,7 +134,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.NOME_MINIMO_CARACTERES, exception.getMessage());
     }
@@ -151,7 +154,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.NOME_MAXIMO_CARACTERES, exception.getMessage());
     }
@@ -170,7 +173,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.HORARIO_FUNCIONAMENTO_OBRIGATORIO, exception.getMessage());
     }
@@ -189,7 +192,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.HORARIO_FUNCIONAMENTO_OBRIGATORIO, exception.getMessage());
     }
@@ -208,7 +211,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.TIPO_COZINHA_OBRIGATORIO, exception.getMessage());
     }
@@ -227,7 +230,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.ENDERECO_OBRIGATORIO, exception.getMessage());
     }
@@ -246,7 +249,7 @@ class RestauranteValidatorTest {
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante);
+            RestauranteValidator.validar(restaurante, idUsuarioLogado);
         });
         assertEquals(MensagemUtil.DONO_RESTAURANTE_OBRIGATORIO, exception.getMessage());
     }
@@ -264,7 +267,7 @@ class RestauranteValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> RestauranteValidator.validar(restaurante));
+        assertDoesNotThrow(() -> RestauranteValidator.validar(restaurante, idUsuarioLogado));
     }
 
     @Test
@@ -281,6 +284,6 @@ class RestauranteValidatorTest {
                 .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> RestauranteValidator.validar(restaurante));
+        assertDoesNotThrow(() -> RestauranteValidator.validar(restaurante, idUsuarioLogado));
     }
 }

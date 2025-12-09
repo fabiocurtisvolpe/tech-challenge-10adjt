@@ -3,35 +3,35 @@ package com.postech.adjt.domain.usecase.tipoCozinha;
 import java.util.Optional;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
 
 public class ObterTipoCozinhaPorIdUseCase {
 
-    private final TipoUsuarioRepositoryPort tipoUsuarioRepository;
+    private final TipoCozinhaRepositoryPort tipoCozinhaRepository;
 
-    private ObterTipoCozinhaPorIdUseCase(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
-        this.tipoUsuarioRepository = tipoUsuarioRepository;
+    private ObterTipoCozinhaPorIdUseCase(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+        this.tipoCozinhaRepository = tipoCozinhaRepository;
     }
 
-    public static ObterTipoCozinhaPorIdUseCase create(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
-        return new ObterTipoCozinhaPorIdUseCase(tipoUsuarioRepository);
+    public static ObterTipoCozinhaPorIdUseCase create(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+        return new ObterTipoCozinhaPorIdUseCase(tipoCozinhaRepository);
     }
 
-    public Optional<TipoUsuario> run(Integer id) {
+    public Optional<TipoCozinha> run(Integer id) {
 
         if (id == null || id <= 0) {
             throw new NotificacaoException(MensagemUtil.ID_NULO);
         }
         
-        Optional<TipoUsuario> tipoUsuarioExistente = this.tipoUsuarioRepository.obterPorId(id);
+        Optional<TipoCozinha> tipoCozinhaExistente = this.tipoCozinhaRepository.obterPorId(id);
         
-        if (tipoUsuarioExistente.isEmpty()) {
-            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+        if (tipoCozinhaExistente.isEmpty()) {
+            throw new NotificacaoException(MensagemUtil.TIPO_COZINHA_NAO_ENCONTRADO);
         }
 
-        return tipoUsuarioExistente;
+        return tipoCozinhaExistente;
     }
  
 }

@@ -6,7 +6,7 @@ import com.postech.adjt.domain.entidade.Restaurante;
 
 public class RestauranteValidator {
 
-    public static void validar(Restaurante restaurante) {
+    public static void validar(Restaurante restaurante, Integer idUsuarioLogado) {
         
         if (restaurante == null) {
             throw new IllegalArgumentException(MensagemUtil.RESTAURANTE_NULO);
@@ -40,8 +40,23 @@ public class RestauranteValidator {
             throw new IllegalArgumentException(MensagemUtil.DONO_RESTAURANTE_OBRIGATORIO);
         }
 
+        if (!restaurante.getDono().getId().equals(idUsuarioLogado)) {
+            throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_E_DONO_RESTAURANTE);
+        }
+
         if (restaurante.getDescricao() != null && restaurante.getDescricao().length() > TamanhoUtil.DESCRICAO_MAXIMA_LENGTH) {
             throw new IllegalArgumentException(MensagemUtil.DESCRICAO_MAXIMO_CARACTERES);
+        }
+    }
+
+    public static void validarAtivarInativar(Restaurante restaurante, Integer idUsuarioLogado) {
+
+         if (restaurante.getDono() == null) {
+            throw new IllegalArgumentException(MensagemUtil.DONO_RESTAURANTE_OBRIGATORIO);
+        }
+
+        if (!restaurante.getDono().getId().equals(idUsuarioLogado)) {
+            throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_E_DONO_RESTAURANTE);
         }
     }
 

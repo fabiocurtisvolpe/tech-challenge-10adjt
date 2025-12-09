@@ -17,8 +17,7 @@ import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
 import com.postech.adjt.api.payload.PaginacaoPayLoad;
 import com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad;
-import com.postech.adjt.domain.dto.AtualizaUsuarioDTO;
-import com.postech.adjt.domain.dto.NovoUsuarioDTO;
+import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -106,7 +105,7 @@ public class UsuarioController {
         public UsuarioRespostaDTO criar(@RequestBody @Valid NovoUsuarioPayLoad dto) {
 
                 String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
-                NovoUsuarioDTO usuarioDTO = UsuarioMapperApi.toNovoUsuarioDTO(dto, senhaEncriptada);
+                UsuarioDTO usuarioDTO = UsuarioMapperApi.toNovoUsuarioDTO(dto, senhaEncriptada);
 
                 Usuario usuario = this.cadastrarUsuarioUseCase.run(usuarioDTO);
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -122,7 +121,7 @@ public class UsuarioController {
         @PutMapping("/atualizar")
         public UsuarioRespostaDTO atualizar(@RequestBody @Valid AtualizaUsuarioPayLoad dto) {
 
-                AtualizaUsuarioDTO usuarioDTO = UsuarioMapperApi.toAtualizaUsuarioDTO(dto);
+                UsuarioDTO usuarioDTO = UsuarioMapperApi.toAtualizaUsuarioDTO(dto);
                 Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
