@@ -18,14 +18,14 @@ import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.CardapioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AtualizarCardapioUseCase - Testes Unitários")
 class AtualizarCardapioUseCaseTest {
 
     @Mock
-    private CardapioRepositoryPort cardapioRepository;
+    private GenericRepositoryPort<Cardapio> cardapioRepository;
 
     private AtualizarCardapioUseCase useCase;
     private CardapioDTO cardapioAtualizadoDTO;

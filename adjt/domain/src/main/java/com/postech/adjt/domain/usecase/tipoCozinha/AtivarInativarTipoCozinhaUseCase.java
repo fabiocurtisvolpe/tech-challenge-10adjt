@@ -4,17 +4,17 @@ import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoCozinhaFactory;
-import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class AtivarInativarTipoCozinhaUseCase {
 
-    private final TipoCozinhaRepositoryPort tipoCozinhaRepository;
-
-    private AtivarInativarTipoCozinhaUseCase(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+    private final GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
+    
+    private AtivarInativarTipoCozinhaUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         this.tipoCozinhaRepository = tipoCozinhaRepository;
     }
 
-    public static AtivarInativarTipoCozinhaUseCase create(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+    public static AtivarInativarTipoCozinhaUseCase create(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         return new AtivarInativarTipoCozinhaUseCase(tipoCozinhaRepository);
     }
 

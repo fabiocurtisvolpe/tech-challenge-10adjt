@@ -13,17 +13,18 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.RestauranteEntirade;
 import com.postech.adjt.data.mapper.RestauranteMapper;
+import com.postech.adjt.data.repository.spring.SpringDataRestauranteRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Restaurante;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public class RestauranteRepositoryAdapter implements RestauranteRepositoryPort {
+public class RestauranteRepositoryAdapter implements GenericRepositoryPort<Restaurante> {
 
     private final SpringDataRestauranteRepository dataRestauranteRepository;
 
@@ -51,6 +52,7 @@ public class RestauranteRepositoryAdapter implements RestauranteRepositoryPort {
     @Override
     @Transactional
     public Optional<Restaurante> obterPorNome(String nome) {
+        Objects.requireNonNull(nome, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         return dataRestauranteRepository.findByNome(nome).map(RestauranteMapper::toDomain);
     }
 
@@ -101,5 +103,10 @@ public class RestauranteRepositoryAdapter implements RestauranteRepositoryPort {
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         dataRestauranteRepository.save(entidade);
         return true;
+    }
+
+    @Override
+    public Optional<Restaurante> obterPorEmail(String email) {
+        throw new UnsupportedOperationException("Unimplemented method 'obterPorEmail'");
     }
 }

@@ -2,6 +2,7 @@ package com.postech.adjt.domain.usecase.restaurante;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -21,14 +22,14 @@ import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PaginadoRestauranteUseCase - Testes Unitários")
 class PaginadoRestauranteUseCaseTest {
 
     @Mock
-    private RestauranteRepositoryPort restauranteRepository;
+    private GenericRepositoryPort<Restaurante> restauranteRepository;
 
     private PaginadoRestauranteUseCase useCase;
     private List<Restaurante> restaurantes;

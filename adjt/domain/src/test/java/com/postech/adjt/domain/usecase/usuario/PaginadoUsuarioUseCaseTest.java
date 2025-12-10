@@ -22,7 +22,7 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 /**
  * Testes unitários para PaginadoUsuarioUseCase
@@ -37,7 +37,7 @@ import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 class PaginadoUsuarioUseCaseTest {
 
     @Mock
-    private UsuarioRepositoryPort usuarioRepository;
+    private GenericRepositoryPort<Usuario> usuarioRepository;
 
     private PaginadoUsuarioUseCase useCase;
 

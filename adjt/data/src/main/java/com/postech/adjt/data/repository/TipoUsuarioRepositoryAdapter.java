@@ -13,17 +13,18 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.data.mapper.TipoUsuarioMapper;
+import com.postech.adjt.data.repository.spring.SpringDataTipoUsuarioRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public class TipoUsuarioRepositoryAdapter implements TipoUsuarioRepositoryPort {
+public class TipoUsuarioRepositoryAdapter implements GenericRepositoryPort<TipoUsuario> {
 
     private final SpringDataTipoUsuarioRepository dataTipoUsuarioRepository;
 
@@ -95,5 +96,15 @@ public class TipoUsuarioRepositoryAdapter implements TipoUsuarioRepositoryPort {
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         dataTipoUsuarioRepository.save(entidade);
         return true;
+    }
+
+    @Override
+    public Optional<TipoUsuario> obterPorNome(String nome) {
+        return dataTipoUsuarioRepository.findByNome(nome).map(TipoUsuarioMapper::toDomain);
+    }
+
+    @Override
+    public Optional<TipoUsuario> obterPorEmail(String email) {
+        throw new UnsupportedOperationException("Unimplemented method 'obterPorEmail'");
     }
 }

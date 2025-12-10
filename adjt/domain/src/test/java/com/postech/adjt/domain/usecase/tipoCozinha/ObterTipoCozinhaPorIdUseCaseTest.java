@@ -15,14 +15,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ObterTipoCozinhaPorIdUseCase - Testes Unitários")
 class ObterTipoCozinhaPorIdUseCaseTest {
 
     @Mock
-    private TipoCozinhaRepositoryPort tipoCozinhaRepository;
+    private GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
 
     private ObterTipoCozinhaPorIdUseCase useCase;
     private TipoCozinha tipoCozinhaValida;

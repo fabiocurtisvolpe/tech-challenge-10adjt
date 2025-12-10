@@ -5,18 +5,18 @@ import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.TipoUsuarioValidator;
 
 public class AtualizarTipoUsuarioUseCase {
 
-    private final TipoUsuarioRepositoryPort tipoUsuarioRepository;
+    private final GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository;
 
-    private AtualizarTipoUsuarioUseCase(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
+    private AtualizarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         this.tipoUsuarioRepository = tipoUsuarioRepository;
     }
 
-    public static AtualizarTipoUsuarioUseCase create(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
+    public static AtualizarTipoUsuarioUseCase create(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return new AtualizarTipoUsuarioUseCase(tipoUsuarioRepository);
     }
 

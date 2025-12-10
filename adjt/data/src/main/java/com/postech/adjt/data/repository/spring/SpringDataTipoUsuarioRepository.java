@@ -1,4 +1,4 @@
-package com.postech.adjt.data.repository;
+package com.postech.adjt.data.repository.spring;
 
 import java.util.Optional;
 

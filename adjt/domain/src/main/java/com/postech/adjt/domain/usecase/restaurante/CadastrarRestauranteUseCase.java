@@ -6,23 +6,22 @@ import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.RestauranteFactory;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.RestauranteValidator;
 
 public class CadastrarRestauranteUseCase {
 
-    private final RestauranteRepositoryPort restauranteRepository;
-    private final UsuarioRepositoryPort usuarioRepository;
+    private final GenericRepositoryPort<Restaurante> restauranteRepository;
+    private final GenericRepositoryPort<Usuario> usuarioRepository;
 
-    private CadastrarRestauranteUseCase(RestauranteRepositoryPort restauranteRepository, 
-        UsuarioRepositoryPort usuarioRepository) {
+    private CadastrarRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository, 
+        GenericRepositoryPort<Usuario> usuarioRepository) {
         this.restauranteRepository = restauranteRepository;
         this.usuarioRepository = usuarioRepository;
     }
 
-    public static CadastrarRestauranteUseCase create(RestauranteRepositoryPort restauranteRepository, 
-        UsuarioRepositoryPort usuarioRepository) {
+    public static CadastrarRestauranteUseCase create(GenericRepositoryPort<Restaurante> restauranteRepository, 
+        GenericRepositoryPort<Usuario> usuarioRepository) {
         return new CadastrarRestauranteUseCase(restauranteRepository, usuarioRepository);
     }
 

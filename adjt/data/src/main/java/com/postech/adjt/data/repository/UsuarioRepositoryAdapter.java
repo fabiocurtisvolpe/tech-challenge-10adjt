@@ -13,17 +13,18 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.UsuarioEntidade;
 import com.postech.adjt.data.mapper.UsuarioMapper;
+import com.postech.adjt.data.repository.spring.SpringDataUsuarioRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
+public class UsuarioRepositoryAdapter implements GenericRepositoryPort<Usuario> {
 
     private final SpringDataUsuarioRepository dataUsuarioRepository;
 
@@ -51,6 +52,7 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
     @Override
     @Transactional
     public Optional<Usuario> obterPorEmail(String email) {
+        Objects.requireNonNull(email, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         return dataUsuarioRepository.findByEmail(email).map(UsuarioMapper::toDomain);
     }
 
@@ -101,5 +103,11 @@ public class UsuarioRepositoryAdapter implements UsuarioRepositoryPort {
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         dataUsuarioRepository.save(entidade);
         return true;
+    }
+
+    @Override
+    public Optional<Usuario> obterPorNome(String nome) {
+        Objects.requireNonNull(nome, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        return dataUsuarioRepository.findByNome(nome).map(UsuarioMapper::toDomain);
     }
 }

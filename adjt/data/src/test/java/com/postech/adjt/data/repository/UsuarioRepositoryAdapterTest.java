@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import com.postech.adjt.data.entidade.UsuarioEntidade;
+import com.postech.adjt.data.repository.spring.SpringDataUsuarioRepository;
 import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.entidade.Endereco;

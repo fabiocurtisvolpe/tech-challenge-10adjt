@@ -8,17 +8,17 @@ import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class PaginadoUsuarioUseCase {
 
-    private final UsuarioRepositoryPort usuarioRepository;
-
-    private PaginadoUsuarioUseCase(UsuarioRepositoryPort usuarioRepository) {
+    private final GenericRepositoryPort<Usuario> usuarioRepository;
+    
+    private PaginadoUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public static PaginadoUsuarioUseCase create(UsuarioRepositoryPort usuarioRepository) {
+    public static PaginadoUsuarioUseCase create(GenericRepositoryPort<Usuario> usuarioRepository) {
         return new PaginadoUsuarioUseCase(usuarioRepository);
     }
 

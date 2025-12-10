@@ -19,18 +19,17 @@ import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CadastrarRestauranteUseCase - Testes Unitários")
 class CadastrarRestauranteUseCaseTest {
 
     @Mock
-    private RestauranteRepositoryPort restauranteRepository;
+    private GenericRepositoryPort<Restaurante> restauranteRepository;
 
     @Mock
-    private UsuarioRepositoryPort usuarioRepository;
+    private GenericRepositoryPort<Usuario> usuarioRepository;
 
     private CadastrarRestauranteUseCase useCase;
     private RestauranteDTO novoRestauranteDTO;

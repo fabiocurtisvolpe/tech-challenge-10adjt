@@ -5,20 +5,19 @@ import com.postech.adjt.domain.dto.TipoCozinhaDTO;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoCozinhaFactory;
-import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.TipoCozinhaValidator;
 
 public class AtualizarTipoCozinhaUseCase {
 
-    private final TipoCozinhaRepositoryPort tipoCozinhaRepository;
+    private final GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
 
-
-    private AtualizarTipoCozinhaUseCase(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+    private AtualizarTipoCozinhaUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         this.tipoCozinhaRepository = tipoCozinhaRepository;
     }
 
-    public static AtualizarTipoCozinhaUseCase create(TipoCozinhaRepositoryPort tipoCozinhaRepositoryPort) {
-        return new AtualizarTipoCozinhaUseCase(tipoCozinhaRepositoryPort);
+    public static AtualizarTipoCozinhaUseCase create(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+        return new AtualizarTipoCozinhaUseCase(tipoCozinhaRepository);
     }
 
     public TipoCozinha run(TipoCozinhaDTO dto) {
@@ -36,5 +35,4 @@ public class AtualizarTipoCozinhaUseCase {
 
         return tipoCozinhaRepository.atualizar(tipoCozinha);
     }
-
 }

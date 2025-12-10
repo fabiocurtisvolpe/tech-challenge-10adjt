@@ -4,18 +4,18 @@ import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.TipoUsuarioValidator;
 
 public class CadastrarTipoUsuarioUseCase {
 
-    private final TipoUsuarioRepositoryPort tipoUsuarioRepository;
+    private final GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository;
 
-    private CadastrarTipoUsuarioUseCase(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
+    private CadastrarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         this.tipoUsuarioRepository = tipoUsuarioRepository;
     }
 
-    public static CadastrarTipoUsuarioUseCase create(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
+    public static CadastrarTipoUsuarioUseCase create(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return new CadastrarTipoUsuarioUseCase(tipoUsuarioRepository);
     }
 

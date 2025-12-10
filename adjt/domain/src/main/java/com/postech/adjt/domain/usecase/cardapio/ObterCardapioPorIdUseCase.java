@@ -5,17 +5,17 @@ import java.util.Optional;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.CardapioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class ObterCardapioPorIdUseCase {
 
-    private final CardapioRepositoryPort cardapioRepository;
+    private final GenericRepositoryPort<Cardapio> cardapioRepository;
 
-    private ObterCardapioPorIdUseCase(CardapioRepositoryPort cardapioRepository) {
+    private ObterCardapioPorIdUseCase(GenericRepositoryPort<Cardapio> cardapioRepository) {
         this.cardapioRepository = cardapioRepository;
     }
 
-    public static ObterCardapioPorIdUseCase create(CardapioRepositoryPort cardapioRepository) {
+    public static ObterCardapioPorIdUseCase create(GenericRepositoryPort<Cardapio> cardapioRepository) {
         return new ObterCardapioPorIdUseCase(cardapioRepository);
     }
 

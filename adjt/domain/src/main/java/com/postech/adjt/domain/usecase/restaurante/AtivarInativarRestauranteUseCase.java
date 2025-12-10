@@ -4,18 +4,18 @@ import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.RestauranteFactory;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.RestauranteValidator;
 
 public class AtivarInativarRestauranteUseCase {
 
-    private final RestauranteRepositoryPort restauranteRepository;
-
-    private AtivarInativarRestauranteUseCase(RestauranteRepositoryPort restauranteRepository) {
+    private final GenericRepositoryPort<Restaurante> restauranteRepository;
+    
+    private AtivarInativarRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository) {
         this.restauranteRepository = restauranteRepository;
     }
 
-    public static AtivarInativarRestauranteUseCase create(RestauranteRepositoryPort restauranteRepository) {
+    public static AtivarInativarRestauranteUseCase create(GenericRepositoryPort<Restaurante> restauranteRepository) {
         return new AtivarInativarRestauranteUseCase(restauranteRepository);
     }
 

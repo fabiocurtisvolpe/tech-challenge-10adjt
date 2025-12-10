@@ -2,6 +2,7 @@ package com.postech.adjt.domain.usecase.tipoCozinha;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -18,14 +19,14 @@ import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PaginadoTipoCozinhaUseCase - Testes Unitários")
 class PaginadoTipoCozinhaUseCaseTest {
 
     @Mock
-    private TipoCozinhaRepositoryPort tipoCozinhaRepository;
+    private GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
 
     private PaginadoTipoCozinhaUseCase useCase;
     private List<TipoCozinha> tiposCozinha;

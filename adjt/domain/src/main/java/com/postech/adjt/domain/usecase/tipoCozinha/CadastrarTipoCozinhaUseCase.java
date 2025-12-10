@@ -2,18 +2,18 @@ package com.postech.adjt.domain.usecase.tipoCozinha;
 
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.factory.TipoCozinhaFactory;
-import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.TipoCozinhaValidator;
 
 public class CadastrarTipoCozinhaUseCase {
 
-    private final TipoCozinhaRepositoryPort tipoCozinhaRepository;
+    private final GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
 
-    private CadastrarTipoCozinhaUseCase(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+    private CadastrarTipoCozinhaUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         this.tipoCozinhaRepository = tipoCozinhaRepository;
     }
 
-    public static CadastrarTipoCozinhaUseCase create(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+    public static CadastrarTipoCozinhaUseCase create(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         return new CadastrarTipoCozinhaUseCase(tipoCozinhaRepository);
     }
 
@@ -25,5 +25,4 @@ public class CadastrarTipoCozinhaUseCase {
 
         return tipoCozinhaRepository.criar(tipoCozinha);
     }
- 
 }

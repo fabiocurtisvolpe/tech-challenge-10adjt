@@ -13,17 +13,18 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.CardapioEntidade;
 import com.postech.adjt.data.mapper.CardapioMapper;
+import com.postech.adjt.data.repository.spring.SpringDataCardapioRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Cardapio;
-import com.postech.adjt.domain.ports.CardapioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public class CardapioRepositoryAdapter implements CardapioRepositoryPort {
+public class CardapioRepositoryAdapter implements GenericRepositoryPort<Cardapio> {
 
     private final SpringDataCardapioRepository dataCardapioRepository;
 
@@ -51,6 +52,7 @@ public class CardapioRepositoryAdapter implements CardapioRepositoryPort {
     @Override
     @Transactional
     public Optional<Cardapio> obterPorNome(String nome) {
+        Objects.requireNonNull(nome, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         return dataCardapioRepository.findByNome(nome).map(CardapioMapper::toDomain);
     }
 
@@ -101,5 +103,10 @@ public class CardapioRepositoryAdapter implements CardapioRepositoryPort {
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         dataCardapioRepository.save(entidade);
         return true;
+    }
+
+    @Override
+    public Optional<Cardapio> obterPorEmail(String email) {
+        throw new UnsupportedOperationException("Unimplemented method 'obterPorEmail'");
     }
 }

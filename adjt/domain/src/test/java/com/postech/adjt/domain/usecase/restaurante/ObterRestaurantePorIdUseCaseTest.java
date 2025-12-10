@@ -18,14 +18,14 @@ import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ObterRestaurantePorIdUseCase - Testes Unitários")
 class ObterRestaurantePorIdUseCaseTest {
 
     @Mock
-    private RestauranteRepositoryPort restauranteRepository;
+    private GenericRepositoryPort<Restaurante> restauranteRepository;
 
     private ObterRestaurantePorIdUseCase useCase;
     private Restaurante restauranteValido;

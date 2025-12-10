@@ -13,17 +13,19 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.TipoCozinhaEntidade;
 import com.postech.adjt.data.mapper.TipoCozinhaMapper;
+import com.postech.adjt.data.mapper.UsuarioMapper;
+import com.postech.adjt.data.repository.spring.SpringDataTipoCozinhaRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.TipoCozinha;
-import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public class TipoCozinhaRepositoryAdapter implements TipoCozinhaRepositoryPort {
+public class TipoCozinhaRepositoryAdapter implements GenericRepositoryPort<TipoCozinha> {
 
     private final SpringDataTipoCozinhaRepository dataTipoCozinhaRepository;
 
@@ -95,5 +97,16 @@ public class TipoCozinhaRepositoryAdapter implements TipoCozinhaRepositoryPort {
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         dataTipoCozinhaRepository.save(entidade);
         return true;
+    }
+
+    @Override
+    public Optional<TipoCozinha> obterPorNome(String nome) {
+        Objects.requireNonNull(nome, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        return dataTipoCozinhaRepository.findByNome(nome).map(TipoCozinhaMapper::toDomain);
+    }
+
+    @Override
+    public Optional<TipoCozinha> obterPorEmail(String email) {
+        throw new UnsupportedOperationException("Unimplemented method 'obterPorEmail'");
     }
 }

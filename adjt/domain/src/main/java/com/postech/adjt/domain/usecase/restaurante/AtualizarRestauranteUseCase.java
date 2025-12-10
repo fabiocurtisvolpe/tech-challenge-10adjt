@@ -5,19 +5,19 @@ import com.postech.adjt.domain.dto.RestauranteDTO;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.RestauranteFactory;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.RestauranteValidator;
 
 public class AtualizarRestauranteUseCase {
 
-    private final RestauranteRepositoryPort restauranteRepository;
+    private final GenericRepositoryPort<Restaurante> restauranteRepository;
 
 
-    private AtualizarRestauranteUseCase(RestauranteRepositoryPort restauranteRepository) {
+    private AtualizarRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository) {
         this.restauranteRepository = restauranteRepository;
     }
 
-    public static AtualizarRestauranteUseCase create(RestauranteRepositoryPort restauranteRepository) {
+    public static AtualizarRestauranteUseCase create(GenericRepositoryPort<Restaurante> restauranteRepository) {
         return new AtualizarRestauranteUseCase(restauranteRepository);
     }
 

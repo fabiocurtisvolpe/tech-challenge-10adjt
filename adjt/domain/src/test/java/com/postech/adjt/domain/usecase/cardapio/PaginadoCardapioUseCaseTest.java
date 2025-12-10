@@ -2,6 +2,7 @@ package com.postech.adjt.domain.usecase.cardapio;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -20,14 +21,14 @@ import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.CardapioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PaginadoCardapioUseCase - Testes Unitários")
 class PaginadoCardapioUseCaseTest {
 
     @Mock
-    private CardapioRepositoryPort cardapioRepository;
+    private GenericRepositoryPort<Cardapio> cardapioRepository;
 
     private PaginadoCardapioUseCase useCase;
     private List<Cardapio> cardapios;

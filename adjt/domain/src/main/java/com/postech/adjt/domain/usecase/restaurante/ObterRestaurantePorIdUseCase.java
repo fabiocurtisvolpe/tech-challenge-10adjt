@@ -5,17 +5,17 @@ import java.util.Optional;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class ObterRestaurantePorIdUseCase {
 
-    private final RestauranteRepositoryPort restauranteRepository;
+    private final GenericRepositoryPort<Restaurante> restauranteRepository;
 
-    private ObterRestaurantePorIdUseCase(RestauranteRepositoryPort restauranteRepository) {
+    private ObterRestaurantePorIdUseCase(GenericRepositoryPort<Restaurante> restauranteRepository) {
         this.restauranteRepository = restauranteRepository;
     }
 
-    public static ObterRestaurantePorIdUseCase create(RestauranteRepositoryPort restauranteRepository) {
+    public static ObterRestaurantePorIdUseCase create(GenericRepositoryPort<Restaurante> restauranteRepository) {
         return new ObterRestaurantePorIdUseCase(restauranteRepository);
     }
 

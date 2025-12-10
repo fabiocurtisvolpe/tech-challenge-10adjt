@@ -2,6 +2,7 @@ package com.postech.adjt.domain.usecase.tipoUsuario;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -18,14 +19,14 @@ import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("PaginadoTipoUsuarioUseCase - Testes Unitários")
 class PaginadoTipoUsuarioUseCaseTest {
 
     @Mock
-    private TipoUsuarioRepositoryPort tipoUsuarioRepository;
+    private GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository;
 
     private PaginadoTipoUsuarioUseCase useCase;
     private List<TipoUsuario> tiposUsuario;

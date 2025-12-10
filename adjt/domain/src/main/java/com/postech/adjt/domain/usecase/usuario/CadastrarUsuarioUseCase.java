@@ -5,18 +5,18 @@ import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.UsuarioFactory;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.UsuarioValidator;
 
 public class CadastrarUsuarioUseCase {
 
-    private final UsuarioRepositoryPort usuarioRepository;
+    private final GenericRepositoryPort<Usuario> usuarioRepository;
 
-    private CadastrarUsuarioUseCase(UsuarioRepositoryPort usuarioRepository) {
+    private CadastrarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public static CadastrarUsuarioUseCase create(UsuarioRepositoryPort usuarioRepository) {
+    public static CadastrarUsuarioUseCase create(GenericRepositoryPort<Usuario> usuarioRepository) {
         return new CadastrarUsuarioUseCase(usuarioRepository);
     }
 

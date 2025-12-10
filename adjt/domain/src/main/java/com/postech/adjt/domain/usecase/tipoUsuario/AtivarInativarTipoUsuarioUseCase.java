@@ -4,17 +4,17 @@ import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class AtivarInativarTipoUsuarioUseCase {
 
-    private final TipoUsuarioRepositoryPort tipoUsuarioRepository;
-
-    private AtivarInativarTipoUsuarioUseCase(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
+    private final GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository;
+    
+    private AtivarInativarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         this.tipoUsuarioRepository = tipoUsuarioRepository;
     }
 
-    public static AtivarInativarTipoUsuarioUseCase create(TipoUsuarioRepositoryPort tipoUsuarioRepository) {
+    public static AtivarInativarTipoUsuarioUseCase create(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return new AtivarInativarTipoUsuarioUseCase(tipoUsuarioRepository);
     }
 
@@ -31,5 +31,4 @@ public class AtivarInativarTipoUsuarioUseCase {
 
         return tipoUsuarioRepository.atualizar(novoTipoUsuario);
     }
-
 }

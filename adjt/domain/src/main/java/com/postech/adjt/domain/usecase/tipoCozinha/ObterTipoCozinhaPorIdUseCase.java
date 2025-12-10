@@ -5,17 +5,17 @@ import java.util.Optional;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.TipoCozinhaRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class ObterTipoCozinhaPorIdUseCase {
 
-    private final TipoCozinhaRepositoryPort tipoCozinhaRepository;
-
-    private ObterTipoCozinhaPorIdUseCase(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+    private final GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
+    
+    private ObterTipoCozinhaPorIdUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         this.tipoCozinhaRepository = tipoCozinhaRepository;
     }
 
-    public static ObterTipoCozinhaPorIdUseCase create(TipoCozinhaRepositoryPort tipoCozinhaRepository) {
+    public static ObterTipoCozinhaPorIdUseCase create(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         return new ObterTipoCozinhaPorIdUseCase(tipoCozinhaRepository);
     }
 

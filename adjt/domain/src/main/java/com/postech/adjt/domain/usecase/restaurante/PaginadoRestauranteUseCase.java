@@ -8,17 +8,17 @@ import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.RestauranteRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class PaginadoRestauranteUseCase {
 
-    private final RestauranteRepositoryPort restauranteRepository;
+    private final GenericRepositoryPort<Restaurante> restauranteRepository;
 
-    private PaginadoRestauranteUseCase(RestauranteRepositoryPort restauranteRepository) {
+    private PaginadoRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository) {
         this.restauranteRepository = restauranteRepository;
     }
 
-    public static PaginadoRestauranteUseCase create(RestauranteRepositoryPort restauranteRepository) {
+    public static PaginadoRestauranteUseCase create(GenericRepositoryPort<Restaurante> restauranteRepository) {
         return new PaginadoRestauranteUseCase(restauranteRepository);
     }
 

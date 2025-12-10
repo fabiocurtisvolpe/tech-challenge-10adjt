@@ -1,6 +1,8 @@
 package com.postech.adjt.domain.usecase.usuario;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 /**
  * Testes unitários para AtivarInativarUsuarioUseCase
@@ -33,7 +35,7 @@ import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
 class AtivarInativarUsuarioUseCaseTest {
 
     @Mock
-    private UsuarioRepositoryPort usuarioRepository;
+    private GenericRepositoryPort<Usuario> usuarioRepository;
 
     private AtivarInativarUsuarioUseCase useCase;
 

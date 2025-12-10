@@ -8,17 +8,17 @@ import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.CardapioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class PaginadoCardapioUseCase {
 
-    private final CardapioRepositoryPort cardapioRepository;
-
-    private PaginadoCardapioUseCase(CardapioRepositoryPort cardapioRepository) {
+    private final GenericRepositoryPort<Cardapio> cardapioRepository;
+    
+    private PaginadoCardapioUseCase(GenericRepositoryPort<Cardapio> cardapioRepository) {
         this.cardapioRepository = cardapioRepository;
     }
 
-    public static PaginadoCardapioUseCase create(CardapioRepositoryPort cardapioRepository) {
+    public static PaginadoCardapioUseCase create(GenericRepositoryPort<Cardapio> cardapioRepository) {
         return new PaginadoCardapioUseCase(cardapioRepository);
     }
 

@@ -5,17 +5,17 @@ import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.UsuarioFactory;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class AtualizarSenhaUsuarioUseCase {
 
-    private final UsuarioRepositoryPort usuarioRepository;
-
-    private AtualizarSenhaUsuarioUseCase(UsuarioRepositoryPort usuarioRepository) {
+    private final GenericRepositoryPort<Usuario> usuarioRepository;
+    
+    private AtualizarSenhaUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public static AtualizarSenhaUsuarioUseCase create(UsuarioRepositoryPort usuarioRepository) {
+    public static AtualizarSenhaUsuarioUseCase create(GenericRepositoryPort<Usuario> usuarioRepository) {
         return new AtualizarSenhaUsuarioUseCase(usuarioRepository);
     }
 

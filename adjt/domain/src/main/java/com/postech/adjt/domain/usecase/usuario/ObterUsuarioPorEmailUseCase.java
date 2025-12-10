@@ -5,17 +5,17 @@ import java.util.Optional;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.UsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class ObterUsuarioPorEmailUseCase {
 
-    private final UsuarioRepositoryPort usuarioRepository;
+    private final GenericRepositoryPort<Usuario> usuarioRepository;
 
-    private ObterUsuarioPorEmailUseCase(UsuarioRepositoryPort usuarioRepository) {
+    private ObterUsuarioPorEmailUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public static ObterUsuarioPorEmailUseCase create(UsuarioRepositoryPort usuarioRepository) {
+    public static ObterUsuarioPorEmailUseCase create(GenericRepositoryPort<Usuario> usuarioRepository) {
         return new ObterUsuarioPorEmailUseCase(usuarioRepository);
     }
 

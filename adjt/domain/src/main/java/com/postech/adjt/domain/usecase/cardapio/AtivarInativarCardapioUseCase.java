@@ -4,18 +4,18 @@ import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.CardapioFactory;
-import com.postech.adjt.domain.ports.CardapioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.CardapioValidator;
 
 public class AtivarInativarCardapioUseCase {
 
-    private final CardapioRepositoryPort cardapioRepository;
+    private final GenericRepositoryPort<Cardapio> cardapioRepository;
 
-    private AtivarInativarCardapioUseCase(CardapioRepositoryPort cardapioRepository) {
+    private AtivarInativarCardapioUseCase(GenericRepositoryPort<Cardapio> cardapioRepository) {
         this.cardapioRepository = cardapioRepository;
     }
 
-    public static AtivarInativarCardapioUseCase create(CardapioRepositoryPort cardapioRepository) {
+    public static AtivarInativarCardapioUseCase create(GenericRepositoryPort<Cardapio> cardapioRepository) {
         return new AtivarInativarCardapioUseCase(cardapioRepository);
     }
 

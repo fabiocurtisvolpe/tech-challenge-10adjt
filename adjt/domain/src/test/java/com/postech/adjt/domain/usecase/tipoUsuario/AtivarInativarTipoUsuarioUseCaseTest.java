@@ -15,14 +15,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
-import com.postech.adjt.domain.ports.TipoUsuarioRepositoryPort;
+import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AtivarInativarTipoUsuarioUseCase - Testes Unitários")
 class AtivarInativarTipoUsuarioUseCaseTest {
 
     @Mock
-    private TipoUsuarioRepositoryPort tipoUsuarioRepository;
+    private GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository;
 
     private AtivarInativarTipoUsuarioUseCase useCase;
     private TipoUsuario tipoUsuarioExistente;

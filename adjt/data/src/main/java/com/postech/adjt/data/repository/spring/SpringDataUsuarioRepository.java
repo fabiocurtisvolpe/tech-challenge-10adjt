@@ -1,4 +1,4 @@
-package com.postech.adjt.data.repository;
+package com.postech.adjt.data.repository.spring;
 
 import java.util.Optional;
 
@@ -11,4 +11,5 @@ public interface SpringDataUsuarioRepository extends JpaRepository<UsuarioEntida
                 JpaSpecificationExecutor<UsuarioEntidade> {
 
         Optional<UsuarioEntidade> findByEmail(String email);
+        Optional<UsuarioEntidade> findByNome(String nome);
 }
