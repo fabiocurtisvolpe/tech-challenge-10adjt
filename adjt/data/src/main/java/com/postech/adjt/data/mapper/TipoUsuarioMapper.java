@@ -40,6 +40,7 @@ public class TipoUsuarioMapper {
                 .descricao(entidade.getDescricao())
                 .dataCriacao(entidade.getDataCriacao())
                 .dataAlteracao(entidade.getDataAlteracao())
+                .ativo(entidade.getAtivo())
                 .build();
 
         }
@@ -50,6 +51,7 @@ public class TipoUsuarioMapper {
                 .descricao(entidade.getDescricao())
                 .dataCriacao(entidade.getDataCriacao())
                 .dataAlteracao(entidade.getDataAlteracao())
+                .ativo(entidade.getAtivo())
                 .build();
     }
 
@@ -65,6 +67,7 @@ public class TipoUsuarioMapper {
         }
 
         Boolean isDono = tipoUsuario instanceof TipoUsuarioDonoRestaurante;
+        Boolean ativo = tipoUsuario.getAtivo() != null ? tipoUsuario.getAtivo() : true;
 
         TipoUsuarioEntidade entidade = new TipoUsuarioEntidade();
         entidade.setId(tipoUsuario.getId());
@@ -72,6 +75,7 @@ public class TipoUsuarioMapper {
         entidade.setDescricao(tipoUsuario.getDescricao());
         entidade.setDataCriacao(tipoUsuario.getDataCriacao());
         entidade.setDataAlteracao(tipoUsuario.getDataAlteracao());
+        entidade.setAtivo(ativo);
         entidade.setIsDono(isDono);
 
         return entidade;

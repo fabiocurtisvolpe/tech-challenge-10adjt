@@ -89,7 +89,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/swagger-resources/**").permitAll()
                                                 .requestMatchers("/webjars/**").permitAll()
                                                 .requestMatchers("/api/login/**", "/api/usuario/criar").permitAll()
-                                                .requestMatchers("/api/tipo-usuario/**").hasRole("DONO_RESTURANTE")
+                                                .requestMatchers("/api/tipo-usuario/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .exceptionHandling(ex -> ex
                                                 .accessDeniedHandler(accessDeniedHandler)

@@ -51,6 +51,7 @@ public class TipoUsuarioMapperApi {
                                 tipoUsuario.getNome(),
                                 tipoUsuario.getDescricao(),
                                 tipoUsuario.getDataAlteracao(),
+                                tipoUsuario.getAtivo(),
                                 isDono);
         }
 }

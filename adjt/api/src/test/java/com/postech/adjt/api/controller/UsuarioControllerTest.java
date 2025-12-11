@@ -26,12 +26,12 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
+import com.postech.adjt.domain.usecase.PaginadoUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorEmailUseCase;
-import com.postech.adjt.domain.usecase.usuario.PaginadoUsuarioUseCase;
 
 /**
  * Testes unitários para UsuarioController
@@ -61,7 +61,7 @@ class UsuarioControllerTest {
         private ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
 
         @Mock
-        private PaginadoUsuarioUseCase paginadoUsuarioUseCase;
+        private PaginadoUseCase<Usuario> paginadoUsuarioUseCase;
 
         @Mock
         private AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;

@@ -69,7 +69,33 @@ public class TipoUsuarioRepositoryAdapter implements GenericRepositoryPort<TipoU
         Specification<TipoUsuarioEntidade> spec = (root, query, cb) -> cb.conjunction();
 
         for (FilterDTO f : filters) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get(f.getField()), f.getValue()));
+            spec = spec.and((root, query, cb) -> {
+                switch (f.getOperador()) {
+                    case EQUALS:
+                        return cb.equal(root.get(f.getField()), f.getValue());
+                    case NOT_EQUALS:
+                        return cb.notEqual(root.get(f.getField()), f.getValue());
+                    case LIKE:
+                        return cb.like(root.get(f.getField()), "%" + f.getValue() + "%");
+                    case GREATER_THAN:
+                        return cb.greaterThan(root.get(f.getField()), f.getValue());
+                    case LESS_THAN:
+                        return cb.lessThan(root.get(f.getField()), f.getValue());
+                    case GREATER_EQUAL:
+                        return cb.greaterThanOrEqualTo(root.get(f.getField()), f.getValue());
+                    case LESS_EQUAL:
+                        return cb.lessThanOrEqualTo(root.get(f.getField()), f.getValue());
+                    case BETWEEN:
+                        String[] valores = f.getValue().split(",");
+                        if (valores.length == 2) {
+                            return cb.between(root.get(f.getField()), valores[0], valores[1]);
+                        } else {
+                            throw new IllegalArgumentException("Valor inválido para BETWEEN: " + f.getValue());
+                        }
+                    default:
+                        throw new UnsupportedOperationException("Operador não suportado: " + f.getOperador());
+                }
+            });
         }
 
         Sort springSort = Sort.unsorted();
@@ -79,14 +105,16 @@ public class TipoUsuarioRepositoryAdapter implements GenericRepositoryPort<TipoU
                             s.getField()));
         }
 
-        Page<TipoUsuarioEntidade> result = dataTipoUsuarioRepository.findAll(spec, PageRequest.of(page, size, springSort));
+        Page<TipoUsuarioEntidade> result = dataTipoUsuarioRepository.findAll(spec,
+                PageRequest.of(page, size, springSort));
 
         List<TipoUsuario> tiposUsuario = result.getContent()
                 .stream()
                 .map(entity -> TipoUsuarioMapper.toDomain(entity))
                 .toList();
 
-        return new ResultadoPaginacaoDTO<>(tiposUsuario, result.getNumber(), result.getSize(), result.getTotalElements());
+        return new ResultadoPaginacaoDTO<>(tiposUsuario, result.getNumber(), result.getSize(),
+                result.getTotalElements());
     }
 
     @Override

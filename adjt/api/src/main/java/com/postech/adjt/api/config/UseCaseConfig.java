@@ -3,9 +3,13 @@ package com.postech.adjt.api.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.usecase.PaginadoUseCase;
+import com.postech.adjt.domain.usecase.tipoUsuario.AtualizarTipoUsuarioUseCase;
+import com.postech.adjt.domain.usecase.tipoUsuario.CadastrarTipoUsuarioUseCase;
+import com.postech.adjt.domain.usecase.tipoUsuario.ObterTipoUsuarioPorIdUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
@@ -49,5 +53,27 @@ public class UseCaseConfig {
     @Bean
     public PaginadoUseCase<Usuario> paginadoUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
         return PaginadoUseCase.create(usuarioRepository);
+    }
+
+    /*************************************************************************************************************/
+
+    @Bean
+    public AtualizarTipoUsuarioUseCase atualizarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+        return AtualizarTipoUsuarioUseCase.create(tipoUsuarioRepository);
+    }
+
+    @Bean
+    public CadastrarTipoUsuarioUseCase cadastrarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+        return CadastrarTipoUsuarioUseCase.create(tipoUsuarioRepository);
+    }
+
+    @Bean
+    public ObterTipoUsuarioPorIdUseCase obterTipoUsuarioPorIdUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+        return ObterTipoUsuarioPorIdUseCase.create(tipoUsuarioRepository);
+    }
+
+    @Bean
+    public PaginadoUseCase<TipoUsuario> paginadoTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+        return PaginadoUseCase.create(tipoUsuarioRepository);
     }
 }

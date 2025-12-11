@@ -3,6 +3,7 @@ package com.postech.adjt.domain.usecase.tipoUsuario;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
@@ -28,9 +29,14 @@ public class AtualizarTipoUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
         }
 
+        Boolean isDono = tipoUsuarioExistente instanceof TipoUsuarioDonoRestaurante ? true : false;
+        if (dto.isDono() != null) {
+            isDono = dto.isDono();
+        }
+
         final TipoUsuario tipoUsuario = TipoUsuarioFactory.tipoUsuario(tipoUsuarioExistente.getId(),
                 tipoUsuarioExistente.getNome(),
-                tipoUsuarioExistente.getDescricao(), dto.ativo(), dto.isDono());
+                tipoUsuarioExistente.getDescricao(), dto.ativo(), isDono);
 
         TipoUsuarioValidator.validar(tipoUsuario);
 
