@@ -3,6 +3,9 @@ package com.postech.adjt.domain.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import lombok.Getter;
+
+@Getter
 public class ResultadoPaginacaoDTO<T> implements Serializable {
 
     private static final long serialVersionUID = 907682988992882263L;
@@ -19,21 +22,4 @@ public class ResultadoPaginacaoDTO<T> implements Serializable {
         this.totalElements = totalElements;
     }
 
-    public List<T> getContent() {
-        return content;
-    }
-
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public long getTotalElements() {
-        return totalElements;
-    }
-
-    
 }

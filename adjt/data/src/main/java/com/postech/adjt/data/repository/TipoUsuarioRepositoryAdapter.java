@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
+import com.postech.adjt.data.mapper.EntityMapper;
 import com.postech.adjt.data.mapper.TipoUsuarioMapper;
 import com.postech.adjt.data.repository.jpa.JpaDataTipoUsuarioRepository;
+import com.postech.adjt.data.service.PaginadoService;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -66,55 +64,21 @@ public class TipoUsuarioRepositoryAdapter implements GenericRepositoryPort<TipoU
     public ResultadoPaginacaoDTO<TipoUsuario> listarPaginado(int page, int size, List<FilterDTO> filters,
             List<SortDTO> sorts) {
 
-        Specification<TipoUsuarioEntidade> spec = (root, query, cb) -> cb.conjunction();
+         PaginadoService<TipoUsuarioEntidade, TipoUsuario> paginadoService = new PaginadoService<>(
+                dataTipoUsuarioRepository,
+                new EntityMapper<TipoUsuarioEntidade, TipoUsuario>() {
+                    @Override
+                    public TipoUsuario toDomain(TipoUsuarioEntidade e) {
+                        return TipoUsuarioMapper.toDomain(e);
+                    }
 
-        for (FilterDTO f : filters) {
-            spec = spec.and((root, query, cb) -> {
-                switch (f.getOperador()) {
-                    case EQUALS:
-                        return cb.equal(root.get(f.getField()), f.getValue());
-                    case NOT_EQUALS:
-                        return cb.notEqual(root.get(f.getField()), f.getValue());
-                    case LIKE:
-                        return cb.like(root.get(f.getField()), "%" + f.getValue() + "%");
-                    case GREATER_THAN:
-                        return cb.greaterThan(root.get(f.getField()), f.getValue());
-                    case LESS_THAN:
-                        return cb.lessThan(root.get(f.getField()), f.getValue());
-                    case GREATER_EQUAL:
-                        return cb.greaterThanOrEqualTo(root.get(f.getField()), f.getValue());
-                    case LESS_EQUAL:
-                        return cb.lessThanOrEqualTo(root.get(f.getField()), f.getValue());
-                    case BETWEEN:
-                        String[] valores = f.getValue().split(",");
-                        if (valores.length == 2) {
-                            return cb.between(root.get(f.getField()), valores[0], valores[1]);
-                        } else {
-                            throw new IllegalArgumentException("Valor inválido para BETWEEN: " + f.getValue());
-                        }
-                    default:
-                        throw new UnsupportedOperationException("Operador não suportado: " + f.getOperador());
-                }
-            });
-        }
+                    @Override
+                    public TipoUsuarioEntidade toEntity(TipoUsuario d) {
+                        return TipoUsuarioMapper.toEntity(d);
+                    }
+                });
 
-        Sort springSort = Sort.unsorted();
-        for (SortDTO s : sorts) {
-            springSort = springSort
-                    .and(Sort.by(s.getDirection() == SortDTO.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
-                            s.getField()));
-        }
-
-        Page<TipoUsuarioEntidade> result = dataTipoUsuarioRepository.findAll(spec,
-                PageRequest.of(page, size, springSort));
-
-        List<TipoUsuario> tiposUsuario = result.getContent()
-                .stream()
-                .map(entity -> TipoUsuarioMapper.toDomain(entity))
-                .toList();
-
-        return new ResultadoPaginacaoDTO<>(tiposUsuario, result.getNumber(), result.getSize(),
-                result.getTotalElements());
+        return paginadoService.listarPaginado(page, size, filters, sorts);
     }
 
     @Override

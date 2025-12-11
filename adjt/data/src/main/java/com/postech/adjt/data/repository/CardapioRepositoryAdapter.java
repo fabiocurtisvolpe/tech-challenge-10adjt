@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.CardapioEntidade;
 import com.postech.adjt.data.mapper.CardapioMapper;
+import com.postech.adjt.data.mapper.EntityMapper;
 import com.postech.adjt.data.repository.jpa.JpaDataCardapioRepository;
+import com.postech.adjt.data.service.PaginadoService;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -73,27 +71,21 @@ public class CardapioRepositoryAdapter implements GenericRepositoryPort<Cardapio
     public ResultadoPaginacaoDTO<Cardapio> listarPaginado(int page, int size, List<FilterDTO> filters,
             List<SortDTO> sorts) {
 
-        Specification<CardapioEntidade> spec = (root, query, cb) -> cb.conjunction();
+         PaginadoService<CardapioEntidade, Cardapio> paginadoService = new PaginadoService<>(
+                dataCardapioRepository,
+                new EntityMapper<CardapioEntidade, Cardapio>() {
+                    @Override
+                    public Cardapio toDomain(CardapioEntidade e) {
+                        return CardapioMapper   .toDomain(e);
+                    }
 
-        for (FilterDTO f : filters) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get(f.getField()), f.getValue()));
-        }
+                    @Override
+                    public CardapioEntidade toEntity(Cardapio d) {
+                        return CardapioMapper.toEntity(d);
+                    }
+                });
 
-        Sort springSort = Sort.unsorted();
-        for (SortDTO s : sorts) {
-            springSort = springSort
-                    .and(Sort.by(s.getDirection() == SortDTO.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
-                            s.getField()));
-        }
-
-        Page<CardapioEntidade> result = dataCardapioRepository.findAll(spec, PageRequest.of(page, size, springSort));
-
-        List<Cardapio> cardapios = result.getContent()
-                .stream()
-                .map(entity -> CardapioMapper.toDomain(entity))
-                .toList();
-
-        return new ResultadoPaginacaoDTO<>(cardapios, result.getNumber(), result.getSize(), result.getTotalElements());
+        return paginadoService.listarPaginado(page, size, filters, sorts);
     }
 
     @Override

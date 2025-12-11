@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.UsuarioEntidade;
+import com.postech.adjt.data.mapper.EntityMapper;
 import com.postech.adjt.data.mapper.UsuarioMapper;
 import com.postech.adjt.data.repository.jpa.JpaDataUsuarioRepository;
+import com.postech.adjt.data.service.PaginadoService;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -73,27 +71,21 @@ public class UsuarioRepositoryAdapter implements GenericRepositoryPort<Usuario> 
     public ResultadoPaginacaoDTO<Usuario> listarPaginado(int page, int size, List<FilterDTO> filters,
             List<SortDTO> sorts) {
 
-        Specification<UsuarioEntidade> spec = (root, query, cb) -> cb.conjunction();
+        PaginadoService<UsuarioEntidade, Usuario> paginadoService = new PaginadoService<>(
+                dataUsuarioRepository,
+                new EntityMapper<UsuarioEntidade, Usuario>() {
+                    @Override
+                    public Usuario toDomain(UsuarioEntidade e) {
+                        return UsuarioMapper.toDomain(e);
+                    }
 
-        for (FilterDTO f : filters) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get(f.getField()), f.getValue()));
-        }
+                    @Override
+                    public UsuarioEntidade toEntity(Usuario d) {
+                        return UsuarioMapper.toEntity(d);
+                    }
+                });
 
-        Sort springSort = Sort.unsorted();
-        for (SortDTO s : sorts) {
-            springSort = springSort
-                    .and(Sort.by(s.getDirection() == SortDTO.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
-                            s.getField()));
-        }
-
-        Page<UsuarioEntidade> result = dataUsuarioRepository.findAll(spec, PageRequest.of(page, size, springSort));
-
-        List<Usuario> usuarios = result.getContent()
-                .stream()
-                .map(entity -> UsuarioMapper.toDomain(entity))
-                .toList();
-
-        return new ResultadoPaginacaoDTO<>(usuarios, result.getNumber(), result.getSize(), result.getTotalElements());
+        return paginadoService.listarPaginado(page, size, filters, sorts);
     }
 
     @Override

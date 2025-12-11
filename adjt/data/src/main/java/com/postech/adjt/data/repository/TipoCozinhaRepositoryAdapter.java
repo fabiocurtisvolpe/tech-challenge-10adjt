@@ -5,16 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.TipoCozinhaEntidade;
+import com.postech.adjt.data.mapper.EntityMapper;
 import com.postech.adjt.data.mapper.TipoCozinhaMapper;
-import com.postech.adjt.data.mapper.UsuarioMapper;
 import com.postech.adjt.data.repository.jpa.JpaDataTipoCozinhaRepository;
+import com.postech.adjt.data.service.PaginadoService;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -67,27 +64,21 @@ public class TipoCozinhaRepositoryAdapter implements GenericRepositoryPort<TipoC
     public ResultadoPaginacaoDTO<TipoCozinha> listarPaginado(int page, int size, List<FilterDTO> filters,
             List<SortDTO> sorts) {
 
-        Specification<TipoCozinhaEntidade> spec = (root, query, cb) -> cb.conjunction();
+         PaginadoService<TipoCozinhaEntidade, TipoCozinha> paginadoService = new PaginadoService<>(
+                dataTipoCozinhaRepository,
+                new EntityMapper<TipoCozinhaEntidade, TipoCozinha>() {
+                    @Override
+                    public TipoCozinha toDomain(TipoCozinhaEntidade e) {
+                        return TipoCozinhaMapper.toDomain(e);
+                    }
 
-        for (FilterDTO f : filters) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get(f.getField()), f.getValue()));
-        }
+                    @Override
+                    public TipoCozinhaEntidade toEntity(TipoCozinha d) {
+                        return TipoCozinhaMapper.toEntity(d);
+                    }
+                });
 
-        Sort springSort = Sort.unsorted();
-        for (SortDTO s : sorts) {
-            springSort = springSort
-                    .and(Sort.by(s.getDirection() == SortDTO.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
-                            s.getField()));
-        }
-
-        Page<TipoCozinhaEntidade> result = dataTipoCozinhaRepository.findAll(spec, PageRequest.of(page, size, springSort));
-
-        List<TipoCozinha> tiposCozinha = result.getContent()
-                .stream()
-                .map(entity -> TipoCozinhaMapper.toDomain(entity))
-                .toList();
-
-        return new ResultadoPaginacaoDTO<>(tiposCozinha, result.getNumber(), result.getSize(), result.getTotalElements());
+        return paginadoService.listarPaginado(page, size, filters, sorts);
     }
 
     @Override
