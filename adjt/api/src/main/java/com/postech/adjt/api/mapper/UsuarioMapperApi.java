@@ -34,7 +34,7 @@ public class UsuarioMapperApi {
                                                 .build())
                                 .collect(Collectors.toList());
 
-                TipoUsuario tipoUsuario = TipoUsuarioFactory.usuario(payload.getTipoUsuario().getId(),
+                TipoUsuario tipoUsuario = TipoUsuarioFactory.tipoUsuario(payload.getTipoUsuario().getId(),
                                 payload.getTipoUsuario().getNome(), payload.getTipoUsuario().getDescricao(), true,
                                 payload.getTipoUsuario().getIsDono());
 

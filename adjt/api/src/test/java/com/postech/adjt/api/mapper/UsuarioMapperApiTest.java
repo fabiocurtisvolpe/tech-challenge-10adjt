@@ -49,7 +49,7 @@ class UsuarioMapperApiTest {
         enderecos = new ArrayList<>();
         enderecos.add(endereco);
 
-        tipoUsuarioValido = TipoUsuarioFactory.usuario(1, "CLIENTE", "CLIENTE", true, false);
+        tipoUsuarioValido = TipoUsuarioFactory.tipoUsuario(1, "CLIENTE", "CLIENTE", true, false);
 
         tipoUsuarioValidoPayLoad = TipoUsuarioPayLoad.builder()
                 .id(1)
@@ -498,7 +498,7 @@ class UsuarioMapperApiTest {
         UsuarioRespostaDTO dto1 = UsuarioMapperApi.toUsuarioRespostaDTO(usuario1);
         assertEquals(tipoUsuarioValido.getId(), dto1.getTipoUsuario().getId());
 
-        TipoUsuario tipoDonoRestaurante = TipoUsuarioFactory.usuario(2, "DONO_RESTAURANTE", "DONO_RESTAURANTE", true, true);
+        TipoUsuario tipoDonoRestaurante = TipoUsuarioFactory.tipoUsuario(2, "DONO_RESTAURANTE", "DONO_RESTAURANTE", true, true);
 
         // Test DONO_RESTAURANTE
         Usuario usuario2 = Usuario.builder()

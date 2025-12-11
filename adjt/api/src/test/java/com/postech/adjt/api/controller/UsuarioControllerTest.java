@@ -87,7 +87,7 @@ class UsuarioControllerTest {
                                 .descricao("CLIENTE")
                                 .build();
 
-                tipoUsuarioValido = TipoUsuarioFactory.usuario(1, "CLIENTE", "CLIENTE", true, false);
+                tipoUsuarioValido = TipoUsuarioFactory.tipoUsuario(1, "CLIENTE", "CLIENTE", true, false);
         }
 
         @Test

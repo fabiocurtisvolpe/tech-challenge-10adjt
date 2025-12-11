@@ -35,7 +35,7 @@ class AtualizarTipoUsuarioUseCaseTest {
 
         useCase = AtualizarTipoUsuarioUseCase.create(tipoUsuarioRepository);
 
-        tipoUsuarioExistente = TipoUsuarioFactory.usuario(1, "TIPO_ANTIGO", "Descrição antiga",
+        tipoUsuarioExistente = TipoUsuarioFactory.tipoUsuario(1, "TIPO_ANTIGO", "Descrição antiga",
                 true, true);
 
         tipoUsuarioAtualizadoDTO = new TipoUsuarioDTO(1, "TIPO_NOVO", "Descrição nova", true, true);
@@ -46,7 +46,7 @@ class AtualizarTipoUsuarioUseCaseTest {
     void testAtualizarTipoUsuarioComSucesso() {
         when(tipoUsuarioRepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistente));
 
-        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.usuario(1, "TIPO_ANTIGO", "Descrição antiga",
+        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.tipoUsuario(1, "TIPO_ANTIGO", "Descrição antiga",
                 true, true);
 
         when(tipoUsuarioRepository.atualizar(any(TipoUsuario.class)))
@@ -76,7 +76,7 @@ class AtualizarTipoUsuarioUseCaseTest {
     void testMantendoIDTipoUsuario() {
         when(tipoUsuarioRepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistente));
 
-        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.usuario(1, "TIPO_ANTIGO", "Descrição antiga",
+        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.tipoUsuario(1, "TIPO_ANTIGO", "Descrição antiga",
                 true, true);
 
         when(tipoUsuarioRepository.atualizar(any(TipoUsuario.class)))
@@ -92,7 +92,7 @@ class AtualizarTipoUsuarioUseCaseTest {
     void testRepositorioAtualizarChamadoApenasUmaVez() {
         when(tipoUsuarioRepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistente));
 
-        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.usuario(1, "TIPO_ANTIGO", "Descrição antiga",
+        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.tipoUsuario(1, "TIPO_ANTIGO", "Descrição antiga",
                 true, true);
 
         when(tipoUsuarioRepository.atualizar(any(TipoUsuario.class)))

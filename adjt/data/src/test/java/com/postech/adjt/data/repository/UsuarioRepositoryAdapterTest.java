@@ -51,7 +51,7 @@ class UsuarioRepositoryAdapterTest {
     void setUp() {
         usuarioRepositoryAdapter = new UsuarioRepositoryAdapter(springDataUsuarioRepository);
         
-        tipoUsuario = TipoUsuarioFactory.usuario(1, "CLIENTE", "CLIENTE", true, false);
+        tipoUsuario = TipoUsuarioFactory.tipoUsuario(1, "CLIENTE", "CLIENTE", true, false);
         
 
         tipoUsuarioEntidade = new TipoUsuarioEntidade();

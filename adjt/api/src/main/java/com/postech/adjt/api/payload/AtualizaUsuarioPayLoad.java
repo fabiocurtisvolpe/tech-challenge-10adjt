@@ -6,7 +6,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class AtualizaUsuarioPayLoad {
 
     @NotBlank(message = "O nome não pode estar em branco")
@@ -21,31 +25,4 @@ public class AtualizaUsuarioPayLoad {
     @NotNull(message = "O endereço não pode ser nulo")
     @Size(min = 1, message = "O endereço deve conter pelo menos um item")
     private List<EnderecoPayLoad> enderecos;
-
-    public AtualizaUsuarioPayLoad() {
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<EnderecoPayLoad> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<EnderecoPayLoad> enderecos) {
-        this.enderecos = enderecos;
-    }
 }

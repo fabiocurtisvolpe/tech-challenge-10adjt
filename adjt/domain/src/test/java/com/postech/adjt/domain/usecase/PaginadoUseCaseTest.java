@@ -1,9 +1,15 @@
-package com.postech.adjt.domain.usecase.cardapio;
+package com.postech.adjt.domain.usecase;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +27,33 @@ import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
+import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("PaginadoCardapioUseCase - Testes Unitários")
-class PaginadoCardapioUseCaseTest {
+@DisplayName("PaginadoUseCase - Testes Unitários")
+class PaginadoUseCaseTest {
 
     @Mock
     private GenericRepositoryPort<Cardapio> cardapioRepository;
 
-    private PaginadoCardapioUseCase useCase;
+    private PaginadoUseCase<Cardapio> useCase;
     private List<Cardapio> cardapios;
 
     @BeforeEach
     void setUp() {
-        useCase = PaginadoCardapioUseCase.create(cardapioRepository);
+        useCase = PaginadoUseCase.create(cardapioRepository);
 
-        Usuario dono = Usuario.builder()
-                .id(1)
-                .nome("Dono")
-                .email("dono@test.com")
-                .build();
+        Usuario dono = UsuarioFactory.usuario(
+                1,
+                "Dono",
+                "dono@test.com",
+                "senha123",
+                TipoUsuarioFactory.tipoUsuario(1, "CLIENTE", "CLIENTE", true, false),
+                new ArrayList<>(),
+                true
+        );
 
         Restaurante restaurante = Restaurante.builder()
                 .id(1)
@@ -132,5 +144,5 @@ class PaginadoCardapioUseCaseTest {
 
         verify(cardapioRepository, times(1)).listarPaginado(0, 10, filtros, new ArrayList<>());
     }
-
 }
+

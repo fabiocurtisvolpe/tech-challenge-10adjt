@@ -21,12 +21,12 @@ import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.usecase.PaginadoUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorEmailUseCase;
-import com.postech.adjt.domain.usecase.usuario.PaginadoUsuarioUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -62,7 +62,7 @@ public class UsuarioController {
         private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
         private final AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase;
         private final ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
-        private final PaginadoUsuarioUseCase paginadoUsuarioUseCase;
+        private final PaginadoUseCase<Usuario> paginadoUsuarioUseCase;
 
         /**
          * Construtor com injeção de dependência do caso de uso de ativar/inativar
@@ -83,7 +83,7 @@ public class UsuarioController {
                         AtualizarUsuarioUseCase atualizarUsuarioUseCase,
                         AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase,
                         ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase,
-                        PaginadoUsuarioUseCase paginadoUsuarioUseCase) {
+                        PaginadoUseCase<Usuario> paginadoUsuarioUseCase) {
 
                 this.passwordEncoder = passwordEncoder;
                 this.ativarInativarUsuarioUseCase = ativarInativarUsuarioUseCase;

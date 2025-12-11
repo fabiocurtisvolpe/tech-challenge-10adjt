@@ -19,4 +19,10 @@ public class AtualizaTipoUsuarioPayLoad {
 
     @Size(max = 1000, message = "A descrição deve ter até 1000 caracteres")
     protected String descricao;
+
+    @NotNull(message = "O campo ativo não pode estar vazio")
+    protected Boolean ativo;
+
+    @NotNull(message = "O campo dono não pode estar vazio")
+    protected Boolean isDono;
 }

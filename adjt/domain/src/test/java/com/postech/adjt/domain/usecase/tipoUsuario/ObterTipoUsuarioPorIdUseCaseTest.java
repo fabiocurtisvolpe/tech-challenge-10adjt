@@ -32,7 +32,7 @@ class ObterTipoUsuarioPorIdUseCaseTest {
     void setUp() {
         useCase = ObterTipoUsuarioPorIdUseCase.create(tipoUsuarioRepository);
 
-        tipoUsuarioValido = TipoUsuarioFactory.usuario(1, "TIPO_USUARIO", "Descrição do tipo",
+        tipoUsuarioValido = TipoUsuarioFactory.tipoUsuario(1, "TIPO_USUARIO", "Descrição do tipo",
                 true, true);
     }
 

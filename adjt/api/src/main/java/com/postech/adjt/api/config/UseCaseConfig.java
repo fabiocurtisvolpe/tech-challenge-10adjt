@@ -5,13 +5,13 @@ import org.springframework.context.annotation.Configuration;
 
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
+import com.postech.adjt.domain.usecase.PaginadoUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorEmailUseCase;
 import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorIdUseCase;
-import com.postech.adjt.domain.usecase.usuario.PaginadoUsuarioUseCase;
 
 @Configuration
 public class UseCaseConfig {
@@ -47,7 +47,7 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public PaginadoUsuarioUseCase paginadoUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
-        return PaginadoUsuarioUseCase.create(usuarioRepository);
+    public PaginadoUseCase<Usuario> paginadoUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
+        return PaginadoUseCase.create(usuarioRepository);
     }
 }

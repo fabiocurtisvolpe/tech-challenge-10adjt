@@ -1,6 +1,7 @@
 package com.postech.adjt.api.payload;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,4 +16,7 @@ public class NovoTipoUsuarioPayLoad {
 
     @Size(max = 1000, message = "A descrição deve ter até 1000 caracteres")
     protected String descricao;
+
+    @NotNull(message = "O campo doono não pode ser nulo")
+    protected Boolean isDono;
 }
