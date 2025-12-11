@@ -27,7 +27,7 @@ public class AtualizarSenhaUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
-        final Usuario usuario = UsuarioFactory.atualizar(usuarioExistente.getId(), usuarioExistente.getNome(), 
+        final Usuario usuario = UsuarioFactory.usuario(usuarioExistente.getId(), usuarioExistente.getNome(), 
         usuarioExistente.getEmail(),  dto.senhaCodificada(), 
         usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), true);
 

@@ -38,7 +38,7 @@ class PaginadoTipoUsuarioUseCaseTest {
 
         tiposUsuario = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
-            tiposUsuario.add(TipoUsuarioFactory.atualizar(1, "TIPO_" + i, "Descrição " + i, true, false));
+            tiposUsuario.add(TipoUsuarioFactory.usuario(1, "TIPO_" + i, "Descrição " + i, true, false));
         }
     }
 

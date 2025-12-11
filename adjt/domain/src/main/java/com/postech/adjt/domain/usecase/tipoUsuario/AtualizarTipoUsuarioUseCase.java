@@ -28,7 +28,7 @@ public class AtualizarTipoUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
         }
 
-        final TipoUsuario tipoUsuario = TipoUsuarioFactory.atualizar(tipoUsuarioExistente.getId(),
+        final TipoUsuario tipoUsuario = TipoUsuarioFactory.usuario(tipoUsuarioExistente.getId(),
                 tipoUsuarioExistente.getNome(),
                 tipoUsuarioExistente.getDescricao(), dto.ativo(), dto.isDono());
 

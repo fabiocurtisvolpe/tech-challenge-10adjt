@@ -29,7 +29,7 @@ public class CadastrarTipoUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
         }
 
-        final TipoUsuario tipoUsuario = TipoUsuarioFactory.criar(dto.nome(), dto.descricao(), dto.isDono());
+        final TipoUsuario tipoUsuario = TipoUsuarioFactory.novo(dto.nome(), dto.descricao(), dto.isDono());
         
         TipoUsuarioValidator.validar(tipoUsuario);
 

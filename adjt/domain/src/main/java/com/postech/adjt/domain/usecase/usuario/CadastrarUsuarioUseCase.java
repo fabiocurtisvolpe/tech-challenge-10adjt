@@ -29,7 +29,7 @@ public class CadastrarUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_EXISTENTE);
         }
 
-        final Usuario usuario = UsuarioFactory.criar(dto.nome(), 
+        final Usuario usuario = UsuarioFactory.novo(dto.nome(), 
         dto.email(), dto.senha(), 
         dto.tipoUsuario(), dto.enderecos());
         

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public abstract class UsuarioFactory {
 
-    public static Usuario criar(String nome, String email, String senha,
+    public static Usuario novo(String nome, String email, String senha,
         TipoUsuario tipoUsuario, List<Endereco> enderecos) throws IllegalArgumentException {
 
         return Usuario.builder()
@@ -27,7 +27,7 @@ public abstract class UsuarioFactory {
                 .build();
     }
 
-    public static Usuario atualizar(Integer id, String nome, String email, String senha,
+    public static Usuario usuario(Integer id, String nome, String email, String senha,
         TipoUsuario tipoUsuario, List<Endereco> enderecos, Boolean ativo) throws IllegalArgumentException {
 
         return Usuario.builder()

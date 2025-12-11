@@ -14,4 +14,7 @@ public class TipoUsuarioPayLoad {
     private Integer id;
     private String nome;
     private String descricao;
+
+    @NotNull(message = "O campo dono não pode estar vazio")
+    private Boolean isDono;
 }

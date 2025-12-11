@@ -25,6 +25,7 @@ import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
@@ -86,11 +87,7 @@ class UsuarioControllerTest {
                                 .descricao("CLIENTE")
                                 .build();
 
-                tipoUsuarioValido = TipoUsuario.builder()
-                                .id(1)
-                                .nome("CLIENTE")
-                                .descricao("CLIENTE")
-                                .build();
+                tipoUsuarioValido = TipoUsuarioFactory.usuario(1, "CLIENTE", "CLIENTE", true, false);
         }
 
         @Test

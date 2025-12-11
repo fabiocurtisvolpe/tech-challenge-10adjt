@@ -13,12 +13,13 @@ import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 
 @Component
 public class UsuarioMapperApi {
 
         public static UsuarioDTO toNovoUsuarioDTO(NovoUsuarioPayLoad payload, String senhaEncriptada) {
-                
+
                 List<Endereco> enderecos = payload.getEnderecos().stream()
                                 .map(dto -> Endereco.builder()
                                                 .logradouro(dto.getLogradouro())
@@ -33,11 +34,9 @@ public class UsuarioMapperApi {
                                                 .build())
                                 .collect(Collectors.toList());
 
-                TipoUsuario tipoUsuario = TipoUsuario.builder()
-                                .id(payload.getTipoUsuario().getId())
-                                .nome(payload.getTipoUsuario().getNome())
-                                .descricao(payload.getTipoUsuario().getDescricao())
-                                .build();
+                TipoUsuario tipoUsuario = TipoUsuarioFactory.usuario(payload.getTipoUsuario().getId(),
+                                payload.getTipoUsuario().getNome(), payload.getTipoUsuario().getDescricao(), true,
+                                payload.getTipoUsuario().getIsDono());
 
                 return new UsuarioDTO(
                                 payload.getNome(),
@@ -48,7 +47,7 @@ public class UsuarioMapperApi {
         }
 
         public static UsuarioDTO toAtualizaUsuarioDTO(AtualizaUsuarioPayLoad payload) {
-                
+
                 List<Endereco> enderecos = payload.getEnderecos().stream()
                                 .map(dto -> Endereco.builder()
                                                 .logradouro(dto.getLogradouro())

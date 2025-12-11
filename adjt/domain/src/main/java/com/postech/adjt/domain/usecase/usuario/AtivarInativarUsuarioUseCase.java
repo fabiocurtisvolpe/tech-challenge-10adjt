@@ -26,7 +26,7 @@ public class AtivarInativarUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
-        final Usuario novoUsuario = UsuarioFactory.atualizar(usuarioExistente.getId(), usuarioExistente.getNome(), 
+        final Usuario novoUsuario = UsuarioFactory.usuario(usuarioExistente.getId(), usuarioExistente.getNome(), 
         usuarioExistente.getEmail(), usuarioExistente.getSenha(), 
         usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), ativo);
     

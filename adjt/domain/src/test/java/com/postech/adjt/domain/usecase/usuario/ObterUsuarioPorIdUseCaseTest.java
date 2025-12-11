@@ -20,6 +20,7 @@ import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
+import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 /**
@@ -61,17 +62,16 @@ class ObterUsuarioPorIdUseCaseTest {
                 .principal(true)
                 .build());
 
-        tipoUsuarioValido = TipoUsuarioFactory.atualizar(1, "CLIENTE", "CLIENTE", true, false);
+        tipoUsuarioValido = TipoUsuarioFactory.tipoUsuario(1, "CLIENTE", "CLIENTE", true, false);
 
-        usuario = Usuario.builder()
-                .id(1)
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(tipoUsuarioValido)
-                .enderecos(enderecos)
-                .ativo(true)
-                .build();
+        usuario = UsuarioFactory.usuario(
+                1,
+                "João Silva",
+                "joao@email.com",
+                "senha123",
+                tipoUsuarioValido,
+                enderecos,
+                true);
     }
 
     @Test
@@ -181,18 +181,18 @@ class ObterUsuarioPorIdUseCaseTest {
     @DisplayName("Deve obter usuários de diferentes IDs")
     void testObterUsuariosDiferentesIds() {
         // Arrange
-        Usuario usuario2 = Usuario.builder()
-                .id(2)
-                .nome("Maria Silva")
-                .email("maria@email.com")
-                .senha("senha456")
-                .tipoUsuario(tipoUsuarioValido)
-                .enderecos(enderecos)
-                .ativo(true)
-                .build();
+         Usuario usuario2 = UsuarioFactory.usuario(
+                2,
+                "Maria Silva",
+                "maria@email.com",
+                "senha456",
+                tipoUsuarioValido,
+                enderecos,
+                true);
 
         when(usuarioRepository.obterPorId(1))
                 .thenReturn(Optional.of(usuario));
+
         when(usuarioRepository.obterPorId(2))
                 .thenReturn(Optional.of(usuario2));
 
@@ -236,15 +236,14 @@ class ObterUsuarioPorIdUseCaseTest {
     @DisplayName("Deve obter usuário inativo por ID")
     void testObterUsuarioInativoPorId() {
         // Arrange
-        Usuario usuarioInativo = Usuario.builder()
-                .id(1)
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(tipoUsuarioValido)
-                .enderecos(enderecos)
-                .ativo(false)
-                .build();
+        Usuario usuarioInativo = UsuarioFactory.usuario(
+                1,
+                "João Silva",
+                "joao@email.com",
+                "senha123",
+                tipoUsuarioValido,
+                enderecos,
+                false);
 
         when(usuarioRepository.obterPorId(1))
                 .thenReturn(Optional.of(usuarioInativo));
@@ -271,5 +270,4 @@ class ObterUsuarioPorIdUseCaseTest {
         assertNotNull(resultado);
         assertTrue(resultado.isPresent());
     }
-
 }

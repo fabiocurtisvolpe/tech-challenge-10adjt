@@ -23,6 +23,7 @@ import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
+import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 /**
@@ -37,289 +38,289 @@ import com.postech.adjt.domain.ports.GenericRepositoryPort;
 @DisplayName("PaginadoUsuarioUseCase - Testes Unitários")
 class PaginadoUsuarioUseCaseTest {
 
-    @Mock
-    private GenericRepositoryPort<Usuario> usuarioRepository;
+        @Mock
+        private GenericRepositoryPort<Usuario> usuarioRepository;
 
-    private PaginadoUsuarioUseCase useCase;
+        private PaginadoUsuarioUseCase useCase;
 
-    private List<Usuario> usuarios;
-    private List<Endereco> enderecos;
-    private TipoUsuario tipoUsuarioValido;
+        private List<Usuario> usuarios;
+        private List<Endereco> enderecos;
+        private TipoUsuario tipoUsuarioValido;
 
-    @BeforeEach
-    void setUp() {
-        useCase = PaginadoUsuarioUseCase.create(usuarioRepository);
+        @BeforeEach
+        void setUp() {
+                useCase = PaginadoUsuarioUseCase.create(usuarioRepository);
 
-        // Preparar endereços
-        enderecos = new ArrayList<>();
-        enderecos.add(Endereco.builder()
-                .logradouro("Rua Teste")
-                .numero("123")
-                .complemento("Apto 101")
-                .bairro("Centro")
-                .pontoReferencia("Perto da praça")
-                .cep("12345-678")
-                .municipio("São Paulo")
-                .uf("SP")
-                .principal(true)
-                .build());
+                // Preparar endereços
+                enderecos = new ArrayList<>();
+                enderecos.add(Endereco.builder()
+                                .logradouro("Rua Teste")
+                                .numero("123")
+                                .complemento("Apto 101")
+                                .bairro("Centro")
+                                .pontoReferencia("Perto da praça")
+                                .cep("12345-678")
+                                .municipio("São Paulo")
+                                .uf("SP")
+                                .principal(true)
+                                .build());
 
-        tipoUsuarioValido = TipoUsuarioFactory.atualizar(1, "CLIENTE", "CLIENTE", true, false);
+                tipoUsuarioValido = TipoUsuarioFactory.tipoUsuario(1, "CLIENTE", "CLIENTE", true, false);
 
-        // Preparar lista de usuários
-        usuarios = new ArrayList<>();
-        usuarios.add(Usuario.builder()
-                .id(1)
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(tipoUsuarioValido)
-                .enderecos(enderecos)
-                .ativo(true)
-                .build());
+                // Preparar lista de usuários
+                usuarios = new ArrayList<>();
 
-        TipoUsuario tipoUsuarioFornecedor = TipoUsuarioFactory.atualizar(2, "FORNECEDOR", "FORNECEDOR", true, false);
+                usuarios.add(UsuarioFactory.usuario(
+                                1,
+                                "João Silva",
+                                "joao@email.com",
+                                "senha123",
+                                tipoUsuarioValido,
+                                enderecos,
+                                true));
 
-        usuarios.add(Usuario.builder()
-                .id(2)
-                .nome("Maria Silva")
-                .email("maria@email.com")
-                .senha("senha456")
-                .tipoUsuario(tipoUsuarioFornecedor)
-                .enderecos(enderecos)
-                .ativo(true)
-                .build());
-    }
+                TipoUsuario tipoUsuarioFornecedor = TipoUsuarioFactory.tipoUsuario(2, "FORNECEDOR", "FORNECEDOR", true,
+                                false);
 
-    @Test
-    @DisplayName("Deve listar usuários com paginação padrão")
-    void testListarComPaginacaoPadrao() {
-        // Arrange
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                usuarios,
-                0,
-                10,
-                2);
+                usuarios.add(UsuarioFactory.usuario(
+                                2,
+                                "Maria Silva",
+                                "maria@email.com",
+                                "senha456",
+                                tipoUsuarioFornecedor,
+                                enderecos,
+                                true));
+        }
 
-        when(usuarioRepository.listarPaginado(0, 10, null, null))
-                .thenReturn(resultado);
+        @Test
+        @DisplayName("Deve listar usuários com paginação padrão")
+        void testListarComPaginacaoPadrao() {
+                // Arrange
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                usuarios,
+                                0,
+                                10,
+                                2);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
+                when(usuarioRepository.listarPaginado(0, 10, null, null))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        assertEquals(2, resposta.getContent().size());
-        assertEquals(0, resposta.getPageNumber());
-        assertEquals(10, resposta.getPageSize());
-        verify(usuarioRepository, times(1)).listarPaginado(0, 10, null, null);
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
 
-    @Test
-    @DisplayName("Deve lançar exceção quando página é negativa")
-    void testListarComPaginaNegativa() {
-        // Act & Assert
-        assertThrows(NotificacaoException.class, () -> {
-            useCase.run(-1, 10, null, null);
-        });
+                // Assert
+                assertNotNull(resposta);
+                assertEquals(2, resposta.getContent().size());
+                assertEquals(0, resposta.getPageNumber());
+                assertEquals(10, resposta.getPageSize());
+                verify(usuarioRepository, times(1)).listarPaginado(0, 10, null, null);
+        }
 
-        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
-    }
+        @Test
+        @DisplayName("Deve lançar exceção quando página é negativa")
+        void testListarComPaginaNegativa() {
+                // Act & Assert
+                assertThrows(NotificacaoException.class, () -> {
+                        useCase.run(-1, 10, null, null);
+                });
 
-    @Test
-    @DisplayName("Deve lançar exceção quando size é zero")
-    void testListarComSizeZero() {
-        // Act & Assert
-        assertThrows(NotificacaoException.class, () -> {
-            useCase.run(0, 0, null, null);
-        });
+                verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
+        }
 
-        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
-    }
+        @Test
+        @DisplayName("Deve lançar exceção quando size é zero")
+        void testListarComSizeZero() {
+                // Act & Assert
+                assertThrows(NotificacaoException.class, () -> {
+                        useCase.run(0, 0, null, null);
+                });
 
-    @Test
-    @DisplayName("Deve lançar exceção quando size é negativo")
-    void testListarComSizeNegativo() {
-        // Act & Assert
-        assertThrows(NotificacaoException.class, () -> {
-            useCase.run(0, -1, null, null);
-        });
+                verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
+        }
 
-        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
-    }
+        @Test
+        @DisplayName("Deve lançar exceção quando size é negativo")
+        void testListarComSizeNegativo() {
+                // Act & Assert
+                assertThrows(NotificacaoException.class, () -> {
+                        useCase.run(0, -1, null, null);
+                });
 
-    @Test
-    @DisplayName("Deve listar com filtros")
-    void testListarComFiltros() {
-        // Arrange
-        List<FilterDTO> filtros = new ArrayList<>();
-        filtros.add(new FilterDTO("tipoUsuario", "CLIENTE"));
+                verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
+        }
 
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                usuarios.stream().filter(u -> u.getTipoUsuario() == tipoUsuarioValido).toList(),
-                0,
-                10,
-                1);
+        @Test
+        @DisplayName("Deve listar com filtros")
+        void testListarComFiltros() {
+                // Arrange
+                List<FilterDTO> filtros = new ArrayList<>();
+                filtros.add(new FilterDTO("tipoUsuario", "CLIENTE"));
 
-        when(usuarioRepository.listarPaginado(0, 10, filtros, null))
-                .thenReturn(resultado);
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                usuarios.stream().filter(u -> u.getTipoUsuario() == tipoUsuarioValido).toList(),
+                                0,
+                                10,
+                                1);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, null);
+                when(usuarioRepository.listarPaginado(0, 10, filtros, null))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        verify(usuarioRepository, times(1)).listarPaginado(0, 10, filtros, null);
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, null);
 
-    @Test
-    @DisplayName("Deve listar com ordenação")
-    void testListarComOrdenacao() {
-        // Arrange
-        List<SortDTO> sorts = new ArrayList<>();
-        sorts.add(new SortDTO("nome", SortDTO.Direction.ASC));
+                // Assert
+                assertNotNull(resposta);
+                verify(usuarioRepository, times(1)).listarPaginado(0, 10, filtros, null);
+        }
 
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                usuarios,
-                0,
-                10,
-                2);
+        @Test
+        @DisplayName("Deve listar com ordenação")
+        void testListarComOrdenacao() {
+                // Arrange
+                List<SortDTO> sorts = new ArrayList<>();
+                sorts.add(new SortDTO("nome", SortDTO.Direction.ASC));
 
-        when(usuarioRepository.listarPaginado(0, 10, null, sorts))
-                .thenReturn(resultado);
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                usuarios,
+                                0,
+                                10,
+                                2);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, sorts);
+                when(usuarioRepository.listarPaginado(0, 10, null, sorts))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        verify(usuarioRepository, times(1)).listarPaginado(0, 10, null, sorts);
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, sorts);
 
-    @Test
-    @DisplayName("Deve listar com filtros e ordenação")
-    void testListarComFiltrosEOrdenacao() {
-        // Arrange
-        List<FilterDTO> filtros = new ArrayList<>();
-        filtros.add(new FilterDTO("ativo", "true"));
+                // Assert
+                assertNotNull(resposta);
+                verify(usuarioRepository, times(1)).listarPaginado(0, 10, null, sorts);
+        }
 
-        List<SortDTO> sorts = new ArrayList<>();
-        sorts.add(new SortDTO("email", SortDTO.Direction.ASC));
+        @Test
+        @DisplayName("Deve listar com filtros e ordenação")
+        void testListarComFiltrosEOrdenacao() {
+                // Arrange
+                List<FilterDTO> filtros = new ArrayList<>();
+                filtros.add(new FilterDTO("ativo", "true"));
 
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                usuarios,
-                0,
-                10,
-                2);
+                List<SortDTO> sorts = new ArrayList<>();
+                sorts.add(new SortDTO("email", SortDTO.Direction.ASC));
 
-        when(usuarioRepository.listarPaginado(0, 10, filtros, sorts))
-                .thenReturn(resultado);
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                usuarios,
+                                0,
+                                10,
+                                2);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, sorts);
+                when(usuarioRepository.listarPaginado(0, 10, filtros, sorts))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        verify(usuarioRepository, times(1)).listarPaginado(0, 10, filtros, sorts);
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, filtros, sorts);
 
-    @Test
-    @DisplayName("Deve listar segunda página")
-    void testListarSegundaPagina() {
-        // Arrange
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                new ArrayList<>(),
-                1,
-                10,
-                0);
+                // Assert
+                assertNotNull(resposta);
+                verify(usuarioRepository, times(1)).listarPaginado(0, 10, filtros, sorts);
+        }
 
-        when(usuarioRepository.listarPaginado(1, 10, null, null))
-                .thenReturn(resultado);
+        @Test
+        @DisplayName("Deve listar segunda página")
+        void testListarSegundaPagina() {
+                // Arrange
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                new ArrayList<>(),
+                                1,
+                                10,
+                                0);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(1, 10, null, null);
+                when(usuarioRepository.listarPaginado(1, 10, null, null))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        assertEquals(1, resposta.getPageNumber());
-        assertEquals(0, resposta.getContent().size());
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(1, 10, null, null);
 
-    @Test
-    @DisplayName("Deve listar com tamanho customizado")
-    void testListarComTamanhCustomizado() {
-        // Arrange
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                usuarios,
-                0,
-                5,
-                2);
+                // Assert
+                assertNotNull(resposta);
+                assertEquals(1, resposta.getPageNumber());
+                assertEquals(0, resposta.getContent().size());
+        }
 
-        when(usuarioRepository.listarPaginado(0, 5, null, null))
-                .thenReturn(resultado);
+        @Test
+        @DisplayName("Deve listar com tamanho customizado")
+        void testListarComTamanhCustomizado() {
+                // Arrange
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                usuarios,
+                                0,
+                                5,
+                                2);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 5, null, null);
+                when(usuarioRepository.listarPaginado(0, 5, null, null))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        assertEquals(5, resposta.getPageSize());
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 5, null, null);
 
-    @Test
-    @DisplayName("Deve validar parâmetros antes de chamar repositório")
-    void testValidarParametrosAntesDeChamarRepositorio() {
-        // Act & Assert
-        assertThrows(NotificacaoException.class, () -> {
-            useCase.run(-1, 10, null, null);
-        });
+                // Assert
+                assertNotNull(resposta);
+                assertEquals(5, resposta.getPageSize());
+        }
 
-        verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
-    }
+        @Test
+        @DisplayName("Deve validar parâmetros antes de chamar repositório")
+        void testValidarParametrosAntesDeChamarRepositorio() {
+                // Act & Assert
+                assertThrows(NotificacaoException.class, () -> {
+                        useCase.run(-1, 10, null, null);
+                });
 
-    @Test
-    @DisplayName("Deve retornar resultado com informações de paginação")
-    void testRetornarResultadoComInfoPaginacao() {
-        // Arrange
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                usuarios,
-                0,
-                10,
-                2);
+                verify(usuarioRepository, never()).listarPaginado(anyInt(), anyInt(), any(), any());
+        }
 
-        when(usuarioRepository.listarPaginado(0, 10, null, null))
-                .thenReturn(resultado);
+        @Test
+        @DisplayName("Deve retornar resultado com informações de paginação")
+        void testRetornarResultadoComInfoPaginacao() {
+                // Arrange
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                usuarios,
+                                0,
+                                10,
+                                2);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
+                when(usuarioRepository.listarPaginado(0, 10, null, null))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        assertEquals(0, resposta.getPageNumber());
-        assertEquals(10, resposta.getPageSize());
-        assertEquals(2, resposta.getTotalElements());
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
 
-    @Test
-    @DisplayName("Deve retornar lista vazia quando nenhum resultado")
-    void testRetornarListaVaziaQuandoNenhumResultado() {
-        // Arrange
-        ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
-                new ArrayList<>(),
-                0,
-                10,
-                0);
+                // Assert
+                assertNotNull(resposta);
+                assertEquals(0, resposta.getPageNumber());
+                assertEquals(10, resposta.getPageSize());
+                assertEquals(2, resposta.getTotalElements());
+        }
 
-        when(usuarioRepository.listarPaginado(0, 10, null, null))
-                .thenReturn(resultado);
+        @Test
+        @DisplayName("Deve retornar lista vazia quando nenhum resultado")
+        void testRetornarListaVaziaQuandoNenhumResultado() {
+                // Arrange
+                ResultadoPaginacaoDTO<Usuario> resultado = new ResultadoPaginacaoDTO<>(
+                                new ArrayList<>(),
+                                0,
+                                10,
+                                0);
 
-        // Act
-        ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
+                when(usuarioRepository.listarPaginado(0, 10, null, null))
+                                .thenReturn(resultado);
 
-        // Assert
-        assertNotNull(resposta);
-        assertTrue(resposta.getContent().isEmpty());
-        assertEquals(0, resposta.getTotalElements());
-    }
+                // Act
+                ResultadoPaginacaoDTO<Usuario> resposta = useCase.run(0, 10, null, null);
+
+                // Assert
+                assertNotNull(resposta);
+                assertTrue(resposta.getContent().isEmpty());
+                assertEquals(0, resposta.getTotalElements());
+        }
 
 }

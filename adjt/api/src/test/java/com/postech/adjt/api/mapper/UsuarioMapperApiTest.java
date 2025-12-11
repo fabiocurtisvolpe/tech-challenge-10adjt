@@ -9,6 +9,8 @@ import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,11 +49,7 @@ class UsuarioMapperApiTest {
         enderecos = new ArrayList<>();
         enderecos.add(endereco);
 
-        tipoUsuarioValido = TipoUsuario.builder()
-                .id(1)
-                .nome("CLIENTE")
-                .descricao("CLIENTE")
-                .build();
+        tipoUsuarioValido = TipoUsuarioFactory.usuario(1, "CLIENTE", "CLIENTE", true, false);
 
         tipoUsuarioValidoPayLoad = TipoUsuarioPayLoad.builder()
                 .id(1)
@@ -500,11 +498,7 @@ class UsuarioMapperApiTest {
         UsuarioRespostaDTO dto1 = UsuarioMapperApi.toUsuarioRespostaDTO(usuario1);
         assertEquals(tipoUsuarioValido.getId(), dto1.getTipoUsuario().getId());
 
-        TipoUsuario tipoDonoRestaurante = TipoUsuario.builder()
-                .id(2)
-                .nome("DONO_RESTAURANTE")
-                .descricao("DONO_RESTAURANTE")
-                .build();
+        TipoUsuario tipoDonoRestaurante = TipoUsuarioFactory.usuario(2, "DONO_RESTAURANTE", "DONO_RESTAURANTE", true, true);
 
         // Test DONO_RESTAURANTE
         Usuario usuario2 = Usuario.builder()

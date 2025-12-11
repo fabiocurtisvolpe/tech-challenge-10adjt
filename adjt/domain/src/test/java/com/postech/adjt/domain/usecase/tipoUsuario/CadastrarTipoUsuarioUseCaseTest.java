@@ -45,7 +45,7 @@ class CadastrarTipoUsuarioUseCaseTest {
     void testCadastrarNovoTipoUsuarioComSucesso() {
         when(tipoUsuarioRepository.obterPorId(null)).thenReturn(Optional.empty());
 
-        TipoUsuario tipoUsuarioCriado = TipoUsuarioFactory.criar("NOVO_TIPO", "Descrição do novo tipo",
+        TipoUsuario tipoUsuarioCriado = TipoUsuarioFactory.novo("NOVO_TIPO", "Descrição do novo tipo",
                 true);
 
         when(tipoUsuarioRepository.criar(any(TipoUsuario.class)))
@@ -62,7 +62,7 @@ class CadastrarTipoUsuarioUseCaseTest {
     @Test
     @DisplayName("Deve lançar exceção quando tipo de usuário já existe")
     void testCadastrarComTipoUsuarioExistente() {
-        TipoUsuario tipoUsuarioExistente = TipoUsuarioFactory.criar("NOVO_TIPO", "Descrição do novo tipo",
+        TipoUsuario tipoUsuarioExistente = TipoUsuarioFactory.novo("NOVO_TIPO", "Descrição do novo tipo",
                 true);
 
         when(tipoUsuarioRepository.obterPorNome("NOVO_TIPO")).thenReturn(Optional.of(tipoUsuarioExistente));
@@ -79,7 +79,7 @@ class CadastrarTipoUsuarioUseCaseTest {
     void testTipoUsuarioComIDAposCriacao() {
         when(tipoUsuarioRepository.obterPorNome("NOVO_TIPO")).thenReturn(Optional.empty());
 
-        TipoUsuario tipoUsuarioCriado = TipoUsuarioFactory.criar("NOVO_TIPO", "Descrição do novo tipo",
+        TipoUsuario tipoUsuarioCriado = TipoUsuarioFactory.novo("NOVO_TIPO", "Descrição do novo tipo",
                 true);
 
         when(tipoUsuarioRepository.criar(any(TipoUsuario.class)))
@@ -96,7 +96,7 @@ class CadastrarTipoUsuarioUseCaseTest {
     void testRepositorioCriarChamadoApenasUmaVez() {
         when(tipoUsuarioRepository.obterPorNome("NOVO_TIPO")).thenReturn(Optional.empty());
 
-        TipoUsuario tipoUsuarioCriado = TipoUsuarioFactory.criar("NOVO_TIPO", "Descrição do novo tipo",
+        TipoUsuario tipoUsuarioCriado = TipoUsuarioFactory.novo("NOVO_TIPO", "Descrição do novo tipo",
                 true);
                 
         when(tipoUsuarioRepository.criar(any(TipoUsuario.class)))
