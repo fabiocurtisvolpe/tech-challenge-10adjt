@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.RestauranteEntirade;
 import com.postech.adjt.data.mapper.RestauranteMapper;
-import com.postech.adjt.data.repository.spring.SpringDataRestauranteRepository;
+import com.postech.adjt.data.repository.jpa.JpaDataRestauranteRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -26,9 +26,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public class RestauranteRepositoryAdapter implements GenericRepositoryPort<Restaurante> {
 
-    private final SpringDataRestauranteRepository dataRestauranteRepository;
+    private final JpaDataRestauranteRepository dataRestauranteRepository;
 
-    public RestauranteRepositoryAdapter(SpringDataRestauranteRepository dataRestauranteRepository) {
+    public RestauranteRepositoryAdapter(JpaDataRestauranteRepository dataRestauranteRepository) {
         this.dataRestauranteRepository = dataRestauranteRepository;
     }
 

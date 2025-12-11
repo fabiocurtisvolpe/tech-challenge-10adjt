@@ -22,6 +22,7 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 /**
@@ -63,10 +64,7 @@ class PaginadoUsuarioUseCaseTest {
                 .principal(true)
                 .build());
 
-        tipoUsuarioValido = TipoUsuario.builder()
-                .id(1)
-                .descricao("CLIENTE")
-                .build();
+        tipoUsuarioValido = TipoUsuarioFactory.atualizar(1, "CLIENTE", "CLIENTE", true, false);
 
         // Preparar lista de usuários
         usuarios = new ArrayList<>();
@@ -80,10 +78,7 @@ class PaginadoUsuarioUseCaseTest {
                 .ativo(true)
                 .build());
 
-        TipoUsuario tipoUsuarioFornecedor = TipoUsuario.builder()
-                .id(2)
-                .descricao("FORNECEDOR")
-                .build();
+        TipoUsuario tipoUsuarioFornecedor = TipoUsuarioFactory.atualizar(2, "FORNECEDOR", "FORNECEDOR", true, false);
 
         usuarios.add(Usuario.builder()
                 .id(2)

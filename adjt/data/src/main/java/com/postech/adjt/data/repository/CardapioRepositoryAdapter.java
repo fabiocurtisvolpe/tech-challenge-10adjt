@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.CardapioEntidade;
 import com.postech.adjt.data.mapper.CardapioMapper;
-import com.postech.adjt.data.repository.spring.SpringDataCardapioRepository;
+import com.postech.adjt.data.repository.jpa.JpaDataCardapioRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -26,9 +26,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public class CardapioRepositoryAdapter implements GenericRepositoryPort<Cardapio> {
 
-    private final SpringDataCardapioRepository dataCardapioRepository;
+    private final JpaDataCardapioRepository dataCardapioRepository;
 
-    public CardapioRepositoryAdapter(SpringDataCardapioRepository dataCardapioRepository) {
+    public CardapioRepositoryAdapter(JpaDataCardapioRepository dataCardapioRepository) {
         this.dataCardapioRepository = dataCardapioRepository;
     }
 

@@ -29,4 +29,6 @@ public class TipoUsuarioEntidade extends BaseEntidade {
     @OneToMany(mappedBy = "tipoUsuario", fetch = FetchType.LAZY)
     private List<UsuarioEntidade> usuarios = new ArrayList<>();
 
+    @Column(name = "dono")
+    private Boolean isDono;
 }

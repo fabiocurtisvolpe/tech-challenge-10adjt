@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioGenrico;
 
 /**
  * Testes unitários para TipoUsuarioMapper
@@ -32,7 +33,7 @@ class TipoUsuarioMapperTest {
         entidade.setDataCriacao(LocalDateTime.now());
         entidade.setDataAlteracao(LocalDateTime.now());
 
-        dominio = TipoUsuario.builder()
+        dominio = TipoUsuarioGenrico.builder()
                 .id(1)
                 .nome("Cliente")
                 .descricao("Usuário do tipo Cliente")
@@ -167,7 +168,7 @@ class TipoUsuarioMapperTest {
     @DisplayName("Deve converter domínio sem descrição")
     void testToEntitySemDescricao() {
         // Arrange
-        TipoUsuario dominioSemDescricao = TipoUsuario.builder()
+        TipoUsuario dominioSemDescricao = TipoUsuarioGenrico.builder()
                 .id(1)
                 .nome("Tipo Teste")
                 .descricao(null)

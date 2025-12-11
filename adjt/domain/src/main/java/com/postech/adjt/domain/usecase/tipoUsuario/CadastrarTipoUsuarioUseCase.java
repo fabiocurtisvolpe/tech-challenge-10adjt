@@ -1,6 +1,7 @@
 package com.postech.adjt.domain.usecase.tipoUsuario;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
@@ -19,16 +20,16 @@ public class CadastrarTipoUsuarioUseCase {
         return new CadastrarTipoUsuarioUseCase(tipoUsuarioRepository);
     }
 
-    public TipoUsuario run(TipoUsuario dto) {
+    public TipoUsuario run(TipoUsuarioDTO dto) {
         
 
-        final TipoUsuario tipoUsuarioExistente = this.tipoUsuarioRepository.obterPorId(dto.getId()).orElse(null);
+        final TipoUsuario tipoUsuarioExistente = this.tipoUsuarioRepository.obterPorNome(dto.nome()).orElse(null);
         
         if (tipoUsuarioExistente != null) {
-            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
+            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
         }
 
-        final TipoUsuario tipoUsuario = TipoUsuarioFactory.criar(dto.getNome(), dto.getDescricao());
+        final TipoUsuario tipoUsuario = TipoUsuarioFactory.criar(dto.nome(), dto.descricao(), dto.isDono());
         
         TipoUsuarioValidator.validar(tipoUsuario);
 

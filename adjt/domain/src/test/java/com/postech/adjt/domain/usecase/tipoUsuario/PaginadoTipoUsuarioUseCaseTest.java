@@ -19,6 +19,7 @@ import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,11 +38,7 @@ class PaginadoTipoUsuarioUseCaseTest {
 
         tiposUsuario = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
-            tiposUsuario.add(TipoUsuario.builder()
-                    .id(i)
-                    .nome("TIPO_" + i)
-                    .descricao("Descrição " + i)
-                    .build());
+            tiposUsuario.add(TipoUsuarioFactory.atualizar(1, "TIPO_" + i, "Descrição " + i, true, false));
         }
     }
 
@@ -107,7 +104,8 @@ class PaginadoTipoUsuarioUseCaseTest {
     @DisplayName("Deve respeitar filtros fornecidos")
     void testRespeitarFiltros() {
         List<FilterDTO> filtros = new ArrayList<>();
-        ResultadoPaginacaoDTO<TipoUsuario> resultado = new ResultadoPaginacaoDTO<>(tiposUsuario.subList(0, 1), 0, 10, 1);
+        ResultadoPaginacaoDTO<TipoUsuario> resultado = new ResultadoPaginacaoDTO<>(tiposUsuario.subList(0, 1), 0, 10,
+                1);
         when(tipoUsuarioRepository.listarPaginado(0, 10, filtros, new ArrayList<>()))
                 .thenReturn(resultado);
 

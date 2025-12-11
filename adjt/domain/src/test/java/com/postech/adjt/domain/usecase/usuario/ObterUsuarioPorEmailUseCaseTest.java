@@ -19,6 +19,7 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 /**
@@ -60,10 +61,7 @@ class ObterUsuarioPorEmailUseCaseTest {
                 .principal(true)
                 .build());
 
-        tipoUsuarioValido = TipoUsuario.builder()
-                .id(1)
-                .descricao("CLIENTE")
-                .build();
+        tipoUsuarioValido = TipoUsuarioFactory.atualizar(1, "CLIENTE", "CLIENTE", true, false);
 
         usuario = Usuario.builder()
                 .id(1)

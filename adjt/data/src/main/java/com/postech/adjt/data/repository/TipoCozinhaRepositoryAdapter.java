@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.postech.adjt.data.entidade.TipoCozinhaEntidade;
 import com.postech.adjt.data.mapper.TipoCozinhaMapper;
 import com.postech.adjt.data.mapper.UsuarioMapper;
-import com.postech.adjt.data.repository.spring.SpringDataTipoCozinhaRepository;
+import com.postech.adjt.data.repository.jpa.JpaDataTipoCozinhaRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -27,9 +27,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public class TipoCozinhaRepositoryAdapter implements GenericRepositoryPort<TipoCozinha> {
 
-    private final SpringDataTipoCozinhaRepository dataTipoCozinhaRepository;
+    private final JpaDataTipoCozinhaRepository dataTipoCozinhaRepository;
 
-    public TipoCozinhaRepositoryAdapter(SpringDataTipoCozinhaRepository dataTipoCozinhaRepository) {
+    public TipoCozinhaRepositoryAdapter(JpaDataTipoCozinhaRepository dataTipoCozinhaRepository) {
         this.dataTipoCozinhaRepository = dataTipoCozinhaRepository;
     }
 

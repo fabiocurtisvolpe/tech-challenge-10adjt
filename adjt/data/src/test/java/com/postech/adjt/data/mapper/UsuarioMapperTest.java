@@ -5,6 +5,7 @@ import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.data.entidade.UsuarioEntidade;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioGenrico;
 import com.postech.adjt.domain.entidade.Usuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +48,7 @@ class UsuarioMapperTest {
             .build();
         enderecos.add(endereco);
 
-        tipoUsuarioValido = TipoUsuario.builder()
+        tipoUsuarioValido = TipoUsuarioGenrico.builder()
                 .id(1)
                 .descricao("CLIENTE")
                 .build();

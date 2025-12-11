@@ -13,7 +13,8 @@ BEGIN
       dt_alteracao timestamp(6),
       dt_criacao timestamp(6),
       descricao varchar(1000),
-      nome varchar(50) NOT NULL
+      nome varchar(50) NOT NULL,
+      dono bool NOT NULL DEFAULT false
     );
 
     CREATE TABLE public.tipo_usuario_aud (
@@ -25,6 +26,7 @@ BEGIN
       dt_criacao TIMESTAMP(6),
       descricao VARCHAR(1000),
       nome VARCHAR(50),
+      dono bool,
       PRIMARY KEY (id, rev)
     );
   END IF;

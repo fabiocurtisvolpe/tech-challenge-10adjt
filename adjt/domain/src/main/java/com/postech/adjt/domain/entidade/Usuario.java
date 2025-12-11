@@ -14,7 +14,6 @@ public class Usuario extends Base {
     protected String senha;
     protected TipoUsuario tipoUsuario;
     protected List<Endereco> enderecos;
-    protected Boolean isDono;
 
     @Override
     public int hashCode() {

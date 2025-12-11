@@ -2,6 +2,7 @@ package com.postech.adjt.domain.validators;
 
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioGenrico;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,7 @@ class UsuarioValidatorTest {
     }
 
     private TipoUsuario criarTipoUsuarioValido() {
-        return TipoUsuario.builder()
+        return TipoUsuarioGenrico.builder()
             .id(1)
             .nome("CLIENTE")
             .descricao("Cliente do sistema")

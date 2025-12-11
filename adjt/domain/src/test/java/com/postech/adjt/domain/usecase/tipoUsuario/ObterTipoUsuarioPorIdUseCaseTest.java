@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,11 +32,8 @@ class ObterTipoUsuarioPorIdUseCaseTest {
     void setUp() {
         useCase = ObterTipoUsuarioPorIdUseCase.create(tipoUsuarioRepository);
 
-        tipoUsuarioValido = TipoUsuario.builder()
-                .id(1)
-                .nome("TIPO_USUARIO")
-                .descricao("Descrição do tipo")
-                .build();
+        tipoUsuarioValido = TipoUsuarioFactory.atualizar(1, "TIPO_USUARIO", "Descrição do tipo",
+                true, true);
     }
 
     @Test

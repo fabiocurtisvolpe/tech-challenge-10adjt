@@ -1,16 +1,14 @@
 package com.postech.adjt.api.payload;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-public class TipoUsuarioPayLoad {
+public class TipoCozinhaPayLoad {
 
-    @NotNull(message = "O id do tipo de usuário não pode estar vazio")
+    @NotNull(message = "O id do tipo de cozinha não pode estar vazio")
     private Integer id;
     private String nome;
     private String descricao;

@@ -41,4 +41,5 @@ public class MensagemUtil {
     public static final String CARDAPIO_NAO_ENCONTRADO = "Cardápio não encontrado.";
     public static final String CARDAPIO_JA_CADASTRADO = "Cardápio com esse nome já está cadastrado.";
     public static final String USUARIO_NAO_E_DONO_RESTAURANTE = "Usuário logado não é o dono do restaurante.";
+    public static final String TIPO_USUARIO_JA_CADASTRADO = "Tipo de Usuário já está cadastrado.";
 }

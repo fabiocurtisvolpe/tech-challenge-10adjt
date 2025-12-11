@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.data.mapper.TipoUsuarioMapper;
-import com.postech.adjt.data.repository.spring.SpringDataTipoUsuarioRepository;
+import com.postech.adjt.data.repository.jpa.JpaDataTipoUsuarioRepository;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.filtro.FilterDTO;
@@ -26,9 +26,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public class TipoUsuarioRepositoryAdapter implements GenericRepositoryPort<TipoUsuario> {
 
-    private final SpringDataTipoUsuarioRepository dataTipoUsuarioRepository;
+    private final JpaDataTipoUsuarioRepository dataTipoUsuarioRepository;
 
-    public TipoUsuarioRepositoryAdapter(SpringDataTipoUsuarioRepository dataTipoUsuarioRepository) {
+    public TipoUsuarioRepositoryAdapter(JpaDataTipoUsuarioRepository dataTipoUsuarioRepository) {
         this.dataTipoUsuarioRepository = dataTipoUsuarioRepository;
     }
 

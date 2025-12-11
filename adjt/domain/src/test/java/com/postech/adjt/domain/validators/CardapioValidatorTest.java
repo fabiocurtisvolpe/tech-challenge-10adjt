@@ -5,6 +5,7 @@ import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.entidade.Endereco;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ class CardapioValidatorTest {
 
     @BeforeEach
     void setUp() {
-        TipoUsuario tipoUsuario = TipoUsuario.builder()
+        TipoUsuario tipoUsuario = TipoUsuarioDonoRestaurante.builder()
                 .id(1)
                 .nome("DONO")
                 .descricao("Dono de restaurante")
@@ -34,7 +35,6 @@ class CardapioValidatorTest {
                 .email("joao@email.com")
                 .senha("senha123")
                 .tipoUsuario(tipoUsuario)
-                .isDono(true)
                 .build();
 
         idUsuarioLogado = 1;

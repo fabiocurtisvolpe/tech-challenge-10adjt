@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,15 +32,13 @@ class AtualizarTipoUsuarioUseCaseTest {
 
     @BeforeEach
     void setUp() {
+
         useCase = AtualizarTipoUsuarioUseCase.create(tipoUsuarioRepository);
 
-        tipoUsuarioExistente = TipoUsuario.builder()
-                .id(1)
-                .nome("TIPO_ANTIGO")
-                .descricao("Descrição antiga")
-                .build();
+        tipoUsuarioExistente = TipoUsuarioFactory.atualizar(1, "TIPO_ANTIGO", "Descrição antiga",
+                true, true);
 
-        tipoUsuarioAtualizadoDTO = new TipoUsuarioDTO(1, "TIPO_NOVO", "Descrição nova");
+        tipoUsuarioAtualizadoDTO = new TipoUsuarioDTO(1, "TIPO_NOVO", "Descrição nova", true, true);
     }
 
     @Test
@@ -47,12 +46,8 @@ class AtualizarTipoUsuarioUseCaseTest {
     void testAtualizarTipoUsuarioComSucesso() {
         when(tipoUsuarioRepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistente));
 
-        TipoUsuario tipoUsuarioAtualizado = TipoUsuario.builder()
-                .id(1)
-                .nome("TIPO_ANTIGO")
-                .descricao("Descrição antiga")
-                .ativo(true)
-                .build();
+        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.atualizar(1, "TIPO_ANTIGO", "Descrição antiga",
+                true, true);
 
         when(tipoUsuarioRepository.atualizar(any(TipoUsuario.class)))
                 .thenReturn(tipoUsuarioAtualizado);
@@ -81,12 +76,8 @@ class AtualizarTipoUsuarioUseCaseTest {
     void testMantendoIDTipoUsuario() {
         when(tipoUsuarioRepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistente));
 
-        TipoUsuario tipoUsuarioAtualizado = TipoUsuario.builder()
-                .id(1)
-                .nome("TIPO_ANTIGO")
-                .descricao("Descrição antiga")
-                .ativo(true)
-                .build();
+        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.atualizar(1, "TIPO_ANTIGO", "Descrição antiga",
+                true, true);
 
         when(tipoUsuarioRepository.atualizar(any(TipoUsuario.class)))
                 .thenReturn(tipoUsuarioAtualizado);
@@ -101,12 +92,8 @@ class AtualizarTipoUsuarioUseCaseTest {
     void testRepositorioAtualizarChamadoApenasUmaVez() {
         when(tipoUsuarioRepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistente));
 
-        TipoUsuario tipoUsuarioAtualizado = TipoUsuario.builder()
-                .id(1)
-                .nome("TIPO_ANTIGO")
-                .descricao("Descrição antiga")
-                .ativo(true)
-                .build();
+        TipoUsuario tipoUsuarioAtualizado = TipoUsuarioFactory.atualizar(1, "TIPO_ANTIGO", "Descrição antiga",
+                true, true);
 
         when(tipoUsuarioRepository.atualizar(any(TipoUsuario.class)))
                 .thenReturn(tipoUsuarioAtualizado);

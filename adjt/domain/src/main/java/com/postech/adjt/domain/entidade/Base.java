@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class Base implements Serializable {
+public abstract class Base implements Serializable {
     
     protected Integer id;
     protected LocalDateTime dataCriacao;

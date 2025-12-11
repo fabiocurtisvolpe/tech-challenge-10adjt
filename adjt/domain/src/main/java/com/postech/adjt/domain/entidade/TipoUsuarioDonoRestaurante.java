@@ -5,9 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public abstract class TipoUsuario extends Base {
-
-    protected String nome;
-    protected String descricao;
+public class TipoUsuarioDonoRestaurante extends TipoUsuario {
 
 }

@@ -20,6 +20,7 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 /**
@@ -50,32 +51,28 @@ class AtivarInativarUsuarioUseCaseTest {
         // Preparar dados de teste
         enderecos = new ArrayList<>();
         enderecos.add(Endereco.builder()
-            .logradouro("Rua Teste")
-            .numero("123")
-            .complemento("Apto 101")
-            .bairro("Centro")
-            .pontoReferencia("Perto da praça")
-            .cep("12345-678")
-            .municipio("São Paulo")
-            .uf("SP")
-            .principal(true)
-            .build());
+                .logradouro("Rua Teste")
+                .numero("123")
+                .complemento("Apto 101")
+                .bairro("Centro")
+                .pontoReferencia("Perto da praça")
+                .cep("12345-678")
+                .municipio("São Paulo")
+                .uf("SP")
+                .principal(true)
+                .build());
 
-        tipoUsuarioValido = TipoUsuario.builder()
-            .id(1)
-            .nome("CLIENTE")
-            .descricao("CLIENTE")
-            .build();
+        tipoUsuarioValido = TipoUsuarioFactory.atualizar(1, "CLIENTE", "CLIENTE", true, false);
 
         usuarioExistente = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaSegura123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
     }
 
     @Test
@@ -83,19 +80,19 @@ class AtivarInativarUsuarioUseCaseTest {
     void testAtivarUsuarioComSucesso() {
         // Arrange
         Usuario usuarioAtivado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaSegura123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtivado);
+                .thenReturn(usuarioAtivado);
 
         // Act
         Usuario resultado = useCase.run("joao@email.com", true);
@@ -114,19 +111,19 @@ class AtivarInativarUsuarioUseCaseTest {
     void testDesativarUsuarioComSucesso() {
         // Arrange
         Usuario usuarioDesativado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(enderecos)
-            .ativo(false)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaSegura123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(false)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioDesativado);
+                .thenReturn(usuarioDesativado);
 
         // Act
         Usuario resultado = useCase.run("joao@email.com", false);
@@ -144,7 +141,7 @@ class AtivarInativarUsuarioUseCaseTest {
     void testAtivarUsuarioNaoEncontrado() {
         // Arrange
         when(usuarioRepository.obterPorEmail("inexistente@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
@@ -160,7 +157,7 @@ class AtivarInativarUsuarioUseCaseTest {
     void testDesativarUsuarioNaoEncontrado() {
         // Arrange
         when(usuarioRepository.obterPorEmail("inexistente@email.com"))
-            .thenReturn(Optional.empty());
+                .thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
@@ -176,19 +173,19 @@ class AtivarInativarUsuarioUseCaseTest {
     void testMantendoDadosAoAtivar() {
         // Arrange
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaSegura123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         Usuario resultado = useCase.run("joao@email.com", true);
@@ -205,32 +202,32 @@ class AtivarInativarUsuarioUseCaseTest {
     void testAtivarMultiplosUsuarios() {
         // Arrange
         Usuario usuario1 = Usuario.builder()
-            .id(1)
-            .nome("João")
-            .email("joao@email.com")
-            .senha("senha1")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(new ArrayList<>())
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João")
+                .email("joao@email.com")
+                .senha("senha1")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(new ArrayList<>())
+                .ativo(true)
+                .build();
 
         Usuario usuario2 = Usuario.builder()
-            .id(2)
-            .nome("Maria")
-            .email("maria@email.com")
-            .senha("senha2")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(new ArrayList<>())
-            .ativo(true)
-            .build();
+                .id(2)
+                .nome("Maria")
+                .email("maria@email.com")
+                .senha("senha2")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(new ArrayList<>())
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.obterPorEmail("maria@email.com"))
-            .thenReturn(Optional.of(usuario2));
+                .thenReturn(Optional.of(usuario2));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuario1)
-            .thenReturn(usuario2);
+                .thenReturn(usuario1)
+                .thenReturn(usuario2);
 
         // Act
         Usuario resultado1 = useCase.run("joao@email.com", true);
@@ -250,19 +247,19 @@ class AtivarInativarUsuarioUseCaseTest {
     void testDesativarUsuarioMantendoEnderecos() {
         // Arrange
         Usuario usuarioDesativado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(enderecos)
-            .ativo(false)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaSegura123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(false)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioDesativado);
+                .thenReturn(usuarioDesativado);
 
         // Act
         Usuario resultado = useCase.run("joao@email.com", false);
@@ -279,9 +276,9 @@ class AtivarInativarUsuarioUseCaseTest {
     void testChamadasRepositorioAoAtivar() {
         // Arrange
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioExistente);
+                .thenReturn(usuarioExistente);
 
         // Act
         useCase.run("joao@email.com", true);
@@ -297,19 +294,19 @@ class AtivarInativarUsuarioUseCaseTest {
     void testUsandoFactoryParaAtualizacao() {
         // Arrange
         Usuario usuarioAtualizado = Usuario.builder()
-            .id(1)
-            .nome("João Silva")
-            .email("joao@email.com")
-            .senha("senhaSegura123")
-            .tipoUsuario(tipoUsuarioValido)
-            .enderecos(enderecos)
-            .ativo(true)
-            .build();
+                .id(1)
+                .nome("João Silva")
+                .email("joao@email.com")
+                .senha("senhaSegura123")
+                .tipoUsuario(tipoUsuarioValido)
+                .enderecos(enderecos)
+                .ativo(true)
+                .build();
 
         when(usuarioRepository.obterPorEmail("joao@email.com"))
-            .thenReturn(Optional.of(usuarioExistente));
+                .thenReturn(Optional.of(usuarioExistente));
         when(usuarioRepository.atualizar(any(Usuario.class)))
-            .thenReturn(usuarioAtualizado);
+                .thenReturn(usuarioAtualizado);
 
         // Act
         Usuario resultado = useCase.run("joao@email.com", true);

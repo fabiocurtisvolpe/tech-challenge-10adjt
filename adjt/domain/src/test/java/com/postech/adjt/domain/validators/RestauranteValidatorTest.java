@@ -5,6 +5,7 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,7 @@ class RestauranteValidatorTest {
 
     @BeforeEach
     void setUp() {
-        TipoUsuario tipoUsuario = TipoUsuario.builder()
+        TipoUsuario tipoUsuario = TipoUsuarioDonoRestaurante.builder()
                 .id(1)
                 .nome("DONO")
                 .descricao("Dono de restaurante")
@@ -35,7 +36,6 @@ class RestauranteValidatorTest {
                 .email("joao@email.com")
                 .senha("senha123")
                 .tipoUsuario(tipoUsuario)
-                .isDono(true)
                 .build();
 
         idUsuarioLogado = 1;

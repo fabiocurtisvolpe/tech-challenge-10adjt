@@ -21,19 +21,20 @@ public class AtualizarTipoUsuarioUseCase {
     }
 
     public TipoUsuario run(TipoUsuarioDTO dto) {
-        
+
         final TipoUsuario tipoUsuarioExistente = this.tipoUsuarioRepository.obterPorId(dto.id()).orElse(null);
-        
+
         if (tipoUsuarioExistente == null) {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
         }
 
-        final TipoUsuario tipoUsuario = TipoUsuarioFactory.atualizar(tipoUsuarioExistente.getId(), tipoUsuarioExistente.getNome(), 
-        tipoUsuarioExistente.getDescricao(), true);
+        final TipoUsuario tipoUsuario = TipoUsuarioFactory.atualizar(tipoUsuarioExistente.getId(),
+                tipoUsuarioExistente.getNome(),
+                tipoUsuarioExistente.getDescricao(), dto.ativo(), dto.isDono());
 
         TipoUsuarioValidator.validar(tipoUsuario);
 
         return tipoUsuarioRepository.atualizar(tipoUsuario);
     }
- 
+
 }

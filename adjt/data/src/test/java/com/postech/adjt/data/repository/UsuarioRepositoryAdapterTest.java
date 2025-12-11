@@ -18,11 +18,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import com.postech.adjt.data.entidade.UsuarioEntidade;
-import com.postech.adjt.data.repository.spring.SpringDataUsuarioRepository;
+import com.postech.adjt.data.repository.jpa.JpaDataUsuarioRepository;
 import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 
 /**
@@ -39,7 +40,7 @@ import com.postech.adjt.domain.entidade.TipoUsuario;
 class UsuarioRepositoryAdapterTest {
 
     @Mock
-    private SpringDataUsuarioRepository springDataUsuarioRepository;
+    private JpaDataUsuarioRepository springDataUsuarioRepository;
 
     private UsuarioRepositoryAdapter usuarioRepositoryAdapter;
     
@@ -50,13 +51,12 @@ class UsuarioRepositoryAdapterTest {
     void setUp() {
         usuarioRepositoryAdapter = new UsuarioRepositoryAdapter(springDataUsuarioRepository);
         
-        tipoUsuario = TipoUsuario.builder()
-                .id(1)
-                .descricao("CLIENTE")
-                .build();
-                
+        tipoUsuario = TipoUsuarioFactory.atualizar(1, "CLIENTE", "CLIENTE", true, false);
+        
+
         tipoUsuarioEntidade = new TipoUsuarioEntidade();
         tipoUsuarioEntidade.setId(1);
+        tipoUsuarioEntidade.setNome("CLIENTE");
         tipoUsuarioEntidade.setDescricao("CLIENTE");
     }
 
