@@ -31,4 +31,7 @@ public class TipoUsuarioEntidade extends BaseEntidade {
 
     @Column(name = "dono")
     private Boolean isDono;
+
+    @Column(name = "editavel")
+    private Boolean isEditavel;
 }

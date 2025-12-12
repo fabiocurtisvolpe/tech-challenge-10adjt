@@ -1,16 +1,14 @@
 package com.postech.adjt.domain.usecase.usuario;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.dto.EnderecoDTO;
 import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
+import com.postech.adjt.domain.factory.EnderecoFactory;
 import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.validators.UsuarioValidator;
@@ -45,34 +43,13 @@ public class CadastrarUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
         }
 
-        List<Endereco> enderecos = dto.enderecos().stream().map(
-                item -> converterEndereco(item))
-                .collect(Collectors.toList());
+        List<Endereco> enderecos = EnderecoFactory.toEnderecoList(dto.enderecos());
 
         final Usuario usuario = UsuarioFactory.novo(dto.nome(),
                 dto.email(), dto.senha(),
                 tipoUsuario, enderecos);
 
-        UsuarioValidator.validarParaCriacao(usuario);
-
         return usuarioRepository.criar(usuario);
-    }
-
-    private Endereco converterEndereco(EnderecoDTO dto) {
-        return Endereco.builder()
-                .logradouro(dto.logradouro())
-                .numero(dto.numero())
-                .complemento(dto.complemento())
-                .bairro(dto.bairro())
-                .pontoReferencia(dto.pontoReferencia())
-                .cep(dto.cep())
-                .municipio(dto.municipio())
-                .uf(dto.uf())
-                .principal(Boolean.TRUE.equals(dto.principal()))
-                .ativo(true)
-                .dataCriacao(LocalDateTime.now())
-                .dataAlteracao(LocalDateTime.now())
-                .build();
     }
 
 }

@@ -14,7 +14,8 @@ BEGIN
       dt_criacao timestamp(6),
       descricao varchar(1000),
       nome varchar(50) NOT NULL,
-      dono bool NOT NULL DEFAULT false
+      dono bool NOT NULL DEFAULT false,
+      editavel bool NOT NULL DEFAULT true
     );
 
     CREATE TABLE public.tipo_usuario_aud (
@@ -27,6 +28,7 @@ BEGIN
       descricao VARCHAR(1000),
       nome VARCHAR(50),
       dono bool,
+      editavel bool,
       PRIMARY KEY (id, rev)
     );
   END IF;
@@ -37,25 +39,13 @@ ALTER TABLE public.usuario ADD COLUMN IF NOT EXISTS tipo_usuario_id INT;
 ALTER TABLE public.usuario_aud ADD COLUMN IF NOT EXISTS tipo_usuario_id INT;
 
 -- 3. Inserir tipos de usuário (se não existirem)
-INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao)
-SELECT 'ADMINISTRADOR', 'ADMINISTRADOR', true, NOW()
-WHERE NOT EXISTS (SELECT 1 FROM public.tipo_usuario WHERE nome = 'ADMINISTRADOR');
-
-INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao)
-SELECT 'CLIENTE', 'CLIENTE', true, NOW()
+INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao, dono, editavel)
+SELECT 'CLIENTE', 'CLIENTE', true, NOW(), false, false
 WHERE NOT EXISTS (SELECT 1 FROM public.tipo_usuario WHERE nome = 'CLIENTE');
 
-INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao)
-SELECT 'DONO RESTAURANTE', 'DONO RESTAURANTE', true, NOW()
+INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao, dono, editavel)
+SELECT 'DONO RESTAURANTE', 'DONO RESTAURANTE', true, NOW(), true, false
 WHERE NOT EXISTS (SELECT 1 FROM public.tipo_usuario WHERE nome = 'DONO RESTAURANTE');
-
-INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao)
-SELECT 'FORNECEDOR', 'FORNECEDOR', true, NOW()
-WHERE NOT EXISTS (SELECT 1 FROM public.tipo_usuario WHERE nome = 'FORNECEDOR');
-
-INSERT INTO public.tipo_usuario (nome, descricao, ativo, dt_criacao)
-SELECT 'PRESTADOR SERVICO', 'PRESTADOR SERVICO', true, NOW()
-WHERE NOT EXISTS (SELECT 1 FROM public.tipo_usuario WHERE nome = 'PRESTADOR SERVICO');
 
 -- 4. Atualizar tabela usuario mapeando siglas antigas para IDs
 DO $$

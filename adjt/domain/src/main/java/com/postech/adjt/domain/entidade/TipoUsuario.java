@@ -9,5 +9,6 @@ public abstract class TipoUsuario extends Base {
 
     protected String nome;
     protected String descricao;
+    protected Boolean isEditavel;
 
 }

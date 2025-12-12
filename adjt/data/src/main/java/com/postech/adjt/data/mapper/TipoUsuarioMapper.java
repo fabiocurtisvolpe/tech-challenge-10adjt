@@ -41,6 +41,7 @@ public class TipoUsuarioMapper {
                 .dataCriacao(entidade.getDataCriacao())
                 .dataAlteracao(entidade.getDataAlteracao())
                 .ativo(entidade.getAtivo())
+                .isEditavel(entidade.getIsEditavel())
                 .build();
 
         }
@@ -52,6 +53,7 @@ public class TipoUsuarioMapper {
                 .dataCriacao(entidade.getDataCriacao())
                 .dataAlteracao(entidade.getDataAlteracao())
                 .ativo(entidade.getAtivo())
+                .isEditavel(entidade.getIsEditavel())
                 .build();
     }
 
@@ -77,6 +79,7 @@ public class TipoUsuarioMapper {
         entidade.setDataAlteracao(tipoUsuario.getDataAlteracao());
         entidade.setAtivo(ativo);
         entidade.setIsDono(isDono);
+        entidade.setIsEditavel(tipoUsuario.getIsEditavel());
 
         return entidade;
     }

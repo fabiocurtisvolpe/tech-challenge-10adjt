@@ -6,6 +6,7 @@ import java.util.List;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.validators.UsuarioValidator;
 
 import lombok.NoArgsConstructor;
 
@@ -15,7 +16,7 @@ public abstract class UsuarioFactory {
     public static Usuario novo(String nome, String email, String senha,
             TipoUsuario tipoUsuario, List<Endereco> enderecos) throws IllegalArgumentException {
 
-        return Usuario.builder()
+        Usuario usuario = Usuario.builder()
                 .dataCriacao(LocalDateTime.now())
                 .dataAlteracao(LocalDateTime.now())
                 .ativo(true)
@@ -25,12 +26,16 @@ public abstract class UsuarioFactory {
                 .tipoUsuario(tipoUsuario)
                 .enderecos(enderecos)
                 .build();
+
+        UsuarioValidator.validarParaCriacao(usuario);
+
+        return usuario;
     }
 
     public static Usuario usuario(Integer id, String nome, String email, String senha,
             TipoUsuario tipoUsuario, List<Endereco> enderecos, Boolean ativo) throws IllegalArgumentException {
 
-        return Usuario.builder()
+        Usuario usuario = Usuario.builder()
                 .id(id)
                 .dataAlteracao(LocalDateTime.now())
                 .ativo(ativo)
@@ -40,6 +45,10 @@ public abstract class UsuarioFactory {
                 .tipoUsuario(tipoUsuario)
                 .enderecos(enderecos)
                 .build();
+
+
+                
+        return usuario;
     }
 
     public static Usuario atualizarSenha(Integer id, String email, String senha) throws IllegalArgumentException {
