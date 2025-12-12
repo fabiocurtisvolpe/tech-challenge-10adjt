@@ -15,8 +15,10 @@ public class AtualizaTipoCozinhaPayLoad {
 
     @NotBlank(message = "O nome não pode estar em branco")
     @Size(max = 50, message = "O nome deve ter até 50 caracteres")
-    protected String nome;
+    private String nome;
 
     @Size(max = 1000, message = "A descrição deve ter até 1000 caracteres")
-    protected String descricao;
+    private String descricao;
+
+    private Boolean ativo = true;
 }

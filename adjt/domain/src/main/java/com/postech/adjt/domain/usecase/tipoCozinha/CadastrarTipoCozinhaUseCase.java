@@ -1,5 +1,6 @@
 package com.postech.adjt.domain.usecase.tipoCozinha;
 
+import com.postech.adjt.domain.dto.TipoCozinhaDTO;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.factory.TipoCozinhaFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
@@ -17,9 +18,9 @@ public class CadastrarTipoCozinhaUseCase {
         return new CadastrarTipoCozinhaUseCase(tipoCozinhaRepository);
     }
 
-    public TipoCozinha run(TipoCozinha dto) {
+    public TipoCozinha run(TipoCozinhaDTO dto) {
         
-        final TipoCozinha tipoCozinha = TipoCozinhaFactory.criar(dto.getNome(), dto.getDescricao());
+        final TipoCozinha tipoCozinha = TipoCozinhaFactory.novo(dto.nome(), dto.descricao());
         
         TipoCozinhaValidator.validar(tipoCozinha);
 

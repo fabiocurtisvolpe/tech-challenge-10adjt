@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public abstract class TipoCozinhaFactory {
 
-    public static TipoCozinha criar(String nome, String descricao) throws IllegalArgumentException {
+    public static TipoCozinha novo(String nome, String descricao) throws IllegalArgumentException {
 
         return TipoCozinha.builder()
                 .nome(nome)
@@ -20,7 +20,7 @@ public abstract class TipoCozinhaFactory {
                 .build();
     }
 
-    public static TipoCozinha atualizar(Integer id, String nome, String descricao,
+    public static TipoCozinha tipoCozinha(Integer id, String nome, String descricao,
             Boolean ativo) throws IllegalArgumentException {
 
         return TipoCozinha.builder()

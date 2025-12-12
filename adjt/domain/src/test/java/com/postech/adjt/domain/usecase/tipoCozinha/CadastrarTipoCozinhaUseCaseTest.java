@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.postech.adjt.domain.dto.TipoCozinhaDTO;
 import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
@@ -22,16 +23,12 @@ class CadastrarTipoCozinhaUseCaseTest {
     private GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
 
     private CadastrarTipoCozinhaUseCase useCase;
-    private TipoCozinha novoTipoCozinha;
+    private TipoCozinhaDTO novoTipoCozinha;
 
     @BeforeEach
     void setUp() {
         useCase = CadastrarTipoCozinhaUseCase.create(tipoCozinhaRepository);
-
-        novoTipoCozinha = TipoCozinha.builder()
-                .nome("ITALIANA")
-                .descricao("Culinária italiana")
-                .build();
+        novoTipoCozinha = new TipoCozinhaDTO(null, "ITALIANA", "Culinária italiana", true);
     }
 
     @Test

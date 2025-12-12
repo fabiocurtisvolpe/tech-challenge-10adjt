@@ -28,7 +28,7 @@ public class AtualizarTipoCozinhaUseCase {
             throw new NotificacaoException(MensagemUtil.TIPO_COZINHA_NAO_ENCONTRADO);
         }
 
-        final TipoCozinha tipoCozinha = TipoCozinhaFactory.atualizar(TipoCozinhaExistente.getId(), 
+        final TipoCozinha tipoCozinha = TipoCozinhaFactory.tipoCozinha(TipoCozinhaExistente.getId(), 
                 dto.nome(), dto.descricao(), true);
 
         TipoCozinhaValidator.validar(tipoCozinha);

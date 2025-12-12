@@ -39,7 +39,7 @@ class AtualizarTipoCozinhaUseCaseTest {
                 .descricao("Culinária italiana")
                 .build();
 
-        tipoCozinhaAtualizadoDTO = new TipoCozinhaDTO(1, "ITALIANA_MODERNA", "Culinária italiana moderna");
+        tipoCozinhaAtualizadoDTO = new TipoCozinhaDTO(1, "ITALIANA_MODERNA", "Culinária italiana moderna", true);
     }
 
     @Test
