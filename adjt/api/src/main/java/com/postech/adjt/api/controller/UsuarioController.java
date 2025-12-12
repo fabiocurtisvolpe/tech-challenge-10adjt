@@ -180,8 +180,9 @@ public class UsuarioController {
         @PutMapping("/{email}/ativar")
         public UsuarioRespostaDTO ativar(@PathVariable String email) {
 
-                UsuarioDTO usuarioDTO = new UsuarioDTO(null, email, null,
+                UsuarioDTO usuarioDTO = new UsuarioDTO(null, null, email, null,
                                 null, null, true);
+
                 Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
 
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
@@ -189,8 +190,9 @@ public class UsuarioController {
 
         @PutMapping("/{email}/desativar")
         public UsuarioRespostaDTO desativar(@PathVariable String email) {
-                UsuarioDTO usuarioDTO = new UsuarioDTO(null, email, null,
+                UsuarioDTO usuarioDTO = new UsuarioDTO(null, null, email, null,
                                 null, null, false);
+
                 Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
 
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);

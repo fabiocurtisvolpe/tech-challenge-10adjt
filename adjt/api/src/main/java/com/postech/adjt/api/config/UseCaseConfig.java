@@ -42,8 +42,9 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public CadastrarUsuarioUseCase cadastrarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
-        return CadastrarUsuarioUseCase.create(usuarioRepository);
+    public CadastrarUsuarioUseCase cadastrarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository,
+            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+        return CadastrarUsuarioUseCase.create(usuarioRepository, tipoUsuarioRepository);
     }
 
     @Bean
@@ -64,45 +65,56 @@ public class UseCaseConfig {
     /*************************************************************************************************************/
 
     @Bean
-    public AtualizarTipoCozinhaUseCase atualizarTipoCozinhaUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+    public AtualizarTipoCozinhaUseCase atualizarTipoCozinhaUseCase(
+            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         return AtualizarTipoCozinhaUseCase.create(tipoCozinhaRepository);
     }
 
     @Bean
-    public CadastrarTipoCozinhaUseCase cadastrarTipoCozinhaUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+    public CadastrarTipoCozinhaUseCase cadastrarTipoCozinhaUseCase(
+            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         return CadastrarTipoCozinhaUseCase.create(tipoCozinhaRepository);
     }
 
     @Bean
-    public ObterTipoCozinhaPorIdUseCase obterTipoCozinhaPorIdUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+    public ObterTipoCozinhaPorIdUseCase obterTipoCozinhaPorIdUseCase(
+            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         return ObterTipoCozinhaPorIdUseCase.create(tipoCozinhaRepository);
     }
 
     @Bean
-    public PaginadoUseCase<TipoCozinha> paginadoTipoCozinhaUseCase(GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+    public PaginadoUseCase<TipoCozinha> paginadoTipoCozinhaUseCase(
+            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
         return PaginadoUseCase.create(tipoCozinhaRepository);
     }
 
     /*************************************************************************************************************/
 
     @Bean
-    public AtualizarRestauranteUseCase atualizarRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository) {
-        return AtualizarRestauranteUseCase.create(restauranteRepository);
+    public AtualizarRestauranteUseCase atualizarRestauranteUseCase(
+            GenericRepositoryPort<Restaurante> restauranteRepository,
+            GenericRepositoryPort<Usuario> usuarioRepository,
+            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+        return AtualizarRestauranteUseCase.create(restauranteRepository, usuarioRepository, tipoCozinhaRepository);
     }
 
     @Bean
-    public CadastrarRestauranteUseCase cadastrarRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository,
-        GenericRepositoryPort<Usuario> usuarioRepository) {
-        return CadastrarRestauranteUseCase.create(restauranteRepository, usuarioRepository);
+    public CadastrarRestauranteUseCase cadastrarRestauranteUseCase(
+            GenericRepositoryPort<Restaurante> restauranteRepository,
+            GenericRepositoryPort<Usuario> usuarioRepository,
+            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+        return CadastrarRestauranteUseCase.create(restauranteRepository, usuarioRepository, tipoCozinhaRepository);
     }
 
     @Bean
-    public ObterRestaurantePorIdUseCase obterRestaurantePorIdUseCase(GenericRepositoryPort<Restaurante> restauranteRepository) {
+    public ObterRestaurantePorIdUseCase obterRestaurantePorIdUseCase(
+            GenericRepositoryPort<Restaurante> restauranteRepository) {
         return ObterRestaurantePorIdUseCase.create(restauranteRepository);
     }
 
     @Bean
-    public PaginadoUseCase<Restaurante> paginadoRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository) {
+    public PaginadoUseCase<Restaurante> paginadoRestauranteUseCase(
+            GenericRepositoryPort<Restaurante> restauranteRepository) {
         return PaginadoUseCase.create(restauranteRepository);
     }
 
@@ -131,22 +143,26 @@ public class UseCaseConfig {
     /*************************************************************************************************************/
 
     @Bean
-    public AtualizarTipoUsuarioUseCase atualizarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+    public AtualizarTipoUsuarioUseCase atualizarTipoUsuarioUseCase(
+            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return AtualizarTipoUsuarioUseCase.create(tipoUsuarioRepository);
     }
 
     @Bean
-    public CadastrarTipoUsuarioUseCase cadastrarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+    public CadastrarTipoUsuarioUseCase cadastrarTipoUsuarioUseCase(
+            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return CadastrarTipoUsuarioUseCase.create(tipoUsuarioRepository);
     }
 
     @Bean
-    public ObterTipoUsuarioPorIdUseCase obterTipoUsuarioPorIdUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+    public ObterTipoUsuarioPorIdUseCase obterTipoUsuarioPorIdUseCase(
+            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return ObterTipoUsuarioPorIdUseCase.create(tipoUsuarioRepository);
     }
 
     @Bean
-    public PaginadoUseCase<TipoUsuario> paginadoTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+    public PaginadoUseCase<TipoUsuario> paginadoTipoUsuarioUseCase(
+            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return PaginadoUseCase.create(tipoUsuarioRepository);
     }
 }

@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 public abstract class UsuarioFactory {
 
     public static Usuario novo(String nome, String email, String senha,
-        TipoUsuario tipoUsuario, List<Endereco> enderecos) throws IllegalArgumentException {
+            TipoUsuario tipoUsuario, List<Endereco> enderecos) throws IllegalArgumentException {
 
         return Usuario.builder()
                 .dataCriacao(LocalDateTime.now())
                 .dataAlteracao(LocalDateTime.now())
-                .ativo(true)    
+                .ativo(true)
                 .nome(nome)
                 .email(email)
                 .senha(senha)
@@ -28,12 +28,12 @@ public abstract class UsuarioFactory {
     }
 
     public static Usuario usuario(Integer id, String nome, String email, String senha,
-        TipoUsuario tipoUsuario, List<Endereco> enderecos, Boolean ativo) throws IllegalArgumentException {
+            TipoUsuario tipoUsuario, List<Endereco> enderecos, Boolean ativo) throws IllegalArgumentException {
 
         return Usuario.builder()
                 .id(id)
                 .dataAlteracao(LocalDateTime.now())
-                .ativo(ativo)    
+                .ativo(ativo)
                 .nome(nome)
                 .email(email)
                 .senha(senha)
@@ -42,7 +42,7 @@ public abstract class UsuarioFactory {
                 .build();
     }
 
-    public static Usuario atualizarSenha(Integer id,String email, String senha) throws IllegalArgumentException {
+    public static Usuario atualizarSenha(Integer id, String email, String senha) throws IllegalArgumentException {
 
         return Usuario.builder()
                 .id(id)

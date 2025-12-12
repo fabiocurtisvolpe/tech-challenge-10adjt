@@ -8,37 +8,27 @@ import org.springframework.stereotype.Component;
 import com.postech.adjt.api.dto.EnderecoRespostaDTO;
 import com.postech.adjt.api.dto.UsuarioRespostaDTO;
 import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
+import com.postech.adjt.api.payload.EnderecoPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
+import com.postech.adjt.domain.dto.EnderecoDTO;
+import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
-import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 
 @Component
 public class UsuarioMapperApi {
 
         public static UsuarioDTO toNovoUsuarioDTO(NovoUsuarioPayLoad payload, String senhaEncriptada) {
 
-                List<Endereco> enderecos = payload.getEnderecos().stream()
-                                .map(dto -> Endereco.builder()
-                                                .logradouro(dto.getLogradouro())
-                                                .numero(dto.getNumero())
-                                                .complemento(dto.getComplemento())
-                                                .bairro(dto.getBairro())
-                                                .pontoReferencia(dto.getPontoReferencia())
-                                                .cep(dto.getCep())
-                                                .municipio(dto.getMunicipio())
-                                                .uf(dto.getUf())
-                                                .principal(dto.getPrincipal())
-                                                .build())
-                                .collect(Collectors.toList());
+                List<EnderecoDTO> enderecos = toEnderecoDTOList(payload.getEnderecos());
 
-                TipoUsuario tipoUsuario = TipoUsuarioFactory.tipoUsuario(payload.getTipoUsuario().getId(),
+                TipoUsuarioDTO tipoUsuario = new TipoUsuarioDTO(payload.getTipoUsuario().getId(),
                                 payload.getTipoUsuario().getNome(), payload.getTipoUsuario().getDescricao(), true,
                                 payload.getTipoUsuario().getIsDono());
 
                 return new UsuarioDTO(
+                                null,
                                 payload.getNome(),
                                 payload.getEmail(),
                                 senhaEncriptada,
@@ -48,21 +38,10 @@ public class UsuarioMapperApi {
 
         public static UsuarioDTO toAtualizaUsuarioDTO(AtualizaUsuarioPayLoad payload) {
 
-                List<Endereco> enderecos = payload.getEnderecos().stream()
-                                .map(dto -> Endereco.builder()
-                                                .logradouro(dto.getLogradouro())
-                                                .numero(dto.getNumero())
-                                                .complemento(dto.getComplemento())
-                                                .bairro(dto.getBairro())
-                                                .pontoReferencia(dto.getPontoReferencia())
-                                                .cep(dto.getCep())
-                                                .municipio(dto.getMunicipio())
-                                                .uf(dto.getUf())
-                                                .principal(dto.getPrincipal() != null ? dto.getPrincipal() : false)
-                                                .build())
-                                .collect(Collectors.toList());
+                List<EnderecoDTO> enderecos = toEnderecoDTOList(payload.getEnderecos());
 
                 return new UsuarioDTO(
+                                null,
                                 payload.getNome(),
                                 payload.getEmail(),
                                 null,
@@ -87,6 +66,25 @@ public class UsuarioMapperApi {
                                 usuario.getTipoUsuario(),
                                 enderecos,
                                 usuario.getDataAlteracao());
+        }
+
+        private static List<EnderecoDTO> toEnderecoDTOList(List<EnderecoPayLoad> enderecos) {
+                if (enderecos == null) {
+                        return null;
+                }
+
+                return enderecos.stream()
+                                .map(endereco -> new EnderecoDTO(
+                                                endereco.getLogradouro(),
+                                                endereco.getNumero(),
+                                                endereco.getComplemento(),
+                                                endereco.getBairro(),
+                                                endereco.getPontoReferencia(),
+                                                endereco.getCep(),
+                                                endereco.getMunicipio(),
+                                                endereco.getUf(),
+                                                endereco.getPrincipal()))
+                                .collect(Collectors.toList());
         }
 
         private static EnderecoRespostaDTO toEnderecoRespostaDTO(Endereco endereco) {
