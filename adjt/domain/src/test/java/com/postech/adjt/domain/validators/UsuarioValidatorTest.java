@@ -318,7 +318,7 @@ class UsuarioValidatorTest {
             .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
+        assertDoesNotThrow(() -> UsuarioValidator.validarUsuario(usuario));
     }
 
     @Test
@@ -326,7 +326,7 @@ class UsuarioValidatorTest {
     void testValidarParaAtualizacaoComUsuarioNulo() {
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(null);
+            UsuarioValidator.validarUsuario(null);
         });
     }
 
@@ -344,7 +344,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -363,7 +363,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -382,7 +382,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -400,7 +400,7 @@ class UsuarioValidatorTest {
             .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
+        assertDoesNotThrow(() -> UsuarioValidator.validarUsuario(usuario));
     }
 
     @Test
@@ -418,7 +418,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -437,7 +437,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -456,7 +456,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -474,7 +474,7 @@ class UsuarioValidatorTest {
             .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
+        assertDoesNotThrow(() -> UsuarioValidator.validarUsuario(usuario));
     }
 
     @Test
@@ -492,7 +492,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -511,7 +511,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -530,7 +530,7 @@ class UsuarioValidatorTest {
 
         // Act & Assert
         assertThrows(NotificacaoException.class, () -> {
-            UsuarioValidator.validarParaAtualizacao(usuario);
+            UsuarioValidator.validarUsuario(usuario);
         });
     }
 
@@ -548,7 +548,7 @@ class UsuarioValidatorTest {
             .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
+        assertDoesNotThrow(() -> UsuarioValidator.validarUsuario(usuario));
     }
 
     @Test
@@ -597,6 +597,6 @@ class UsuarioValidatorTest {
             .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> UsuarioValidator.validarParaAtualizacao(usuario));
+        assertDoesNotThrow(() -> UsuarioValidator.validarUsuario(usuario));
     }
 }

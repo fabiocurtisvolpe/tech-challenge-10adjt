@@ -46,7 +46,7 @@ public abstract class UsuarioFactory {
                 .enderecos(enderecos)
                 .build();
 
-
+        UsuarioValidator.validarUsuario(usuario);
                 
         return usuario;
     }

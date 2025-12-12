@@ -11,7 +11,6 @@ import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.EnderecoFactory;
 import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
-import com.postech.adjt.domain.validators.UsuarioValidator;
 
 public class CadastrarUsuarioUseCase {
 

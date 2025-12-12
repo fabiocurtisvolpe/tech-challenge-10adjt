@@ -55,7 +55,8 @@ public class UsuarioValidator {
      * @param usuario Usuario a ser validado
      * @throws NotificacaoException se alguma validação falhar
      */
-    public static void validarParaAtualizacao(Usuario usuario) throws NotificacaoException {
+    public static void validarUsuario(Usuario usuario) throws NotificacaoException {
+        
         if (usuario == null) {
             throw new NotificacaoException(MensagemUtil.USUARIO_NULO);
         }

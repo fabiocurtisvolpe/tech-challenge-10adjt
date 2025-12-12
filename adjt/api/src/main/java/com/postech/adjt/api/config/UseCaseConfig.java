@@ -37,8 +37,9 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public AtualizarUsuarioUseCase atualizarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
-        return AtualizarUsuarioUseCase.create(usuarioRepository);
+    public AtualizarUsuarioUseCase atualizarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository,
+        GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+        return AtualizarUsuarioUseCase.create(usuarioRepository, tipoUsuarioRepository);
     }
 
     @Bean

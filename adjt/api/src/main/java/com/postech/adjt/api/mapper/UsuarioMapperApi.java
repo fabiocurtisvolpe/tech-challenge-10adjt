@@ -61,6 +61,7 @@ public class UsuarioMapperApi {
                                 : null;
 
                 return new UsuarioRespostaDTO(
+                                usuario.getId(),
                                 usuario.getNome(),
                                 usuario.getEmail(),
                                 usuario.getTipoUsuario(),

@@ -19,14 +19,16 @@ import lombok.Getter;
 @Getter
 public class UsuarioRespostaDTO {
 
+    private Integer id;
     private String nome;
     private String email;
     private TipoUsuario tipoUsuario;
     private List<EnderecoRespostaDTO> enderecos;
     private LocalDateTime dataAlteracao;
 
-    public UsuarioRespostaDTO(String nome, String email, TipoUsuario tipoUsuario,
+    public UsuarioRespostaDTO(Integer id, String nome, String email, TipoUsuario tipoUsuario,
             List<EnderecoRespostaDTO> enderecos, LocalDateTime dataAlteracao) {
+        this.id = id;
         this.nome = nome;
         this.email = email;
         this.tipoUsuario = tipoUsuario;

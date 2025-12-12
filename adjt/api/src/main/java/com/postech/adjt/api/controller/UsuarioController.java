@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.postech.adjt.api.dto.UsuarioRespostaDTO;
+import com.postech.adjt.api.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.api.mapper.UsuarioMapperApi;
 import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
@@ -118,7 +119,7 @@ public class UsuarioController {
         public UsuarioRespostaDTO atualizar(@RequestBody @Valid AtualizaUsuarioPayLoad dto) {
 
                 UsuarioDTO usuarioDTO = UsuarioMapperApi.toAtualizaUsuarioDTO(dto);
-                Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
+                Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO, UsuarioLogadoUtil.getUsuarioLogado());
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
@@ -177,6 +178,7 @@ public class UsuarioController {
                                 resultado.getTotalElements());
         }
 
+        /*
         @PutMapping("/{email}/ativar")
         public UsuarioRespostaDTO ativar(@PathVariable String email) {
 
@@ -197,4 +199,5 @@ public class UsuarioController {
 
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
+                */
 }
