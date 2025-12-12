@@ -1,5 +1,7 @@
 package com.postech.adjt.api.payload;
 
+import com.postech.adjt.domain.enums.TipoCozinhaEnum;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,7 +23,7 @@ public class NovoRestaurantePayLoad {
     protected String horarioFuncionamento;
 
     @NotNull(message = "O tipo de cozinha não pode ser nulo")
-    protected TipoCozinhaPayLoad tipoCozinha;
+    protected TipoCozinhaEnum tipoCozinha;
     
     @NotNull(message = "O endereço não pode ser nulo")
     protected EnderecoPayLoad endereco;

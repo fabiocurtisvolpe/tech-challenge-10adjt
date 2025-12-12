@@ -2,6 +2,8 @@ package com.postech.adjt.api.dto;
 
 import java.time.LocalDateTime;
 
+import com.postech.adjt.domain.enums.TipoCozinhaEnum;
+
 import lombok.Getter;
 
 @Getter
@@ -12,12 +14,12 @@ public class RestauranteRespostaDTO {
     private String descricao;
     private LocalDateTime dataAlteracao;
     private EnderecoRespostaDTO endereco;
-    private TipoCozinhaRespostaDTO tipoCozinha;
+    private TipoCozinhaEnum tipoCozinha;
     private UsuarioRespostaDTO dono;
     private Boolean ativo;
 
     public RestauranteRespostaDTO(Integer id, String nome, String descricao, LocalDateTime dataAlteracao,
-            EnderecoRespostaDTO endereco, TipoCozinhaRespostaDTO tipoCozinha, UsuarioRespostaDTO dono, Boolean ativo) {
+            EnderecoRespostaDTO endereco, TipoCozinhaEnum tipoCozinha, UsuarioRespostaDTO dono, Boolean ativo) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;

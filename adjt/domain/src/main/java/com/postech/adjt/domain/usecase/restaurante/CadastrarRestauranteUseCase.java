@@ -7,7 +7,6 @@ import com.postech.adjt.domain.dto.EnderecoDTO;
 import com.postech.adjt.domain.dto.RestauranteDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Restaurante;
-import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.RestauranteFactory;
@@ -18,20 +17,16 @@ public class CadastrarRestauranteUseCase {
 
     private final GenericRepositoryPort<Restaurante> restauranteRepository;
     private final GenericRepositoryPort<Usuario> usuarioRepository;
-    private final GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository;
 
     private CadastrarRestauranteUseCase(GenericRepositoryPort<Restaurante> restauranteRepository,
-            GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
+            GenericRepositoryPort<Usuario> usuarioRepository) {
         this.restauranteRepository = restauranteRepository;
         this.usuarioRepository = usuarioRepository;
-        this.tipoCozinhaRepository = tipoCozinhaRepository;
     }
 
     public static CadastrarRestauranteUseCase create(GenericRepositoryPort<Restaurante> restauranteRepository,
-            GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
-        return new CadastrarRestauranteUseCase(restauranteRepository, usuarioRepository, tipoCozinhaRepository);
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return new CadastrarRestauranteUseCase(restauranteRepository, usuarioRepository);
     }
 
     public Restaurante run(RestauranteDTO dto, Integer idUsuarioLogado) {
@@ -46,16 +41,11 @@ public class CadastrarRestauranteUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
-        final TipoCozinha tipoCozinha = this.tipoCozinhaRepository.obterPorId(dto.tipoCozinha().id()).orElse(null);
-        if (tipoCozinha == null) {
-            throw new NotificacaoException(MensagemUtil.TIPO_COZINHA_NAO_ENCONTRADO);
-        }
-
         final Endereco endereco = converterEndereco(dto.endereco());
 
         final Restaurante restaurante = RestauranteFactory.criar(dto.nome(), dto.descricao(),
                 dto.horarioFuncionamento(),
-                tipoCozinha, endereco, dono);
+                dto.tipoCozinha(), endereco, dono);
 
         RestauranteValidator.validar(restaurante, idUsuarioLogado);
 

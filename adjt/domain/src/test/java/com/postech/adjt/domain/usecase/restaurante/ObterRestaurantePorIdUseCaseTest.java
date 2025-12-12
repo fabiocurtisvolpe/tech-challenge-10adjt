@@ -1,8 +1,13 @@
 package com.postech.adjt.domain.usecase.restaurante;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -15,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Restaurante;
-import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.enums.TipoCozinhaEnum;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
@@ -40,12 +45,6 @@ class ObterRestaurantePorIdUseCaseTest {
                 .email("dono@test.com")
                 .build();
 
-        TipoCozinha tipoCozinha = TipoCozinha.builder()
-                .id(1)
-                .nome("ITALIANA")
-                .descricao("Culinária italiana")
-                .build();
-
         Endereco endereco = Endereco.builder()
                 .id(1)
                 .logradouro("Rua A")
@@ -61,7 +60,7 @@ class ObterRestaurantePorIdUseCaseTest {
                 .nome("Restaurante Test")
                 .descricao("Ótimo restaurante")
                 .horarioFuncionamento("11:00 - 22:00")
-                .tipoCozinha(tipoCozinha)
+                .tipoCozinha(TipoCozinhaEnum.AMERICANA)
                 .endereco(endereco)
                 .dono(dono)
                 .ativo(true)

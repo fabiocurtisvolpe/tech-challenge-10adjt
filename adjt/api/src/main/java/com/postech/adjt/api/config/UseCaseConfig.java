@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.postech.adjt.domain.entidade.Cardapio;
 import com.postech.adjt.domain.entidade.Restaurante;
-import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
@@ -16,9 +15,6 @@ import com.postech.adjt.domain.usecase.cardapio.ObterCardapioPorIdUseCase;
 import com.postech.adjt.domain.usecase.restaurante.AtualizarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.CadastrarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.ObterRestaurantePorIdUseCase;
-import com.postech.adjt.domain.usecase.tipoCozinha.AtualizarTipoCozinhaUseCase;
-import com.postech.adjt.domain.usecase.tipoCozinha.CadastrarTipoCozinhaUseCase;
-import com.postech.adjt.domain.usecase.tipoCozinha.ObterTipoCozinhaPorIdUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.AtualizarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.CadastrarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.ObterTipoUsuarioPorIdUseCase;
@@ -72,45 +68,17 @@ public class UseCaseConfig {
     /*************************************************************************************************************/
 
     @Bean
-    public AtualizarTipoCozinhaUseCase atualizarTipoCozinhaUseCase(
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
-        return AtualizarTipoCozinhaUseCase.create(tipoCozinhaRepository);
-    }
-
-    @Bean
-    public CadastrarTipoCozinhaUseCase cadastrarTipoCozinhaUseCase(
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
-        return CadastrarTipoCozinhaUseCase.create(tipoCozinhaRepository);
-    }
-
-    @Bean
-    public ObterTipoCozinhaPorIdUseCase obterTipoCozinhaPorIdUseCase(
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
-        return ObterTipoCozinhaPorIdUseCase.create(tipoCozinhaRepository);
-    }
-
-    @Bean
-    public PaginadoUseCase<TipoCozinha> paginadoTipoCozinhaUseCase(
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
-        return PaginadoUseCase.create(tipoCozinhaRepository);
-    }
-
-    /*************************************************************************************************************/
-
-    @Bean
     public AtualizarRestauranteUseCase atualizarRestauranteUseCase(
             GenericRepositoryPort<Restaurante> restauranteRepository,
-            GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
-        return AtualizarRestauranteUseCase.create(restauranteRepository, usuarioRepository, tipoCozinhaRepository);
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return AtualizarRestauranteUseCase.create(restauranteRepository, usuarioRepository);
     }
 
     @Bean
     public CadastrarRestauranteUseCase cadastrarRestauranteUseCase(
             GenericRepositoryPort<Restaurante> restauranteRepository,
-            GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<TipoCozinha> tipoCozinhaRepository) {
-        return CadastrarRestauranteUseCase.create(restauranteRepository, usuarioRepository, tipoCozinhaRepository);
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return CadastrarRestauranteUseCase.create(restauranteRepository, usuarioRepository);
     }
 
     @Bean

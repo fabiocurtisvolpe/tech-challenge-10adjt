@@ -4,13 +4,11 @@ import org.springframework.stereotype.Component;
 
 import com.postech.adjt.api.dto.EnderecoRespostaDTO;
 import com.postech.adjt.api.dto.RestauranteRespostaDTO;
-import com.postech.adjt.api.dto.TipoCozinhaRespostaDTO;
 import com.postech.adjt.api.dto.UsuarioRespostaDTO;
 import com.postech.adjt.api.payload.AtualizaRestaurantePayLoad;
 import com.postech.adjt.api.payload.NovoRestaurantePayLoad;
 import com.postech.adjt.domain.dto.EnderecoDTO;
 import com.postech.adjt.domain.dto.RestauranteDTO;
-import com.postech.adjt.domain.dto.TipoCozinhaDTO;
 import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Restaurante;
@@ -39,18 +37,12 @@ public class RestauranteMapperApi {
                                 null,
                                 null);
 
-                TipoCozinhaDTO tipoCozinha = new TipoCozinhaDTO(
-                                payload.getTipoCozinha().getId(),
-                                payload.getTipoCozinha().getNome(),
-                                payload.getTipoCozinha().getDescricao(),
-                                true);
-
                 return new RestauranteDTO(
                                 null,
                                 payload.getNome(),
                                 payload.getDescricao(),
                                 payload.getHorarioFuncionamento(),
-                                tipoCozinha,
+                                payload.getTipoCozinha(),
                                 endereco,
                                 dono);
         }
@@ -76,18 +68,12 @@ public class RestauranteMapperApi {
                                 null,
                                 null);
 
-                TipoCozinhaDTO tipoCozinha = new TipoCozinhaDTO(
-                                payload.getTipoCozinha().getId(),
-                                payload.getTipoCozinha().getNome(),
-                                payload.getTipoCozinha().getDescricao(),
-                                true);
-
                 return new RestauranteDTO(
                                 null,
                                 payload.getNome(),
                                 payload.getDescricao(),
                                 payload.getHorarioFuncionamento(),
-                                tipoCozinha,
+                                payload.getTipoCozinha(),
                                 endereco,
                                 dono);
         }
@@ -98,9 +84,6 @@ public class RestauranteMapperApi {
                 }
 
                 EnderecoRespostaDTO endereco = toEnderecoRespostaDTO(restaurante.getEndereco());
-                TipoCozinhaRespostaDTO tipoCozinha = TipoCozinhaMapperApi.toTipoCozinhaRespostaDTO(restaurante.getTipoCozinha());
-                
-
                 UsuarioRespostaDTO dono = UsuarioMapperApi.toUsuarioRespostaDTO(restaurante.getDono());
 
                 return new RestauranteRespostaDTO(
@@ -109,7 +92,7 @@ public class RestauranteMapperApi {
                                 restaurante.getDescricao(),
                                 restaurante.getDataAlteracao(),
                                 endereco,
-                                tipoCozinha,
+                                restaurante.getTipoCozinha(),
                                 dono,
                                 restaurante.getAtivo());
         }

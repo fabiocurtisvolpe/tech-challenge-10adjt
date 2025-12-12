@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Restaurante;
-import com.postech.adjt.domain.entidade.TipoCozinha;
 import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.enums.TipoCozinhaEnum;
 
 import lombok.NoArgsConstructor;
 
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public abstract class RestauranteFactory {
 
     public static Restaurante criar(String nome, String descricao, String horarioFuncionamento,
-            TipoCozinha tipoCozinha, Endereco endereco, Usuario dono) throws IllegalArgumentException {
+            TipoCozinhaEnum tipoCozinha, Endereco endereco, Usuario dono) throws IllegalArgumentException {
 
         return Restaurante.builder()
                 .nome(nome)
@@ -29,7 +29,7 @@ public abstract class RestauranteFactory {
     }
 
     public static Restaurante atualizar(Integer id, String nome, String descricao, String horarioFuncionamento,
-            TipoCozinha tipoCozinha, Endereco endereco, Usuario dono, Boolean ativo) throws IllegalArgumentException {
+            TipoCozinhaEnum tipoCozinha, Endereco endereco, Usuario dono, Boolean ativo) throws IllegalArgumentException {
 
         return Restaurante.builder()
                 .id(id)

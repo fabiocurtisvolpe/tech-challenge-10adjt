@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.hibernate.envers.Audited;
 
+import com.postech.adjt.domain.enums.TipoCozinhaEnum;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,7 +20,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -38,9 +41,8 @@ public class RestauranteEntirade extends BaseEntidade {
     @JoinColumn(name = "endereco_id", nullable = false, unique = true)
     private EnderecoEntidade endereco;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tipo_cozinha_id", nullable = false)
-    private TipoCozinhaEntidade tipoCozinha;
+    @Enumerated(EnumType.STRING)
+    private TipoCozinhaEnum tipoCozinha;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id_dono", nullable = false)

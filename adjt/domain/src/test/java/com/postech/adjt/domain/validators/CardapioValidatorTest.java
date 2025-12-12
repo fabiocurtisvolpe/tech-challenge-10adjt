@@ -1,18 +1,21 @@
 package com.postech.adjt.domain.validators;
 
-import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.entidade.Cardapio;
-import com.postech.adjt.domain.entidade.Restaurante;
-import com.postech.adjt.domain.entidade.TipoCozinha;
-import com.postech.adjt.domain.entidade.TipoUsuario;
-import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
-import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.entidade.Endereco;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.entidade.Cardapio;
+import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.entidade.Restaurante;
+import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
+import com.postech.adjt.domain.entidade.Usuario;
+import com.postech.adjt.domain.enums.TipoCozinhaEnum;
 
 @DisplayName("CardapioValidator - Testes Unitários")
 class CardapioValidatorTest {
@@ -39,12 +42,6 @@ class CardapioValidatorTest {
 
         idUsuarioLogado = 1;
 
-        TipoCozinha tipoCozinha = TipoCozinha.builder()
-                .id(1)
-                .nome("Italiana")
-                .descricao("Culinária italiana")
-                .build();
-
         Endereco endereco = Endereco.builder()
                 .logradouro("Rua A")
                 .numero("123")
@@ -58,7 +55,7 @@ class CardapioValidatorTest {
         restaurante = Restaurante.builder()
                 .nome("Restaurante Italiano")
                 .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(tipoCozinha)
+                .tipoCozinha(TipoCozinhaEnum.BRASILEIRA)
                 .endereco(endereco)
                 .dono(dono)
                 .build();

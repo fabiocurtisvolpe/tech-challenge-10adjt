@@ -23,7 +23,6 @@ import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.usecase.PaginadoUseCase;
-import com.postech.adjt.domain.usecase.cardapio.AtivarInativarCardapioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;

@@ -36,7 +36,7 @@ public class RestauranteMapper {
                 .nome(entidade.getNome())
                 .descricao(entidade.getDescricao())
                 .horarioFuncionamento(entidade.getHorarioFuncionamento())
-                .tipoCozinha(TipoCozinhaMapper.toDomain(entidade.getTipoCozinha()))
+                .tipoCozinha(entidade.getTipoCozinha())
                 .endereco(EnderecoMapper.toDomain(entidade.getEndereco()))
                 .dono(UsuarioMapper.toDomain(entidade.getDono()))
                 .dataCriacao(entidade.getDataCriacao())
@@ -60,7 +60,7 @@ public class RestauranteMapper {
         entidade.setNome(restaurante.getNome());
         entidade.setDescricao(restaurante.getDescricao());
         entidade.setHorarioFuncionamento(restaurante.getHorarioFuncionamento());
-        entidade.setTipoCozinha(TipoCozinhaMapper.toEntity(restaurante.getTipoCozinha()));
+        entidade.setTipoCozinha(restaurante.getTipoCozinha());
         entidade.setEndereco(EnderecoMapper.toEntity(restaurante.getEndereco()));
         entidade.setDono(UsuarioMapper.toEntity(restaurante.getDono()));
         entidade.setDataCriacao(restaurante.getDataCriacao());
