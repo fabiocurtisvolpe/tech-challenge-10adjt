@@ -72,7 +72,7 @@ class CadastrarUsuarioUseCaseTest {
                                 "novo.usuario@email.com",
                                 "senha123Segura",
                                 tipoUsuarioValido,
-                                enderecos);
+                                enderecos, true);
 
                 usuarioCriado = UsuarioFactory.usuario(
                                 1,
@@ -183,7 +183,7 @@ class CadastrarUsuarioUseCaseTest {
                                 "usuario.multi@email.com",
                                 "senha456",
                                 tipoUsuarioValido,
-                                multiplosEnderecos);
+                                multiplosEnderecos, true);
 
                 when(usuarioRepository.obterPorEmail("usuario.multi@email.com"))
                                 .thenReturn(Optional.empty());
@@ -235,7 +235,7 @@ class CadastrarUsuarioUseCaseTest {
                                 "cliente@email.com",
                                 "senha1",
                                 tipoUsuarioValido,
-                                enderecos);
+                                enderecos, true);
 
                 Usuario usuarioCliente = UsuarioFactory.usuario(
                                 1,
@@ -264,7 +264,7 @@ class CadastrarUsuarioUseCaseTest {
                                 "fornecedor@email.com",
                                 "senha2",
                                 tipoUsuarioValido,
-                                enderecos);
+                                enderecos, true);
 
                 Usuario usuarioFornecedor = UsuarioFactory.usuario(
                                 2,

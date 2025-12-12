@@ -6,5 +6,5 @@ import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 
 public record UsuarioDTO(String nome, String email, String senha, 
-    TipoUsuario tipoUsuario, List<Endereco> enderecos) {
+    TipoUsuario tipoUsuario, List<Endereco> enderecos, Boolean ativo) {
 }

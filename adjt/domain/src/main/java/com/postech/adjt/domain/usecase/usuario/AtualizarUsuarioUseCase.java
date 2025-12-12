@@ -30,7 +30,7 @@ public class AtualizarUsuarioUseCase {
 
         final Usuario usuario = UsuarioFactory.usuario(usuarioExistente.getId(), usuarioExistente.getNome(), 
         usuarioExistente.getEmail(),  usuarioExistente.getSenha(), 
-        usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), true);
+        usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), dto.ativo());
 
         UsuarioValidator.validarParaAtualizacao(usuario);
 

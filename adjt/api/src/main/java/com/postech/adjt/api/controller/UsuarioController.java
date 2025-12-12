@@ -17,12 +17,11 @@ import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
 import com.postech.adjt.api.payload.PaginacaoPayLoad;
 import com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad;
-import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
+import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.usecase.PaginadoUseCase;
-import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
@@ -56,8 +55,7 @@ import jakarta.validation.Valid;
 public class UsuarioController {
 
         private final PasswordEncoder passwordEncoder;
-        
-        private final AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
+
         private final CadastrarUsuarioUseCase cadastrarUsuarioUseCase;
         private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
         private final AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase;
@@ -78,7 +76,6 @@ public class UsuarioController {
          */
 
         public UsuarioController(PasswordEncoder passwordEncoder,
-                        AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase,
                         CadastrarUsuarioUseCase cadastrarUsuarioUseCase,
                         AtualizarUsuarioUseCase atualizarUsuarioUseCase,
                         AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase,
@@ -86,7 +83,6 @@ public class UsuarioController {
                         PaginadoUseCase<Usuario> paginadoUsuarioUseCase) {
 
                 this.passwordEncoder = passwordEncoder;
-                this.ativarInativarUsuarioUseCase = ativarInativarUsuarioUseCase;
                 this.cadastrarUsuarioUseCase = cadastrarUsuarioUseCase;
                 this.atualizarUsuarioUseCase = atualizarUsuarioUseCase;
                 this.atualizarSenhaUsuarioUseCase = atualizarSenhaUsuarioUseCase;
@@ -174,8 +170,8 @@ public class UsuarioController {
 
                 return new ResultadoPaginacaoDTO<>(
                                 resultado.getContent().stream()
-                                        .map(UsuarioMapperApi::toUsuarioRespostaDTO)
-                                        .toList(),
+                                                .map(UsuarioMapperApi::toUsuarioRespostaDTO)
+                                                .toList(),
                                 resultado.getPageNumber(),
                                 resultado.getPageSize(),
                                 resultado.getTotalElements());
@@ -183,13 +179,20 @@ public class UsuarioController {
 
         @PutMapping("/{email}/ativar")
         public UsuarioRespostaDTO ativar(@PathVariable String email) {
-                Usuario usuario = ativarInativarUsuarioUseCase.run(email, true);
+
+                UsuarioDTO usuarioDTO = new UsuarioDTO(null, email, null,
+                                null, null, true);
+                Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
+
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
         @PutMapping("/{email}/desativar")
         public UsuarioRespostaDTO desativar(@PathVariable String email) {
-                Usuario usuario = ativarInativarUsuarioUseCase.run(email, false);
+                UsuarioDTO usuarioDTO = new UsuarioDTO(null, email, null,
+                                null, null, false);
+                Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
+
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 }

@@ -1,8 +1,12 @@
 package com.postech.adjt.api.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +25,14 @@ import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.EnderecoPayLoad;
 import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
 import com.postech.adjt.api.payload.TipoUsuarioPayLoad;
+import com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
+import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.usecase.PaginadoUseCase;
-import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
@@ -63,9 +68,6 @@ class UsuarioControllerTest {
         @Mock
         private PaginadoUseCase<Usuario> paginadoUsuarioUseCase;
 
-        @Mock
-        private AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
-
         private UsuarioController usuarioController;
         private TipoUsuarioPayLoad tipoUsuarioValidoPayLoad;
         private TipoUsuario tipoUsuarioValido;
@@ -74,7 +76,6 @@ class UsuarioControllerTest {
         void setUp() {
                 usuarioController = new UsuarioController(
                                 passwordEncoder,
-                                ativarInativarUsuarioUseCase,
                                 cadastrarUsuarioUseCase,
                                 atualizarUsuarioUseCase,
                                 atualizarSenhaUsuarioUseCase,
@@ -252,7 +253,7 @@ class UsuarioControllerTest {
         @DisplayName("Deve atualizar senha com sucesso")
         void testAtualizarSenhaComSucesso() {
                 // Arrange
-                com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad payload = new com.postech.adjt.api.payload.TrocarSenhaUsuarioPayLoad();
+                TrocarSenhaUsuarioPayLoad payload = new TrocarSenhaUsuarioPayLoad();
                 payload.setEmail("joao@email.com");
                 payload.setSenha("novaSenha123");
 
@@ -281,8 +282,11 @@ class UsuarioControllerTest {
         @DisplayName("Deve ativar usuário com sucesso")
         void testAtivarUsuarioComSucesso() {
                 // Arrange
+                UsuarioDTO usuarioDTO = new UsuarioDTO(null, "joao@email.com", null,
+                                null, null, true);
+                
                 List<Endereco> enderecos = new ArrayList<>();
-                Usuario usuarioAtivado = Usuario.builder()
+                Usuario usuarioAtivo = Usuario.builder()
                                 .nome("João Silva")
                                 .email("joao@email.com")
                                 .senha("senha123")
@@ -290,7 +294,7 @@ class UsuarioControllerTest {
                                 .enderecos(enderecos)
                                 .build();
 
-                when(ativarInativarUsuarioUseCase.run("joao@email.com", true)).thenReturn(usuarioAtivado);
+                when(atualizarUsuarioUseCase.run(usuarioDTO)).thenReturn(usuarioAtivo);
 
                 // Act
                 UsuarioRespostaDTO resultado = usuarioController.ativar("joao@email.com");
@@ -298,7 +302,7 @@ class UsuarioControllerTest {
                 // Assert
                 assertNotNull(resultado);
                 assertEquals("joao@email.com", resultado.getEmail());
-                verify(ativarInativarUsuarioUseCase, times(1)).run("joao@email.com", true);
+                verify(atualizarUsuarioUseCase, times(1)).run(usuarioDTO);
         }
 
         @Test
@@ -314,7 +318,10 @@ class UsuarioControllerTest {
                                 .enderecos(enderecos)
                                 .build();
 
-                when(ativarInativarUsuarioUseCase.run("joao@email.com", false)).thenReturn(usuarioDesativado);
+                UsuarioDTO usuarioDTO = new UsuarioDTO(null, "joao@email.com", null,
+                                null, null, false);
+
+                when(atualizarUsuarioUseCase.run(usuarioDTO)).thenReturn(usuarioDesativado);
 
                 // Act
                 UsuarioRespostaDTO resultado = usuarioController.desativar("joao@email.com");
@@ -322,7 +329,7 @@ class UsuarioControllerTest {
                 // Assert
                 assertNotNull(resultado);
                 assertEquals("joao@email.com", resultado.getEmail());
-                verify(ativarInativarUsuarioUseCase, times(1)).run("joao@email.com", false);
+                verify(atualizarUsuarioUseCase, times(1)).run(usuarioDTO);
         }
 
         @Test

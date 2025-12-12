@@ -25,4 +25,6 @@ public class AtualizaUsuarioPayLoad {
     @NotNull(message = "O endereço não pode ser nulo")
     @Size(min = 1, message = "O endereço deve conter pelo menos um item")
     private List<EnderecoPayLoad> enderecos;
+
+    private Boolean ativo = true;
 }

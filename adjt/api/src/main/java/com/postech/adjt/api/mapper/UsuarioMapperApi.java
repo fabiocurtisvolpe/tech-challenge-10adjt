@@ -43,7 +43,7 @@ public class UsuarioMapperApi {
                                 payload.getEmail(),
                                 senhaEncriptada,
                                 tipoUsuario,
-                                enderecos);
+                                enderecos, true);
         }
 
         public static UsuarioDTO toAtualizaUsuarioDTO(AtualizaUsuarioPayLoad payload) {
@@ -67,7 +67,7 @@ public class UsuarioMapperApi {
                                 payload.getEmail(),
                                 null,
                                 null,
-                                enderecos);
+                                enderecos, payload.getAtivo());
         }
 
         public static UsuarioRespostaDTO toUsuarioRespostaDTO(Usuario usuario) {
