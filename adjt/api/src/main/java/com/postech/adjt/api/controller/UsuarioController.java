@@ -134,7 +134,7 @@ public class UsuarioController {
 
                 String senhaEncriptada = passwordEncoder.encode(dto.getSenha());
                 TrocarSenhaUsuarioDTO senha = new TrocarSenhaUsuarioDTO(
-                                dto.getEmail(),
+                                UsuarioLogadoUtil.getUsuarioLogado(),
                                 dto.getSenha(),
                                 senhaEncriptada);
 
