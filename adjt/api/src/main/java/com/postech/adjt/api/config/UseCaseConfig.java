@@ -22,6 +22,7 @@ import com.postech.adjt.domain.usecase.tipoCozinha.ObterTipoCozinhaPorIdUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.AtualizarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.CadastrarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.ObterTipoUsuarioPorIdUseCase;
+import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
@@ -61,6 +62,11 @@ public class UseCaseConfig {
     @Bean
     public PaginadoUseCase<Usuario> paginadoUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
         return PaginadoUseCase.create(usuarioRepository);
+    }
+
+    @Bean
+    public AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
+        return AtivarInativarUsuarioUseCase.create(usuarioRepository);
     }
 
     /*************************************************************************************************************/

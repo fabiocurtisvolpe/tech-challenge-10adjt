@@ -3,6 +3,7 @@ package com.postech.adjt.domain.usecase.usuario;
 import java.util.Optional;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
+import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
@@ -19,10 +20,15 @@ public class ObterUsuarioPorIdUseCase {
         return new ObterUsuarioPorIdUseCase(usuarioRepository);
     }
 
-    public Optional<Usuario> run(Integer id) {
+    public Optional<Usuario> run(Integer id, String usuarioLogado) {
 
         if (id == null || id <= 0) {
             throw new NotificacaoException(MensagemUtil.ID_NULO);
+        }
+
+        Usuario usuarioDono = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
+        if (!(usuarioDono.getTipoUsuario() instanceof TipoUsuarioDonoRestaurante)) {
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
         }
         
         Optional<Usuario> usuarioExistente = this.usuarioRepository.obterPorId(id);
@@ -33,5 +39,4 @@ public class ObterUsuarioPorIdUseCase {
 
         return usuarioExistente;
     }
- 
 }

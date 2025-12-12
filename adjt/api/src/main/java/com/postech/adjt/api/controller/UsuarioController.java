@@ -23,10 +23,13 @@ import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.usecase.PaginadoUseCase;
+import com.postech.adjt.domain.usecase.cardapio.AtivarInativarCardapioUseCase;
+import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
 import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorEmailUseCase;
+import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorIdUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -61,34 +64,27 @@ public class UsuarioController {
         private final AtualizarUsuarioUseCase atualizarUsuarioUseCase;
         private final AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase;
         private final ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase;
+        private final ObterUsuarioPorIdUseCase obterUsuarioPorIdUseCase;
         private final PaginadoUseCase<Usuario> paginadoUsuarioUseCase;
-
-        /**
-         * Construtor com injeção de dependência do caso de uso de ativar/inativar
-         * usuário.
-         *
-         * @param ativarInativarUsuarioUseCase Caso de uso de ativar/inativar usuário.
-         * @param cadastrarUsuarioUseCase      Caso de uso de cadastrar usuário.
-         * @param atualizarUsuarioUseCase      Caso de uso de atualizar usuário.
-         * @param atualizarSenhaUsuarioUseCase Caso de uso de atualizar senha do
-         *                                     usuário.
-         * @param obterUsuarioPorEmailUseCase  Caso de uso de obter usuário por email.
-         * @param paginadoUsuarioUseCase       Caso de uso de paginação de usuários.
-         */
+        private final AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase;
 
         public UsuarioController(PasswordEncoder passwordEncoder,
                         CadastrarUsuarioUseCase cadastrarUsuarioUseCase,
                         AtualizarUsuarioUseCase atualizarUsuarioUseCase,
                         AtualizarSenhaUsuarioUseCase atualizarSenhaUsuarioUseCase,
+                        ObterUsuarioPorIdUseCase obterUsuarioPorIdUseCase,
                         ObterUsuarioPorEmailUseCase obterUsuarioPorEmailUseCase,
-                        PaginadoUseCase<Usuario> paginadoUsuarioUseCase) {
+                        PaginadoUseCase<Usuario> paginadoUsuarioUseCase,
+                        AtivarInativarUsuarioUseCase ativarInativarUsuarioUseCase) {
 
                 this.passwordEncoder = passwordEncoder;
                 this.cadastrarUsuarioUseCase = cadastrarUsuarioUseCase;
                 this.atualizarUsuarioUseCase = atualizarUsuarioUseCase;
                 this.atualizarSenhaUsuarioUseCase = atualizarSenhaUsuarioUseCase;
+                this.obterUsuarioPorIdUseCase = obterUsuarioPorIdUseCase;
                 this.obterUsuarioPorEmailUseCase = obterUsuarioPorEmailUseCase;
                 this.paginadoUsuarioUseCase = paginadoUsuarioUseCase;
+                this.ativarInativarUsuarioUseCase = ativarInativarUsuarioUseCase;
         }
 
         @Operation(summary = "Usuario", description = "Realiza o cadastro de um novo usuario")
@@ -144,13 +140,25 @@ public class UsuarioController {
 
         @Operation(summary = "Usuario", description = "Realiza busca de um usuário através do id")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "cadastro realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+                        @ApiResponse(responseCode = "200", description = "Busca realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
                         @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
                         @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
         })
-        @GetMapping("/{email}")
-        public UsuarioRespostaDTO buscar(@PathVariable String email) {
-                Optional<Usuario> usuario = this.obterUsuarioPorEmailUseCase.run(email);
+        @GetMapping("/{id}")
+        public UsuarioRespostaDTO buscar(@PathVariable Integer id) {
+                Optional<Usuario> usuario = this.obterUsuarioPorIdUseCase.run(id, UsuarioLogadoUtil.getUsuarioLogado());
+                return usuario.map(UsuarioMapperApi::toUsuarioRespostaDTO).orElse(null);
+        }
+
+        @Operation(summary = "Usuario", description = "Realiza busca usuario logado")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Busca realizado com sucesso", content = @Content(schema = @Schema(implementation = Usuario.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+                        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+        })
+        @GetMapping("/info")
+        public UsuarioRespostaDTO buscarLogado() {
+                Optional<Usuario> usuario = this.obterUsuarioPorEmailUseCase.run(UsuarioLogadoUtil.getUsuarioLogado());
                 return usuario.map(UsuarioMapperApi::toUsuarioRespostaDTO).orElse(null);
         }
 
@@ -178,26 +186,15 @@ public class UsuarioController {
                                 resultado.getTotalElements());
         }
 
-        /*
-        @PutMapping("/{email}/ativar")
-        public UsuarioRespostaDTO ativar(@PathVariable String email) {
-
-                UsuarioDTO usuarioDTO = new UsuarioDTO(null, null, email, null,
-                                null, null, true);
-
-                Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
-
+        @PutMapping("/{id}/ativar")
+        public UsuarioRespostaDTO ativar(@PathVariable Integer id) {
+                Usuario usuario = this.ativarInativarUsuarioUseCase.run(true, id, UsuarioLogadoUtil.getUsuarioLogado());
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
-        @PutMapping("/{email}/desativar")
-        public UsuarioRespostaDTO desativar(@PathVariable String email) {
-                UsuarioDTO usuarioDTO = new UsuarioDTO(null, null, email, null,
-                                null, null, false);
-
-                Usuario usuario = this.atualizarUsuarioUseCase.run(usuarioDTO);
-
+        @PutMapping("/{id}/desativar")
+        public UsuarioRespostaDTO desativar(@PathVariable Integer id) {
+                Usuario usuario = this.ativarInativarUsuarioUseCase.run(false, id, UsuarioLogadoUtil.getUsuarioLogado());
                 return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
-                */
 }
