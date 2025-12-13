@@ -16,7 +16,7 @@ import com.postech.adjt.domain.entidade.Restaurante;
 @Component
 public class RestauranteMapperApi {
 
-        public static RestauranteDTO toNovoRestauranteDTO(NovoRestaurantePayLoad payload, Integer idUsuario) {
+        public static RestauranteDTO toNovoRestauranteDTO(NovoRestaurantePayLoad payload, String usuarioLogado) {
 
                 EnderecoDTO endereco = new EnderecoDTO(
                                 payload.getEndereco().getLogradouro(),
@@ -29,25 +29,27 @@ public class RestauranteMapperApi {
                                 payload.getEndereco().getUf(),
                                 true);
 
-                UsuarioDTO dono = new UsuarioDTO(idUsuario,
+                UsuarioDTO dono = new UsuarioDTO(null,
                                 null,
-                                null,
+                                usuarioLogado,
                                 null,
                                 null,
                                 null,
                                 null);
 
+                String horarioFuncionamento = ConversorJson.converterParaJson(payload.getHorarioFuncionamento());
+
                 return new RestauranteDTO(
                                 null,
                                 payload.getNome(),
                                 payload.getDescricao(),
-                                payload.getHorarioFuncionamento(),
+                                horarioFuncionamento,
                                 payload.getTipoCozinha(),
                                 endereco,
                                 dono);
         }
 
-        public static RestauranteDTO toAtualizaUsuarioDTO(AtualizaRestaurantePayLoad payload, Integer idUsuario) {
+        public static RestauranteDTO toAtualizaRestauranteDTO(AtualizaRestaurantePayLoad payload, String usuarioLogado) {
 
                 EnderecoDTO endereco = new EnderecoDTO(
                                 payload.getEndereco().getLogradouro(),
@@ -60,9 +62,9 @@ public class RestauranteMapperApi {
                                 payload.getEndereco().getUf(),
                                 true);
 
-                UsuarioDTO dono = new UsuarioDTO(idUsuario,
+                UsuarioDTO dono = new UsuarioDTO(null,
                                 null,
-                                null,
+                                usuarioLogado,
                                 null,
                                 null,
                                 null,

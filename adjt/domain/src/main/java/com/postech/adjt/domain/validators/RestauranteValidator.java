@@ -43,5 +43,7 @@ public class RestauranteValidator {
         if (restaurante.getDescricao() != null && restaurante.getDescricao().length() > TamanhoUtil.DESCRICAO_MAXIMA_LENGTH) {
             throw new IllegalArgumentException(MensagemUtil.DESCRICAO_MAXIMO_CARACTERES);
         }
+
+        HorarioRestauranteValidator.validar(restaurante.getHorarioFuncionamento());
     }
 }

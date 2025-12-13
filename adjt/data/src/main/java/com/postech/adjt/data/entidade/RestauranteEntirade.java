@@ -34,7 +34,7 @@ public class RestauranteEntirade extends BaseEntidade {
     @Column(length = 1000)
     private String descricao;
 
-    @Column(name = "horario_funcionamento", columnDefinition = "json", nullable = false)
+    @Column(name = "horario_funcionamento", nullable = false)
     private String horarioFuncionamento;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -42,6 +42,7 @@ public class RestauranteEntirade extends BaseEntidade {
     private EnderecoEntidade endereco;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_cozinha")
     private TipoCozinhaEnum tipoCozinha;
 
     @ManyToOne(fetch = FetchType.LAZY)

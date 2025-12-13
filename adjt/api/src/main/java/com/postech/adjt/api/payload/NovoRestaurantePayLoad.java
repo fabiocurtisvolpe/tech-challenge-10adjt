@@ -1,5 +1,7 @@
 package com.postech.adjt.api.payload;
 
+import java.util.Map;
+
 import com.postech.adjt.domain.enums.TipoCozinhaEnum;
 
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +22,7 @@ public class NovoRestaurantePayLoad {
     protected String descricao;
 
     @NotBlank(message = "O horário de funcionamento não pode estar em branco")
-    protected String horarioFuncionamento;
+    protected Map<String, DiaFuncionamentoPayload> horarioFuncionamento;
 
     @NotNull(message = "O tipo de cozinha não pode ser nulo")
     protected TipoCozinhaEnum tipoCozinha;
