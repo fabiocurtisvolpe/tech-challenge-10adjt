@@ -32,10 +32,6 @@ public class RestauranteValidator {
             throw new IllegalArgumentException(MensagemUtil.TIPO_COZINHA_OBRIGATORIO);
         }
 
-        if (restaurante.getEndereco() == null) {
-            throw new IllegalArgumentException(MensagemUtil.ENDERECO_OBRIGATORIO);
-        }
-
         if (restaurante.getDono() == null) {
             throw new IllegalArgumentException(MensagemUtil.DONO_RESTAURANTE_OBRIGATORIO);
         }
@@ -48,16 +44,4 @@ public class RestauranteValidator {
             throw new IllegalArgumentException(MensagemUtil.DESCRICAO_MAXIMO_CARACTERES);
         }
     }
-
-    public static void validarAtivarInativar(Restaurante restaurante, Integer idUsuarioLogado) {
-
-         if (restaurante.getDono() == null) {
-            throw new IllegalArgumentException(MensagemUtil.DONO_RESTAURANTE_OBRIGATORIO);
-        }
-
-        if (!restaurante.getDono().getId().equals(idUsuarioLogado)) {
-            throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_E_DONO_RESTAURANTE);
-        }
-    }
-
 }

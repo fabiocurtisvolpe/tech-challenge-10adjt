@@ -12,6 +12,7 @@ import com.postech.adjt.domain.usecase.PaginadoUseCase;
 import com.postech.adjt.domain.usecase.cardapio.AtualizarCardapioUseCase;
 import com.postech.adjt.domain.usecase.cardapio.CadastrarCardapioUseCase;
 import com.postech.adjt.domain.usecase.cardapio.ObterCardapioPorIdUseCase;
+import com.postech.adjt.domain.usecase.restaurante.AtivarInativarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.AtualizarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.CadastrarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.ObterRestaurantePorIdUseCase;
@@ -91,6 +92,13 @@ public class UseCaseConfig {
     public PaginadoUseCase<Restaurante> paginadoRestauranteUseCase(
             GenericRepositoryPort<Restaurante> restauranteRepository) {
         return PaginadoUseCase.create(restauranteRepository);
+    }
+
+    @Bean
+    public AtivarInativarRestauranteUseCase ativarInativarRestauranteUseCase(
+            GenericRepositoryPort<Restaurante> restauranteRepository,
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return AtivarInativarRestauranteUseCase.create(restauranteRepository, usuarioRepository);
     }
 
     /*************************************************************************************************************/

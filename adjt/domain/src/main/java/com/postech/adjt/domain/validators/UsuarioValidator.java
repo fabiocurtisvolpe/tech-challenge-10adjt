@@ -1,13 +1,9 @@
 package com.postech.adjt.domain.validators;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.apache.commons.validator.routines.EmailValidator;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.constants.TamanhoUtil;
-import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
@@ -22,9 +18,6 @@ import com.postech.adjt.domain.exception.NotificacaoException;
  * @since 2025-12-03
  */
 public class UsuarioValidator {
-
-    private static final String CEP_REGEX = "^\\d{5}-?\\d{3}$";
-    private static final Pattern CEP_PATTERN = Pattern.compile(CEP_REGEX);
 
     /**
      * Valida usuário para criação
@@ -42,11 +35,6 @@ public class UsuarioValidator {
         validarFormatoEmail(usuario.getEmail());
         validarSenha(usuario.getSenha());
         validarTipoUsuario(usuario.getTipoUsuario());
-        validarEndereco(usuario.getEnderecos());
-
-        usuario.getEnderecos().forEach(endereco -> {
-            EnderecoValidator.validarCep(endereco.getCep());
-        });
     }
 
     /**
@@ -56,7 +44,7 @@ public class UsuarioValidator {
      * @throws NotificacaoException se alguma validação falhar
      */
     public static void validarUsuario(Usuario usuario) throws NotificacaoException {
-        
+
         if (usuario == null) {
             throw new NotificacaoException(MensagemUtil.USUARIO_NULO);
         }
@@ -65,11 +53,6 @@ public class UsuarioValidator {
         validarNome(usuario.getNome());
         validarFormatoEmail(usuario.getEmail());
         validarTipoUsuario(usuario.getTipoUsuario());
-        validarEndereco(usuario.getEnderecos());
-
-        usuario.getEnderecos().forEach(endereco -> {
-            EnderecoValidator.validarCep(endereco.getCep());
-        });
     }
 
     /**
@@ -152,61 +135,5 @@ public class UsuarioValidator {
         if (tipoUsuario == null) {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NULO);
         }
-    }
-
-    private static boolean isStringVazia(String valor) {
-        return valor == null || valor.trim().isEmpty();
-    }
-
-    private static void validarCep(String cep) throws NotificacaoException {
-        if (isStringVazia(cep)) {
-            throw new NotificacaoException("O CEP é obrigatório.");
-        }
-
-        if (!CEP_PATTERN.matcher(cep).matches()) {
-            throw new NotificacaoException(
-                    "O CEP informado (" + cep + ") é inválido. Formatos aceitos: 12345-678 ou 12345678.");
-        }
-    }
-
-    private static void validarEndereco(List<Endereco> enderecos) {
-        if (enderecos == null || enderecos.isEmpty()) {
-            throw new IllegalArgumentException(MensagemUtil.ENDERECO_EM_BRANCO);
-        }
-
-        for (Endereco endereco : enderecos) {
-
-            if (endereco == null) {
-                throw new NotificacaoException("O endereço não pode ser nulo.");
-            }
-
-            if (isStringVazia(endereco.getLogradouro())) {
-                throw new NotificacaoException("O logradouro é obrigatório.");
-            }
-
-            if (isStringVazia(endereco.getBairro())) {
-                throw new NotificacaoException("O bairro é obrigatório.");
-            }
-
-            if (isStringVazia(endereco.getMunicipio())) {
-                throw new NotificacaoException("O município é obrigatório.");
-            }
-
-            if (isStringVazia(endereco.getUf())) {
-                throw new NotificacaoException("A UF é obrigatória.");
-            }
-
-            if (endereco.getUf().length() != 2) {
-                throw new NotificacaoException("A UF deve conter exatamente 2 letras.");
-            }
-
-            if (endereco.getPrincipal() == null) {
-                throw new NotificacaoException("A definição se o endereço é principal é obrigatória.");
-            }
-
-            validarCep(endereco.getCep());
-
-        }
-
     }
 }

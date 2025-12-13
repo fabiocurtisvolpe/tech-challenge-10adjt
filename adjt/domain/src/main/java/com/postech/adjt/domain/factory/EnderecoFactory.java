@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.postech.adjt.domain.dto.EnderecoDTO;
 import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.validators.EnderecoValidator;
 
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 public abstract class EnderecoFactory {
 
     public static Endereco toEndereco(EnderecoDTO dto) {
-        return Endereco.builder()
+        Endereco endereco = Endereco.builder()
                 .logradouro(dto.logradouro())
                 .numero(dto.numero())
                 .complemento(dto.complemento())
@@ -27,6 +28,10 @@ public abstract class EnderecoFactory {
                 .dataCriacao(LocalDateTime.now())
                 .dataAlteracao(LocalDateTime.now())
                 .build();
+
+        EnderecoValidator.validarEndereco(endereco);
+
+        return endereco;
     }
 
     public static List<Endereco> toEnderecoList(List<EnderecoDTO> enderecos) {
