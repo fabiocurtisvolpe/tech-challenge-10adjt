@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.postech.adjt.api.dto.RestauranteRespostaDTO;
 import com.postech.adjt.api.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.api.mapper.RestauranteMapperApi;
-import com.postech.adjt.api.payload.AtualizaRestaurantePayLoad;
-import com.postech.adjt.api.payload.NovoRestaurantePayLoad;
 import com.postech.adjt.api.payload.PaginacaoPayLoad;
+import com.postech.adjt.api.payload.restaurante.AtualizaRestaurantePayLoad;
+import com.postech.adjt.api.payload.restaurante.NovoRestaurantePayLoad;
 import com.postech.adjt.domain.dto.RestauranteDTO;
 import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.entidade.Restaurante;
@@ -89,7 +89,7 @@ public class RestauranteController {
                 return RestauranteMapperApi.toRestauranteRespostaDTO(restaurante);
         }
 
-        @Operation(summary = "Restaurante", description = "Realiza busca de um tipo de usuário através do id")
+        @Operation(summary = "Restaurante", description = "Realiza busca de um restaurante através do id")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(schema = @Schema(implementation = Restaurante.class))),
                         @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
@@ -97,6 +97,18 @@ public class RestauranteController {
         })
         @GetMapping("/{id}")
         public RestauranteRespostaDTO buscar(@PathVariable Integer id) {
+                Optional<Restaurante> restaurante = this.obterRestaurantePorIdUseCase.run(id);
+                return restaurante.map(RestauranteMapperApi::toRestauranteRespostaGeralDTO).orElse(null);
+        }
+
+        @Operation(summary = "Restaurante", description = "Realiza busca o proprio restaurante através do id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(schema = @Schema(implementation = Restaurante.class))),
+                        @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
+                        @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
+        })
+        @GetMapping("/dono/{id}")
+        public RestauranteRespostaDTO buscarProprio(@PathVariable Integer id) {
                 Optional<Restaurante> restaurante = this.obterRestaurantePorIdUseCase.run(id);
                 return restaurante.map(RestauranteMapperApi::toRestauranteRespostaDTO).orElse(null);
         }

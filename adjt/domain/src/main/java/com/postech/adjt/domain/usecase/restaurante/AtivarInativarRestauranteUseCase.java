@@ -25,9 +25,9 @@ public class AtivarInativarRestauranteUseCase {
 
     public Restaurante run(Boolean ativar, Integer id, String usuarioLogado) {
 
-        final Restaurante restauranteExistente = this.restauranteRepository.obterPorId(id).orElse(null);
+        final Restaurante restaurante = this.restauranteRepository.obterPorId(id).orElse(null);
 
-        if (restauranteExistente == null) {
+        if (restaurante == null) {
             throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
         }
 
@@ -36,13 +36,11 @@ public class AtivarInativarRestauranteUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
-        final Restaurante restaurante = RestauranteFactory.restaurante(restauranteExistente.getId(),
-                restauranteExistente.getNome(), restauranteExistente.getDescricao(),
-                restauranteExistente.getHorarioFuncionamento(),
-                restauranteExistente.getTipoCozinha(), restauranteExistente.getEndereco(),
-                restauranteExistente.getDono(),
-                ativar, usrLogado.getId());
-
-        return restauranteRepository.atualizar(restaurante);
+        return restauranteRepository.atualizar(RestauranteFactory.restaurante(restaurante.getId(),
+                restaurante.getNome(), restaurante.getDescricao(),
+                restaurante.getHorarioFuncionamento(),
+                restaurante.getTipoCozinha(), restaurante.getEndereco(),
+                restaurante.getDono(),
+                ativar, usrLogado.getId()));
     }
 }

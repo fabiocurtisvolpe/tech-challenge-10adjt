@@ -1,7 +1,8 @@
-package com.postech.adjt.api.payload;
+package com.postech.adjt.api.payload.restaurante;
 
 import java.util.Map;
 
+import com.postech.adjt.api.payload.EnderecoPayLoad;
 import com.postech.adjt.domain.enums.TipoCozinhaEnum;
 
 import jakarta.validation.constraints.NotBlank;

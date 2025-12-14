@@ -1,6 +1,8 @@
-package com.postech.adjt.api.payload;
+package com.postech.adjt.api.payload.usuario;
 
 import java.util.List;
+
+import com.postech.adjt.api.payload.EnderecoPayLoad;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -3,6 +3,7 @@ package com.postech.adjt.domain.validators;
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.constants.TamanhoUtil;
 import com.postech.adjt.domain.entidade.Restaurante;
+import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 
 public class RestauranteValidator {
 
@@ -37,6 +38,10 @@ public class RestauranteValidator {
         }
 
         if (!restaurante.getDono().getId().equals(idUsuarioLogado)) {
+            throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+        }
+
+        if(!(restaurante.getDono().getTipoUsuario() instanceof TipoUsuarioDonoRestaurante)) {
             throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_E_DONO_RESTAURANTE);
         }
 

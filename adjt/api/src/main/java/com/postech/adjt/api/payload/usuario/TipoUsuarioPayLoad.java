@@ -1,4 +1,4 @@
-package com.postech.adjt.api.payload;
+package com.postech.adjt.api.payload.usuario;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

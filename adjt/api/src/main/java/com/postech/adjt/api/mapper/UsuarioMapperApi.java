@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 import com.postech.adjt.api.dto.EnderecoRespostaDTO;
 import com.postech.adjt.api.dto.UsuarioRespostaDTO;
-import com.postech.adjt.api.payload.AtualizaUsuarioPayLoad;
 import com.postech.adjt.api.payload.EnderecoPayLoad;
-import com.postech.adjt.api.payload.NovoUsuarioPayLoad;
+import com.postech.adjt.api.payload.usuario.AtualizaUsuarioPayLoad;
+import com.postech.adjt.api.payload.usuario.NovoUsuarioPayLoad;
 import com.postech.adjt.domain.dto.EnderecoDTO;
 import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.dto.UsuarioDTO;

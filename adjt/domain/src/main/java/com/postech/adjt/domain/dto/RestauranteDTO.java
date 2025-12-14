@@ -8,5 +8,5 @@ public record RestauranteDTO(Integer id,
     String horarioFuncionamento,
     TipoCozinhaEnum tipoCozinha,
     EnderecoDTO endereco,
-    UsuarioDTO dono) {
+    UsuarioDTO dono, Boolean ativo) {
 }

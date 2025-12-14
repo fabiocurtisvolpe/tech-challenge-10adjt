@@ -84,8 +84,9 @@ public class UseCaseConfig {
 
     @Bean
     public ObterRestaurantePorIdUseCase obterRestaurantePorIdUseCase(
-            GenericRepositoryPort<Restaurante> restauranteRepository) {
-        return ObterRestaurantePorIdUseCase.create(restauranteRepository);
+            GenericRepositoryPort<Restaurante> restauranteRepository,
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return ObterRestaurantePorIdUseCase.create(restauranteRepository, usuarioRepository);
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package com.postech.adjt.api.payload;
+package com.postech.adjt.api.payload.restaurante;
 
 import lombok.Getter;
 import lombok.Setter;

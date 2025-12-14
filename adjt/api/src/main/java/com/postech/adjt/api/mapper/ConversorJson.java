@@ -1,7 +1,7 @@
 package com.postech.adjt.api.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.postech.adjt.api.payload.DiaFuncionamentoPayload;
+import com.postech.adjt.api.payload.restaurante.DiaFuncionamentoPayload;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 

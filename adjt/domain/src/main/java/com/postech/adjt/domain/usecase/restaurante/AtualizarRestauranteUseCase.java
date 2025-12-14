@@ -1,5 +1,7 @@
 package com.postech.adjt.domain.usecase.restaurante;
 
+import java.util.Objects;
+
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.RestauranteDTO;
 import com.postech.adjt.domain.entidade.Endereco;
@@ -27,6 +29,10 @@ public class AtualizarRestauranteUseCase {
     }
 
     public Restaurante run(RestauranteDTO dto, String usuarioLogado) {
+
+        if (Objects.isNull(dto.id())) {
+            throw new NotificacaoException(MensagemUtil.ID_NULO);
+        }
 
         final Restaurante restauranteExistente = this.restauranteRepository.obterPorId(dto.id()).orElse(null);
         if (restauranteExistente == null) {
