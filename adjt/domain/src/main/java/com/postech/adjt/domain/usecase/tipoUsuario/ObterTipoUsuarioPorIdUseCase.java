@@ -1,5 +1,6 @@
 package com.postech.adjt.domain.usecase.tipoUsuario;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
@@ -36,13 +37,15 @@ public class ObterTipoUsuarioPorIdUseCase {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
         }
 
-         final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
+        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
         if (usrLogado == null) {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
-        if (!tipoUsuario.get().getRestaurante().getDono().getId().equals(usrLogado.getId())) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+        if (Objects.nonNull(tipoUsuario.get().getRestaurante())) {
+            if (!tipoUsuario.get().getRestaurante().getDono().getId().equals(usrLogado.getId())) {
+                throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            }
         }
 
         return tipoUsuario;

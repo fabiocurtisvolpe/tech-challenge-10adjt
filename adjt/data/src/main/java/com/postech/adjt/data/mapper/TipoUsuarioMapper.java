@@ -46,6 +46,7 @@ public class TipoUsuarioMapper {
                 .dataAlteracao(entidade.getDataAlteracao())
                 .ativo(entidade.getAtivo())
                 .isEditavel(entidade.getIsEditavel())
+                .isDono(entidade.getIsDono())
                 .restaurante(restaurante)
                 .build();
 
@@ -59,6 +60,7 @@ public class TipoUsuarioMapper {
                 .dataAlteracao(entidade.getDataAlteracao())
                 .ativo(entidade.getAtivo())
                 .isEditavel(entidade.getIsEditavel())
+                .isDono(entidade.getIsDono())
                 .restaurante(restaurante)
                 .build();
     }

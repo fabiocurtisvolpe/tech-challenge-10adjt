@@ -136,7 +136,7 @@ class CardapioValidatorTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             CardapioValidator.validar(cardapio, idUsuarioLogado);
         });
-        assertEquals(MensagemUtil.RESTAURANTE_OBRIGATORIO_CARDAPIO, exception.getMessage());
+        assertEquals(MensagemUtil.RESTAURANTE_OBRIGATORIO, exception.getMessage());
     }
 
     @Test

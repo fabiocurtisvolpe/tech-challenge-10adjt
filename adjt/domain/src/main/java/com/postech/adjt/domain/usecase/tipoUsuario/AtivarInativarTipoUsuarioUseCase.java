@@ -36,6 +36,10 @@ public class AtivarInativarTipoUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
+        if (!tipoUsuario.getIsEditavel()) { 
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        }
+
         return repositoryPort.atualizar(TipoUsuarioFactory.tipoUsuario(tipoUsuario.getId(),
                 tipoUsuario.getNome(), tipoUsuario.getDescricao(),
                 ativar, tipoUsuario.getIsDono(),

@@ -59,20 +59,23 @@ public abstract class TipoUsuarioFactory {
                     .nome(nome)
                     .descricao(descricao)
                     .restaurante(restaurante)
+                    .isDono(true)
                     .isEditavel(true)
                     .build();
         }
-
-        tipoUsuario = TipoUsuarioGenrico.builder()
+        else {
+            tipoUsuario = TipoUsuarioGenrico.builder()
                 .id(id)
                 .dataAlteracao(LocalDateTime.now())
                 .ativo(ativo)
                 .nome(nome)
                 .descricao(descricao)
                 .restaurante(restaurante)
+                .isDono(false)
                 .isEditavel(true)
                 .build();
-
+        }
+    
         TipoUsuarioValidator.validar(tipoUsuario, idUsuarioLogado);
 
         return tipoUsuario;

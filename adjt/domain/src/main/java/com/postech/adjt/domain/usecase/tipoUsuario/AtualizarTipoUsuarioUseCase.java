@@ -1,10 +1,11 @@
 package com.postech.adjt.domain.usecase.tipoUsuario;
 
+import java.util.Objects;
+
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoUsuario;
-import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
@@ -43,20 +44,23 @@ public class AtualizarTipoUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
         }
 
+        if (Objects.isNull(dto.restaurante())) {
+            throw new NotificacaoException(MensagemUtil.RESTAURANTE_OBRIGATORIO);
+        }
+
         final Restaurante restaurante = this.restauranteRepository.obterPorId(dto.restaurante().id()).orElse(null);
         if (restaurante == null) {
             throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
         }
 
-        Boolean isDono = tipoUsuario instanceof TipoUsuarioDonoRestaurante ? true : false;
-        if (dto.isDono() != null) {
-            isDono = dto.isDono();
+         if (!tipoUsuario.getIsEditavel()) { 
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
 
         return repositoryPort.atualizar(
                 TipoUsuarioFactory.tipoUsuario(tipoUsuario.getId(),
                         tipoUsuario.getNome(), tipoUsuario.getDescricao(),
-                        true, isDono, restaurante, usrLogado.getId()));
+                        true, dto.isDono(), restaurante, usrLogado.getId()));
     }
 
 }

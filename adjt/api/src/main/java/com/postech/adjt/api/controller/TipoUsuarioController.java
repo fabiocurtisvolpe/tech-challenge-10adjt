@@ -20,6 +20,7 @@ import com.postech.adjt.domain.dto.ResultadoPaginacaoDTO;
 import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.usecase.PaginadoUseCase;
+import com.postech.adjt.domain.usecase.tipoUsuario.AtivarInativarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.AtualizarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.CadastrarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.ObterTipoUsuarioPorIdUseCase;
@@ -35,6 +36,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/tipo-usuario")
 public class TipoUsuarioController {
 
+        private final AtivarInativarTipoUsuarioUseCase ativarInativarTipoUsuarioUseCase;
         private final CadastrarTipoUsuarioUseCase cadastrarTipoUsuarioUseCase;
         private final AtualizarTipoUsuarioUseCase atualizarTipoUsuarioUseCase;
         private final ObterTipoUsuarioPorIdUseCase obterTipoUsuarioPorIdUseCase;
@@ -43,12 +45,14 @@ public class TipoUsuarioController {
         public TipoUsuarioController(CadastrarTipoUsuarioUseCase cadastrarTipoUsuarioUseCase,
                         AtualizarTipoUsuarioUseCase atualizarTipoUsuarioUseCase,
                         ObterTipoUsuarioPorIdUseCase obterTipoUsuarioPorIdUseCase,
-                        PaginadoUseCase<TipoUsuario> paginadoTipoUsuarioUseCase) {
+                        PaginadoUseCase<TipoUsuario> paginadoTipoUsuarioUseCase,
+                        AtivarInativarTipoUsuarioUseCase ativarInativarTipoUsuarioUseCase) {
 
                 this.cadastrarTipoUsuarioUseCase = cadastrarTipoUsuarioUseCase;
                 this.atualizarTipoUsuarioUseCase = atualizarTipoUsuarioUseCase;
                 this.obterTipoUsuarioPorIdUseCase = obterTipoUsuarioPorIdUseCase;
                 this.paginadoTipoUsuarioUseCase = paginadoTipoUsuarioUseCase;
+                this.ativarInativarTipoUsuarioUseCase = ativarInativarTipoUsuarioUseCase;
         }
 
         @Operation(summary = "TipoUsuario", description = "Realiza o cadastro de um novo tipo de usuário")
@@ -128,9 +132,8 @@ public class TipoUsuarioController {
         public TipoUsuarioRespostaDTO ativar(@PathVariable Integer id) {
 
                 String ursLogado = UsuarioLogadoUtil.getUsuarioLogado();
-                TipoUsuarioDTO tipoUsuarioDTO = new TipoUsuarioDTO(id, null, null, true, null, null);
+                TipoUsuario tipoUsuario = this.ativarInativarTipoUsuarioUseCase.run(true, id, ursLogado);
 
-                TipoUsuario tipoUsuario = this.atualizarTipoUsuarioUseCase.run(tipoUsuarioDTO, ursLogado);
                 return TipoUsuarioMapperApi.toTipoUsuarioRespostaDTO(tipoUsuario);
         }
 
@@ -138,9 +141,8 @@ public class TipoUsuarioController {
         public TipoUsuarioRespostaDTO desativar(@PathVariable Integer id) {
 
                 String ursLogado = UsuarioLogadoUtil.getUsuarioLogado();
-                TipoUsuarioDTO tipoUsuarioDTO = new TipoUsuarioDTO(id, null, null, false, null, null);
-
-                TipoUsuario tipoUsuario = this.atualizarTipoUsuarioUseCase.run(tipoUsuarioDTO, ursLogado);
+                TipoUsuario tipoUsuario = this.ativarInativarTipoUsuarioUseCase.run(false, id, ursLogado);
+                
                 return TipoUsuarioMapperApi.toTipoUsuarioRespostaDTO(tipoUsuario);
         }
 }
