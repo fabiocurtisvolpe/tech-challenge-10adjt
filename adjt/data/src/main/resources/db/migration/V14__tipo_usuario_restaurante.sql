@@ -15,16 +15,6 @@ BEGIN
       FOREIGN KEY (restaurante_id) REFERENCES public.restaurante(id);
   END IF;
 
-  IF EXISTS (
-    SELECT 1
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = 'tipo_usuario'
-      AND column_name = 'dono'
-  ) THEN
-    ALTER TABLE public.tipo_usuario DROP COLUMN dono;
-  END IF;
-
   IF NOT EXISTS (
     SELECT 1
     FROM information_schema.columns

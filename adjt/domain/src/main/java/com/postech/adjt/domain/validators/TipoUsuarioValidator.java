@@ -35,12 +35,5 @@ public class TipoUsuarioValidator {
         if (!tipoUsuario.getRestaurante().getDono().getId().equals(idUsuarioLogado)) {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
         }
-
-        /*
-         * não pertite operação DONO RESTAURANTE E CLIENTE, padrão do sistema
-         */
-        if (!tipoUsuario.getIsEditavel()) { 
-            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
-        }
     }
 }

@@ -16,7 +16,7 @@ public class CardapioValidator {
         }
 
         if (cardapio.getRestaurante() == null) {
-            throw new IllegalArgumentException(MensagemUtil.RESTAURANTE_OBRIGATORIO_CARDAPIO);
+            throw new IllegalArgumentException(MensagemUtil.RESTAURANTE_OBRIGATORIO);
         }
 
         if (cardapio.getRestaurante().getDono() == null) {

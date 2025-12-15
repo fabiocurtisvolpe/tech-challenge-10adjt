@@ -34,7 +34,7 @@ public class MensagemUtil {
     public static final String CARDAPIO_NULO = "Cardápio não pode ser nulo";
     public static final String NOME_CARDAPIO_OBRIGATORIO = "Nome do cardápio é obrigatório";
     public static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante não encontrado.";
-    public static final String RESTAURANTE_OBRIGATORIO_CARDAPIO = "Restaurante é obrigatório para o cardápio";
+    public static final String RESTAURANTE_OBRIGATORIO = "Restaurante é obrigatório";
     public static final String DONO_RESTAURANTE_CARDAPIO = "Somente o dono do restaurante pode criar o cardápio";
     public static final String PRECO_CARDAPIO_INVALIDO = "Preço do cardápio deve ser maior que zero";
     public static final String RESTAURANTE_JA_CADASTRADO = "Restaurante com esse nome já está cadastrado.";
