@@ -37,7 +37,7 @@ public class UseCaseConfig {
 
     @Bean
     public AtualizarUsuarioUseCase atualizarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository,
-        GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return AtualizarUsuarioUseCase.create(usuarioRepository, tipoUsuarioRepository);
     }
 
@@ -136,20 +136,25 @@ public class UseCaseConfig {
 
     @Bean
     public AtualizarTipoUsuarioUseCase atualizarTipoUsuarioUseCase(
-            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
-        return AtualizarTipoUsuarioUseCase.create(tipoUsuarioRepository);
+            GenericRepositoryPort<TipoUsuario> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository,
+            GenericRepositoryPort<Restaurante> restauranteRepository) {
+        return AtualizarTipoUsuarioUseCase.create(repositoryPort, usuarioRepository, restauranteRepository);
     }
 
     @Bean
     public CadastrarTipoUsuarioUseCase cadastrarTipoUsuarioUseCase(
-            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
-        return CadastrarTipoUsuarioUseCase.create(tipoUsuarioRepository);
+            GenericRepositoryPort<TipoUsuario> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository,
+            GenericRepositoryPort<Restaurante> restauranteRepository) {
+        return CadastrarTipoUsuarioUseCase.create(repositoryPort, usuarioRepository, restauranteRepository);
     }
 
     @Bean
     public ObterTipoUsuarioPorIdUseCase obterTipoUsuarioPorIdUseCase(
-            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
-        return ObterTipoUsuarioPorIdUseCase.create(tipoUsuarioRepository);
+            GenericRepositoryPort<TipoUsuario> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return ObterTipoUsuarioPorIdUseCase.create(repositoryPort, usuarioRepository);
     }
 
     @Bean

@@ -8,6 +8,8 @@ import org.hibernate.envers.Audited;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -34,4 +36,8 @@ public class TipoUsuarioEntidade extends BaseEntidade {
 
     @Column(name = "editavel")
     private Boolean isEditavel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurante_id", nullable = false)
+    private RestauranteEntirade restaurante;
 }
