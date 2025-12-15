@@ -1,7 +1,8 @@
-package com.postech.adjt.api.payload;
+package com.postech.adjt.api.payload.tipoUsuario;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,4 +26,8 @@ public class AtualizaTipoUsuarioPayLoad {
 
     @NotNull(message = "O campo dono não pode estar vazio")
     protected Boolean isDono;
+
+    @NotNull(message = "O id do restaurante não pode estar vazio")
+    @Positive(message = "O id restaurante deve ser maior que zero")
+    protected Integer idRestaurante;
 }

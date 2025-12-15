@@ -25,7 +25,7 @@ public class UsuarioMapperApi {
 
                 TipoUsuarioDTO tipoUsuario = new TipoUsuarioDTO(payload.getTipoUsuario().getId(),
                                 payload.getTipoUsuario().getNome(), payload.getTipoUsuario().getDescricao(), true,
-                                payload.getTipoUsuario().getIsDono());
+                                payload.getTipoUsuario().getIsDono(), null);
 
                 return new UsuarioDTO(
                                 null,

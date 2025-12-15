@@ -3,40 +3,40 @@ package com.postech.adjt.api.mapper;
 import org.springframework.stereotype.Component;
 
 import com.postech.adjt.api.dto.TipoUsuarioRespostaDTO;
-import com.postech.adjt.api.payload.AtualizaTipoUsuarioPayLoad;
-import com.postech.adjt.api.payload.NovoTipoUsuarioPayLoad;
+import com.postech.adjt.api.payload.tipoUsuario.AtualizaTipoUsuarioPayLoad;
+import com.postech.adjt.api.payload.tipoUsuario.NovoTipoUsuarioPayLoad;
+import com.postech.adjt.domain.dto.RestauranteDTO;
 import com.postech.adjt.domain.dto.TipoUsuarioDTO;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
-import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 
 @Component
 public class TipoUsuarioMapperApi {
 
         public static TipoUsuarioDTO toNovoTipoUsuarioDTO(NovoTipoUsuarioPayLoad payload) {
 
-                TipoUsuario tipoUsuario = TipoUsuarioFactory.novo(payload.getNome(), payload.getDescricao(),
-                                payload.getIsDono());
+                RestauranteDTO restaurante = new RestauranteDTO(payload.getIdRestaurante(),
+                                null, null, null, null, null, null, null);
 
                 return new TipoUsuarioDTO(
                                 null,
-                                tipoUsuario.getNome(),
-                                tipoUsuario.getDescricao(),
+                                payload.getNome(),
+                                payload.getDescricao(),
                                 true,
-                                payload.getIsDono());
+                                payload.getIsDono(), restaurante);
         }
 
         public static TipoUsuarioDTO toAtualizaTipoUsuarioDTO(AtualizaTipoUsuarioPayLoad payload) {
 
-                TipoUsuario tipoUsuario = TipoUsuarioFactory.tipoUsuario(payload.getId(), payload.getNome(),
-                                payload.getDescricao(), payload.getAtivo(), payload.getIsDono());
+             RestauranteDTO restaurante = new RestauranteDTO(payload.getIdRestaurante(),
+                                null, null, null, null, null, null, null);
 
                 return new TipoUsuarioDTO(
-                                tipoUsuario.getId(),
-                                tipoUsuario.getNome(),
-                                tipoUsuario.getDescricao(),
-                                tipoUsuario.getAtivo(),
-                                payload.getIsDono());
+                                payload.getId(),
+                                payload.getNome(),
+                                payload.getDescricao(),
+                                payload.getAtivo(),
+                                payload.getIsDono(), restaurante);
         }
 
         public static TipoUsuarioRespostaDTO toTipoUsuarioRespostaDTO(TipoUsuario tipoUsuario) {
