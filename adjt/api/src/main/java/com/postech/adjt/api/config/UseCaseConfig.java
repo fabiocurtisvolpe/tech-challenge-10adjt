@@ -16,6 +16,7 @@ import com.postech.adjt.domain.usecase.restaurante.AtivarInativarRestauranteUseC
 import com.postech.adjt.domain.usecase.restaurante.AtualizarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.CadastrarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.ObterRestaurantePorIdUseCase;
+import com.postech.adjt.domain.usecase.tipoUsuario.AtivarInativarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.AtualizarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.CadastrarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.ObterTipoUsuarioPorIdUseCase;
@@ -125,6 +126,13 @@ public class UseCaseConfig {
     }
 
     /*************************************************************************************************************/
+
+    @Bean
+    public AtivarInativarTipoUsuarioUseCase ativarInativarTipoUsuarioUseCase(
+            GenericRepositoryPort<TipoUsuario> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return AtivarInativarTipoUsuarioUseCase.create(repositoryPort, usuarioRepository);
+    }
 
     @Bean
     public AtualizarTipoUsuarioUseCase atualizarTipoUsuarioUseCase(

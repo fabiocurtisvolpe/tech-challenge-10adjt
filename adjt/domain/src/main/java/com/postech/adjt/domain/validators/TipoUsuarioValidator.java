@@ -7,7 +7,7 @@ import com.postech.adjt.domain.exception.NotificacaoException;
 
 public class TipoUsuarioValidator {
 
-    public static void validar(TipoUsuario tipoUsuario) throws NotificacaoException {
+    public static void validar(TipoUsuario tipoUsuario, Integer idUsuarioLogado) throws NotificacaoException {
         if (tipoUsuario == null) {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NULO_VALIDACAO);
         }
@@ -26,6 +26,21 @@ public class TipoUsuarioValidator {
 
         if (tipoUsuario.getDescricao() != null && tipoUsuario.getDescricao().length() > TamanhoUtil.DESCRICAO_MAXIMA_LENGTH) {
             throw new NotificacaoException(MensagemUtil.DESCRICAO_MAXIMO_CARACTERES);
+        }
+
+        if (tipoUsuario.getRestaurante() == null) {
+            throw new NotificacaoException(MensagemUtil.RESTAURANTE_NULO);
+        }
+
+        if (!tipoUsuario.getRestaurante().getDono().getId().equals(idUsuarioLogado)) {
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+        }
+
+        /*
+         * não pertite operação DONO RESTAURANTE E CLIENTE, padrão do sistema
+         */
+        if (!tipoUsuario.getIsEditavel()) { 
+            throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         }
     }
 }

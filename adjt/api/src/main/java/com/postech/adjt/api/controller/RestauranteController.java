@@ -130,7 +130,7 @@ public class RestauranteController {
 
                 return new ResultadoPaginacaoDTO<>(
                                 resultado.getContent().stream()
-                                                .map(RestauranteMapperApi::toRestauranteRespostaDTO)
+                                                .map(RestauranteMapperApi::toRestauranteRespostaGeralDTO)
                                                 .toList(),
                                 resultado.getPageNumber(),
                                 resultado.getPageSize(),

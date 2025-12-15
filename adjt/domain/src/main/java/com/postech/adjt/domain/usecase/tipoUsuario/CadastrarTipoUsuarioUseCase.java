@@ -2,38 +2,53 @@ package com.postech.adjt.domain.usecase.tipoUsuario;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.dto.TipoUsuarioDTO;
+import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
-import com.postech.adjt.domain.validators.TipoUsuarioValidator;
 
 public class CadastrarTipoUsuarioUseCase {
 
-    private final GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository;
+    private final GenericRepositoryPort<TipoUsuario> repositoryPort;
+    private final GenericRepositoryPort<Restaurante> restauranteRepository;
+    private final GenericRepositoryPort<Usuario> usuarioRepository;
 
-    private CadastrarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
-        this.tipoUsuarioRepository = tipoUsuarioRepository;
+    private CadastrarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository,
+            GenericRepositoryPort<Restaurante> restauranteRepository) {
+        this.repositoryPort = repositoryPort;
+        this.usuarioRepository = usuarioRepository;
+        this.restauranteRepository = restauranteRepository;
     }
 
-    public static CadastrarTipoUsuarioUseCase create(GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
-        return new CadastrarTipoUsuarioUseCase(tipoUsuarioRepository);
+    public static CadastrarTipoUsuarioUseCase create(GenericRepositoryPort<TipoUsuario> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository,
+            GenericRepositoryPort<Restaurante> restauranteRepository) {
+        return new CadastrarTipoUsuarioUseCase(repositoryPort, usuarioRepository, restauranteRepository);
     }
 
-    public TipoUsuario run(TipoUsuarioDTO dto) {
-        
+    public TipoUsuario run(TipoUsuarioDTO dto, String usuarioLogado) {
 
-        final TipoUsuario tipoUsuarioExistente = this.tipoUsuarioRepository.obterPorNome(dto.nome()).orElse(null);
-        
-        if (tipoUsuarioExistente != null) {
+        final TipoUsuario tipoUsuario = this.repositoryPort.obterPorNome(dto.nome()).orElse(null);
+
+        if ((tipoUsuario != null)) {
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
         }
 
-        final TipoUsuario tipoUsuario = TipoUsuarioFactory.novo(dto.nome(), dto.descricao(), dto.isDono());
-        
-        TipoUsuarioValidator.validar(tipoUsuario);
+        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
+        if (usrLogado == null) {
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
+        }
 
-        return tipoUsuarioRepository.criar(tipoUsuario);
+        final Restaurante restaurante = this.restauranteRepository.obterPorId(dto.restaurante().id()).orElse(null);
+        if (restaurante == null) {
+            throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
+        }
+
+        return repositoryPort.criar(TipoUsuarioFactory.novo(dto.nome(), dto.descricao(),
+                dto.isDono(), restaurante, usrLogado.getId()));
     }
- 
+
 }
