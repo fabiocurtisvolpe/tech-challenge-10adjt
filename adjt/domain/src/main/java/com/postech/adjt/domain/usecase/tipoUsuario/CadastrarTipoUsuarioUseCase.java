@@ -33,10 +33,6 @@ public class CadastrarTipoUsuarioUseCase {
 
         final TipoUsuario tipoUsuario = this.repositoryPort.obterPorNome(dto.nome()).orElse(null);
 
-        if ((tipoUsuario != null)) {
-            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
-        }
-
         final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
         if (usrLogado == null) {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
@@ -46,6 +42,12 @@ public class CadastrarTipoUsuarioUseCase {
         if (restaurante == null) {
             throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
         }
+
+        if (tipoUsuario != null && tipoUsuario.getRestaurante().getId().equals(restaurante.getId())) {
+
+            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
+        }
+
 
         return repositoryPort.criar(TipoUsuarioFactory.novo(dto.nome(), dto.descricao(),
                 dto.isDono(), restaurante, usrLogado.getId()));

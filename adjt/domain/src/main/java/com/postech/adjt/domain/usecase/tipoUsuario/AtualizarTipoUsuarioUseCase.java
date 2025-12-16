@@ -53,8 +53,16 @@ public class AtualizarTipoUsuarioUseCase {
             throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
         }
 
-         if (!tipoUsuario.getIsEditavel()) { 
+        if (!tipoUsuario.getIsEditavel()) {
             throw new NotificacaoException(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
+        }
+
+        final TipoUsuario tipoUsuarioNome = this.repositoryPort.obterPorNome(dto.nome()).orElse(null);
+        if (tipoUsuarioNome != null
+                && !tipoUsuarioNome.getId().equals(tipoUsuario.getId()) // Garante que não é o próprio registro
+                && tipoUsuario.getRestaurante().getId().equals(tipoUsuarioNome.getRestaurante().getId())) { // Mesmo restaurante
+
+            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
         }
 
         return repositoryPort.atualizar(
