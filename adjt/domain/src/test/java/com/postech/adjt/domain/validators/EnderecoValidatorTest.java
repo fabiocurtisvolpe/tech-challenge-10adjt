@@ -1,154 +1,226 @@
 package com.postech.adjt.domain.validators;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import com.postech.adjt.domain.entidade.Endereco;
+import com.postech.adjt.domain.exception.NotificacaoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * Testes unitários para EnderecoValidator
- * 
- * Testa a validação de CEP conforme especificações de formato
- * 
- * @author Fabio
- * @since 2025-12-05
- */
-@DisplayName("EnderecoValidator - Testes Unitários")
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 class EnderecoValidatorTest {
 
-    @Test
-    @DisplayName("Deve validar CEP com formato correto (12345-678)")
-    void testValidarCepComFormatoCorreto() {
-        // Arrange
-        String cepValido = "12345-678";
-
-        // Act & Assert - não deve lançar exceção
-        assertDoesNotThrow(() -> EnderecoValidator.validarCep(cepValido));
+    private Endereco criarEnderecoValido() {
+        return Endereco.builder()
+                .logradouro("Rua das Flores")
+                .numero("123")
+                .bairro("Centro")
+                .municipio("São Paulo")
+                .uf("SP")
+                .cep("01001-000")
+                .principal(true)
+                .build();
     }
 
     @Test
-    @DisplayName("Deve validar CEP sem hífen (12345678)")
-    void testValidarCepSemHifen() {
-        // Arrange
-        String cepValido = "12345678";
+    @DisplayName("Deve validar endereço corretamente")
+    void deveValidarEnderecoComSucesso() {
+        Endereco endereco = criarEnderecoValido();
 
-        // Act & Assert - não deve lançar exceção
-        assertDoesNotThrow(() -> EnderecoValidator.validarCep(cepValido));
+        assertThatCode(() -> EnderecoValidator.validarEndereco(endereco))
+                .doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP nulo")
-    void testValidarCepNulo() {
-        // Arrange
-        String cepNulo = null;
-
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepNulo);
-        });
+    @DisplayName("Deve falhar quando endereço for nulo")
+    void deveFalharEnderecoNulo() {
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(null))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("não pode ser nulo");
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP vazio")
-    void testValidarCepVazio() {
-        // Arrange
-        String cepVazio = "";
+    @DisplayName("Deve falhar quando logradouro for vazio")
+    void deveFalharLogradouroVazio() {
+        Endereco endereco = Endereco.builder().logradouro("").bairro("B").municipio("M").uf("SP").cep("00000-000")
+                .principal(true).build();
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepVazio);
-        });
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("logradouro é obrigatório");
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP com menos de 8 dígitos")
-    void testValidarCepMenoDe8Digitos() {
-        // Arrange
-        String cepInvalido = "1234-678";
+    @DisplayName("Deve falhar quando bairro for vazio")
+    void deveFalharBairroVazio() {
+        Endereco endereco = Endereco.builder()
+                .logradouro("Rua A")
+                .bairro("")
+                .municipio("Cidade")
+                .uf("SP")
+                .cep("01001-000")
+                .principal(true)
+                .build();
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepInvalido);
-        });
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("bairro é obrigatório");
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP com mais de 8 dígitos")
-    void testValidarCepMaisDe8Digitos() {
-        // Arrange
-        String cepInvalido = "123456-789";
+    @DisplayName("Deve falhar quando município for vazio")
+    void deveFalharMunicipioVazio() {
+        Endereco endereco = Endereco.builder()
+                .logradouro("Rua A")
+                .bairro("Bairro B")
+                .municipio(null)
+                .uf("SP")
+                .cep("01001-000")
+                .principal(true)
+                .build();
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepInvalido);
-        });
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("município é obrigatório");
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP com caracteres não numéricos")
-    void testValidarCepComCaracteresNaoNumericos() {
-        // Arrange
-        String cepInvalido = "ABCDE-FGH";
+    @DisplayName("Deve falhar quando UF for vazia")
+    void deveFalharUfVazia() {
+        Endereco endereco = Endereco.builder()
+                .logradouro("Rua A")
+                .bairro("Bairro B")
+                .municipio("Cidade")
+                .uf("")
+                .cep("01001-000")
+                .principal(true)
+                .build();
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepInvalido);
-        });
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("UF é obrigatória");
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP com espaços")
-    void testValidarCepComEspacos() {
-        // Arrange
-        String cepInvalido = "12345 678";
+    @DisplayName("Deve falhar quando UF não tiver 2 letras")
+    void deveFalharUfTamanhoInvalido() {
+        Endereco endereco = Endereco.builder()
+                .logradouro("Rua A")
+                .bairro("Bairro B")
+                .municipio("Cidade")
+                .uf("SPA")
+                .cep("01001-000")
+                .principal(true)
+                .build();
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepInvalido);
-        });
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("exatamente 2 letras");
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP com múltiplos hífens")
-    void testValidarCepComMultiplosHifens() {
-        // Arrange
-        String cepInvalido = "123-45-678";
+    @DisplayName("Deve falhar quando flag principal for nula")
+    void deveFalharPrincipalNulo() {
+        Endereco endereco = Endereco.builder()
+                .logradouro("Rua A")
+                .bairro("Bairro B")
+                .municipio("Cidade")
+                .uf("SP")
+                .cep("01001-000")
+                .principal(null)
+                .build();
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepInvalido);
-        });
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("principal é obrigatória");
     }
 
     @Test
-    @DisplayName("Deve rejeitar CEP com hífen em posição incorreta")
-    void testValidarCepComHifenEmPosicaoIncorreta() {
-        // Arrange
-        String cepInvalido = "1234-5678";
+    @DisplayName("Deve falhar quando CEP for inválido")
+    void deveFalharCepInvalido() {
+        Endereco endereco = Endereco.builder()
+                .logradouro("Rua A")
+                .bairro("Bairro B")
+                .municipio("Cidade")
+                .uf("SP")
+                .principal(true)
+                .cep("abc")
+                .build();
 
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            EnderecoValidator.validarCep(cepInvalido);
-        });
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("CEP inválido");
     }
 
     @Test
-    @DisplayName("Deve validar vários CEPs válidos")
-    void testValidarMultiplosCepsValidos() {
-        // Arrange
-        String[] cepsValidos = {
-            "01310-100",  // São Paulo
-            "20040020",   // Rio de Janeiro
-            "30140071",   // Belo Horizonte
-            "88015-100",  // Florianópolis
-            "70040902",   // Brasília
-        };
+    @DisplayName("Deve falhar quando CEP for nulo")
+    void deveFalharCepNulo() {
+        Endereco endereco = Endereco.builder()
+                .logradouro("Rua A")
+                .bairro("Bairro B")
+                .municipio("Cidade")
+                .uf("SP")
+                .principal(true)
+                .cep(null)
+                .build();
 
-        // Act & Assert - todos devem ser válidos
-        for (String cep : cepsValidos) {
-            assertDoesNotThrow(() -> EnderecoValidator.validarCep(cep),
-                "CEP " + cep + " deveria ser válido");
-        }
+        assertThatThrownBy(() -> EnderecoValidator.validarEndereco(endereco))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("CEP inválido");
     }
 
+    // --- Testes para validarEnderecoList ---
+
+    @Test
+    @DisplayName("Deve validar lista de endereços corretamente")
+    void deveValidarListaCorreta() {
+        List<Endereco> enderecos = Arrays.asList(criarEnderecoValido(), criarEnderecoValido());
+
+        assertThatCode(() -> EnderecoValidator.validarEnderecoList(enderecos))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("Deve falhar quando lista for nula")
+    void deveFalharListaNula() {
+        assertThatThrownBy(() -> EnderecoValidator.validarEnderecoList(null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Deve falhar quando lista for vazia")
+    void deveFalharListaVazia() {
+        List<Endereco> vazia = Collections.emptyList();
+        assertThatThrownBy(() -> EnderecoValidator.validarEnderecoList(vazia))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Deve falhar se um elemento da lista for nulo")
+    void deveFalharElementoListaNulo() {
+        List<Endereco> enderecos = new ArrayList<>();
+        enderecos.add(criarEnderecoValido());
+        enderecos.add(null);
+
+        assertThatThrownBy(() -> EnderecoValidator.validarEnderecoList(enderecos))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessageContaining("endereço não pode ser nulo");
+    }
+
+    @Test
+    @DisplayName("Deve falhar se um elemento da lista tiver dados inválidos")
+    void deveFalharElementoListaInvalido() {
+        Endereco enderecoInvalido = criarEnderecoValido();
+        enderecoInvalido = Endereco.builder().logradouro("").build(); // Invalida logradouro
+
+        List<Endereco> enderecos = Arrays.asList(criarEnderecoValido(), enderecoInvalido);
+
+        assertThatThrownBy(() -> EnderecoValidator.validarEnderecoList(enderecos))
+                .isInstanceOf(NotificacaoException.class);
+    }
 }

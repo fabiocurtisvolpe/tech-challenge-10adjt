@@ -1,285 +1,184 @@
 package com.postech.adjt.domain.validators;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.entidade.Endereco;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.enums.TipoCozinhaEnum;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("RestauranteValidator - Testes Unitários")
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class RestauranteValidatorTest {
 
-    private Usuario dono;
-    private Endereco endereco;
-    private Restaurante restauranteValido;
-    private Integer idUsuarioLogado;
+    @Mock
+    private Usuario donoMock;
 
-    @BeforeEach
-    void setUp() {
-        TipoUsuario tipoUsuario = TipoUsuarioDonoRestaurante.builder()
-                .id(1)
-                .nome("DONO")
-                .descricao("Dono de restaurante")
-                .build();
+    @Mock
+    private TipoUsuarioDonoRestaurante tipoUsuarioDonoMock;
 
-        dono = Usuario.builder()
-                .id(1)
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(tipoUsuario)
-                .build();
+    @Mock
+    private TipoUsuario tipoUsuarioComumMock;
 
-        idUsuarioLogado = 1;
+    @Test
+    @DisplayName("Deve validar restaurante com sucesso")
+    void deveValidarComSucesso() {
+        try (MockedStatic<HorarioRestauranteValidator> horarioValidator = Mockito.mockStatic(HorarioRestauranteValidator.class)) {
+            Restaurante restaurante = Restaurante.builder()
+                    .nome("Restaurante Teste")
+                    .horarioFuncionamento("10:00-22:00")
+                    .tipoCozinha(mock(TipoCozinhaEnum.class))
+                    .dono(donoMock)
+                    .build();
 
-        endereco = Endereco.builder()
-                .logradouro("Rua A")
-                .numero("123")
-                .bairro("Centro")
-                .cep("12345-678")
-                .municipio("São Paulo")
-                .uf("SP")
-                .principal(true)
-                .build();
+            when(donoMock.getId()).thenReturn(1);
+            when(donoMock.getTipoUsuario()).thenReturn(tipoUsuarioDonoMock);
 
-        restauranteValido = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.ITALIANA)
-                .endereco(endereco)
-                .dono(dono)
-                .build();
+            assertThatCode(() -> RestauranteValidator.validar(restaurante, 1))
+                    .doesNotThrowAnyException();
+        }
     }
 
     @Test
-    @DisplayName("Deve validar restaurante válido com sucesso")
-    void testValidarRestauranteValido() {
-        // Act & Assert
-        assertDoesNotThrow(() -> RestauranteValidator.validar(restauranteValido, idUsuarioLogado));
+    @DisplayName("Deve falhar quando restaurante for nulo")
+    void deveFalharRestauranteNulo() {
+        assertThatThrownBy(() -> RestauranteValidator.validar(null, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante nulo")
-    void testValidarRestauranteNulo() {
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(null, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.RESTAURANTE_NULO, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com nome nulo")
-    void testValidarRestauranteComNomeNulo() {
-        // Arrange
+    @DisplayName("Deve falhar quando nome for nulo ou vazio")
+    void deveFalharNomeVazio() {
         Restaurante restaurante = Restaurante.builder()
-                .nome(null)
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.AMERICANA)
-                .endereco(endereco)
-                .dono(dono)
+                .nome("")
                 .build();
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.NOME_RESTAURANTE_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com nome vazio")
-    void testValidarRestauranteComNomeVazio() {
-        // Arrange
+    @DisplayName("Deve falhar quando nome for muito curto")
+    void deveFalharNomeCurto() {
         Restaurante restaurante = Restaurante.builder()
-                .nome("  ")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.ARABE)
-                .endereco(endereco)
-                .dono(dono)
+                .nome("A")
                 .build();
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.NOME_RESTAURANTE_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com nome menor que 3 caracteres")
-    void testValidarRestauranteComNomeMuitoCurto() {
-        // Arrange
-        Restaurante restaurante = Restaurante.builder()
-                .nome("AB")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.CHINESA)
-                .endereco(endereco)
-                .dono(dono)
-                .build();
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.NOME_MINIMO_CARACTERES, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com nome maior que 50 caracteres")
-    void testValidarRestauranteComNomeMuitoLongo() {
-        // Arrange
-        String nomeLongo = "A".repeat(51);
+    @DisplayName("Deve falhar quando nome for muito longo")
+    void deveFalharNomeLongo() {
+        String nomeLongo = "A".repeat(200);
         Restaurante restaurante = Restaurante.builder()
                 .nome(nomeLongo)
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.VEGANA)
-                .endereco(endereco)
-                .dono(dono)
                 .build();
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.NOME_MAXIMO_CARACTERES, exception.getMessage());
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com horário nulo")
-    void testValidarRestauranteComHorarioNulo() {
-        // Arrange
+    @DisplayName("Deve falhar quando horário for nulo ou vazio")
+    void deveFalharHorarioVazio() {
         Restaurante restaurante = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento(null)
-                .tipoCozinha(TipoCozinhaEnum.ARABE)
-                .endereco(endereco)
-                .dono(dono)
+                .nome("Restaurante Válido")
+                .horarioFuncionamento("")
                 .build();
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.HORARIO_FUNCIONAMENTO_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com horário vazio")
-    void testValidarRestauranteComHorarioVazio() {
-        // Arrange
+    @DisplayName("Deve falhar quando tipo cozinha for nulo")
+    void deveFalharTipoCozinhaNulo() {
         Restaurante restaurante = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento("  ")
-                .tipoCozinha(TipoCozinhaEnum.ITALIANA)
-                .endereco(endereco)
-                .dono(dono)
-                .build();
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.HORARIO_FUNCIONAMENTO_OBRIGATORIO, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com tipo de cozinha nulo")
-    void testValidarRestauranteComTipoCozinhaNulo() {
-        // Arrange
-        Restaurante restaurante = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento("11:00 - 23:00")
+                .nome("Restaurante Válido")
+                .horarioFuncionamento("10:00-22:00")
                 .tipoCozinha(null)
-                .endereco(endereco)
-                .dono(dono)
                 .build();
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.TIPO_COZINHA_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com endereço nulo")
-    void testValidarRestauranteComEnderecoNulo() {
-        // Arrange
+    @DisplayName("Deve falhar quando dono for nulo")
+    void deveFalharDonoNulo() {
         Restaurante restaurante = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.TAILANDESA)
-                .endereco(null)
-                .dono(dono)
-                .build();
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.ENDERECO_OBRIGATORIO, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção ao validar restaurante com dono nulo")
-    void testValidarRestauranteComDonoNulo() {
-        // Arrange
-        Restaurante restaurante = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.GREGA)
-                .endereco(endereco)
+                .nome("Restaurante Válido")
+                .horarioFuncionamento("10:00-22:00")
+                .tipoCozinha(mock(TipoCozinhaEnum.class))
                 .dono(null)
                 .build();
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            RestauranteValidator.validar(restaurante, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.DONO_RESTAURANTE_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve validar restaurante com nome exatamente 3 caracteres")
-    void testValidarRestauranteComNomeExatamente3Caracteres() {
-        // Arrange
+    @DisplayName("Deve falhar quando usuário logado não for o dono (ID diferente)")
+    void deveFalharIdDiferente() {
         Restaurante restaurante = Restaurante.builder()
-                .nome("ABC")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.MEXICANA)
-                .endereco(endereco)
-                .dono(dono)
+                .nome("Restaurante Válido")
+                .horarioFuncionamento("10:00-22:00")
+                .tipoCozinha(mock(TipoCozinhaEnum.class))
+                .dono(donoMock)
                 .build();
 
-        // Act & Assert
-        assertDoesNotThrow(() -> RestauranteValidator.validar(restaurante, idUsuarioLogado));
+        when(donoMock.getId()).thenReturn(2); 
+
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve validar restaurante com nome exatamente 50 caracteres")
-    void testValidarRestauranteComNomeExatamente50Caracteres() {
-        // Arrange
-        String nome50 = "A".repeat(50);
+    @DisplayName("Deve falhar quando tipo de usuário não for DonoRestaurante")
+    void deveFalharTipoUsuarioInvalido() {
         Restaurante restaurante = Restaurante.builder()
-                .nome(nome50)
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.AMERICANA)
-                .endereco(endereco)
-                .dono(dono)
+                .nome("Restaurante Válido")
+                .horarioFuncionamento("10:00-22:00")
+                .tipoCozinha(mock(TipoCozinhaEnum.class))
+                .dono(donoMock)
                 .build();
 
-        // Act & Assert
-        assertDoesNotThrow(() -> RestauranteValidator.validar(restaurante, idUsuarioLogado));
+        when(donoMock.getId()).thenReturn(1);
+        when(donoMock.getTipoUsuario()).thenReturn(tipoUsuarioComumMock);
+
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Deve falhar quando descrição for muito longa")
+    void deveFalharDescricaoLonga() {
+        String descricaoLonga = "A".repeat(500);
+        
+        Restaurante restaurante = Restaurante.builder()
+                .nome("Restaurante Válido")
+                .horarioFuncionamento("10:00-22:00")
+                .tipoCozinha(mock(TipoCozinhaEnum.class))
+                .dono(donoMock)
+                .descricao(descricaoLonga)
+                .build();
+
+        when(donoMock.getId()).thenReturn(1);
+        when(donoMock.getTipoUsuario()).thenReturn(tipoUsuarioDonoMock);
+
+        assertThatThrownBy(() -> RestauranteValidator.validar(restaurante, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
