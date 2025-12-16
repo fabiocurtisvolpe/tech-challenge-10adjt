@@ -1,5 +1,6 @@
 package com.postech.adjt.domain.validators;
 
+import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -45,7 +46,7 @@ class TipoUsuarioValidatorTest {
     void deveFalharTipoUsuarioNulo() {
         assertThatThrownBy(() -> TipoUsuarioValidator.validar(null, ID_USUARIO_LOGADO))
                 .isInstanceOf(NotificacaoException.class)
-                .hasMessageContaining("Tipo de usuário"); // Valida parte da mensagem
+                .hasMessageContaining(MensagemUtil.TIPO_USUARIO_NULO_VALIDACAO);
     }
 
     @Test

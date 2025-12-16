@@ -9,14 +9,14 @@ import com.postech.adjt.domain.ports.GenericRepositoryPort;
 
 public class ObterCardapioPorIdUseCase {
 
-    private final GenericRepositoryPort<Cardapio> cardapioRepository;
+    private final GenericRepositoryPort<Cardapio> repositoryPort;
 
-    private ObterCardapioPorIdUseCase(GenericRepositoryPort<Cardapio> cardapioRepository) {
-        this.cardapioRepository = cardapioRepository;
+    private ObterCardapioPorIdUseCase(GenericRepositoryPort<Cardapio> repositoryPort) {
+        this.repositoryPort = repositoryPort;
     }
 
-    public static ObterCardapioPorIdUseCase create(GenericRepositoryPort<Cardapio> cardapioRepository) {
-        return new ObterCardapioPorIdUseCase(cardapioRepository);
+    public static ObterCardapioPorIdUseCase create(GenericRepositoryPort<Cardapio> repositoryPort) {
+        return new ObterCardapioPorIdUseCase(repositoryPort);
     }
 
     public Optional<Cardapio> run(Integer id) {
@@ -25,7 +25,7 @@ public class ObterCardapioPorIdUseCase {
             throw new NotificacaoException(MensagemUtil.ID_NULO);
         }
         
-        Optional<Cardapio> cardapioExistente = this.cardapioRepository.obterPorId(id);
+        Optional<Cardapio> cardapioExistente = this.repositoryPort.obterPorId(id);
         
         if (cardapioExistente.isEmpty()) {
             throw new NotificacaoException(MensagemUtil.CARDAPIO_NAO_ENCONTRADO);

@@ -2,38 +2,44 @@ package com.postech.adjt.domain.usecase.cardapio;
 
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Cardapio;
+import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.CardapioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
-import com.postech.adjt.domain.validators.CardapioValidator;
 
 public class AtivarInativarCardapioUseCase {
 
-    private final GenericRepositoryPort<Cardapio> cardapioRepository;
+    private final GenericRepositoryPort<Cardapio> repositoryPort;
+    private final GenericRepositoryPort<Usuario> usuarioRepository;
 
-    private AtivarInativarCardapioUseCase(GenericRepositoryPort<Cardapio> cardapioRepository) {
-        this.cardapioRepository = cardapioRepository;
+    private AtivarInativarCardapioUseCase(GenericRepositoryPort<Cardapio> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        this.repositoryPort = repositoryPort;
+        this.usuarioRepository = usuarioRepository;
     }
 
-    public static AtivarInativarCardapioUseCase create(GenericRepositoryPort<Cardapio> cardapioRepository) {
-        return new AtivarInativarCardapioUseCase(cardapioRepository);
+    public static AtivarInativarCardapioUseCase create(GenericRepositoryPort<Cardapio> repositoryPort,
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return new AtivarInativarCardapioUseCase(repositoryPort, usuarioRepository);
     }
 
-    public Cardapio run(Integer id, Boolean ativo, Integer idUsuarioLogado) throws IllegalArgumentException {
+    public Cardapio run(Integer id, Boolean ativo, String usuarioLogado) throws IllegalArgumentException {
 
-        final Cardapio cardapioExistente = this.cardapioRepository.obterPorId(id).orElse(null);
+        final Cardapio cardapio = this.repositoryPort.obterPorId(id).orElse(null);
 
-        if (cardapioExistente == null) {
+        if (cardapio == null) {
             throw new NotificacaoException(MensagemUtil.CARDAPIO_NAO_ENCONTRADO);
         }
 
-        final Cardapio cardapio = CardapioFactory.atualizar(id, cardapioExistente.getNome(),
-                cardapioExistente.getDescricao(), cardapioExistente.getPreco(), cardapioExistente.getFoto(),
-                cardapioExistente.getDisponivel(), cardapioExistente.getRestaurante(), ativo);
+        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
+        if (usrLogado == null) {
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
+        }
 
-        CardapioValidator.validar(cardapio, idUsuarioLogado);
-
-        return cardapioRepository.atualizar(cardapio);
+        return repositoryPort.atualizar(CardapioFactory.cardapio(id, cardapio.getNome(),
+                cardapio.getDescricao(), cardapio.getPreco(), cardapio.getFoto(),
+                cardapio.getRestaurante(), cardapio.getDisponivel(), ativo,
+                usrLogado.getId()));
     }
 
 }

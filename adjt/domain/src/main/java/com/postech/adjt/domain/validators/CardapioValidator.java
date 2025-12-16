@@ -1,5 +1,7 @@
 package com.postech.adjt.domain.validators;
 
+import java.math.BigDecimal;
+
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Cardapio;
 
@@ -27,7 +29,7 @@ public class CardapioValidator {
             throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_E_DONO_RESTAURANTE);
         }
 
-        if (cardapio.getPreco() == null || cardapio.getPreco() <= 0) {
+        if (cardapio.getPreco() == null || cardapio.getPreco().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(MensagemUtil.PRECO_CARDAPIO_INVALIDO);
         } 
     }

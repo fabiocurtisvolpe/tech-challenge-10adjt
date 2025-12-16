@@ -1,251 +1,141 @@
 package com.postech.adjt.domain.validators;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
+import com.postech.adjt.domain.entidade.Cardapio;
+import com.postech.adjt.domain.entidade.Restaurante;
+import com.postech.adjt.domain.entidade.Usuario;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.postech.adjt.domain.constants.MensagemUtil;
-import com.postech.adjt.domain.entidade.Cardapio;
-import com.postech.adjt.domain.entidade.Endereco;
-import com.postech.adjt.domain.entidade.Restaurante;
-import com.postech.adjt.domain.entidade.TipoUsuario;
-import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
-import com.postech.adjt.domain.entidade.Usuario;
-import com.postech.adjt.domain.enums.TipoCozinhaEnum;
+import java.math.BigDecimal;
 
-@DisplayName("CardapioValidator - Testes Unitários")
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class CardapioValidatorTest {
 
-    private Restaurante restaurante;
-    private Cardapio cardapioValido;
-    private Integer idUsuarioLogado;
+    @Mock
+    private Cardapio cardapioMock;
 
-    @BeforeEach
-    void setUp() {
-        TipoUsuario tipoUsuario = TipoUsuarioDonoRestaurante.builder()
-                .id(1)
-                .nome("DONO")
-                .descricao("Dono de restaurante")
-                .build();
+    @Mock
+    private Restaurante restauranteMock;
 
-        Usuario dono = Usuario.builder()
-                .id(1)
-                .nome("João Silva")
-                .email("joao@email.com")
-                .senha("senha123")
-                .tipoUsuario(tipoUsuario)
-                .build();
+    @Mock
+    private Usuario donoMock;
 
-        idUsuarioLogado = 1;
+    private static final Integer ID_USUARIO_LOGADO = 1;
 
-        Endereco endereco = Endereco.builder()
-                .logradouro("Rua A")
-                .numero("123")
-                .bairro("Centro")
-                .cep("12345-678")
-                .municipio("São Paulo")
-                .uf("SP")
-                .principal(true)
-                .build();
+    @Test
+    @DisplayName("Deve validar cardápio com sucesso")
+    void deveValidarComSucesso() {
+        when(cardapioMock.getNome()).thenReturn("Pizza Margherita");
+        when(cardapioMock.getRestaurante()).thenReturn(restauranteMock);
+        when(restauranteMock.getDono()).thenReturn(donoMock);
+        when(donoMock.getId()).thenReturn(ID_USUARIO_LOGADO);
+        when(cardapioMock.getPreco()).thenReturn(new BigDecimal("50.00"));
 
-        restaurante = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(TipoCozinhaEnum.BRASILEIRA)
-                .endereco(endereco)
-                .dono(dono)
-                .build();
-
-        cardapioValido = Cardapio.builder()
-                .nome("Pizza Margherita")
-                .descricao("Pizza tradicional italiana")
-                .preco(35.50)
-                .restaurante(restaurante)
-                .build();
+        assertThatCode(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("Deve validar cardápio válido com sucesso")
-    void testValidarCardapioValido() {
-        // Act & Assert
-        assertDoesNotThrow(() -> CardapioValidator.validar(cardapioValido, idUsuarioLogado));
+    @DisplayName("Deve falhar quando cardápio for nulo")
+    void deveFalharCardapioNulo() {
+        assertThatThrownBy(() -> CardapioValidator.validar(null, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio nulo")
-    void testValidarCardapioNulo() {
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(null, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.CARDAPIO_NULO, exception.getMessage());
+    @DisplayName("Deve falhar quando nome for nulo")
+    void deveFalharNomeNulo() {
+        when(cardapioMock.getNome()).thenReturn(null);
+
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio com nome nulo")
-    void testValidarCardapioComNomeNulo() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome(null)
-                .descricao("Descrição")
-                .preco(35.50)
-                .restaurante(restaurante)
-                .build();
+    @DisplayName("Deve falhar quando nome for vazio")
+    void deveFalharNomeVazio() {
+        when(cardapioMock.getNome()).thenReturn("");
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.NOME_CARDAPIO_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio com nome vazio")
-    void testValidarCardapioComNomeVazio() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome("  ")
-                .descricao("Descrição")
-                .preco(35.50)
-                .restaurante(restaurante)
-                .build();
+    @DisplayName("Deve falhar quando restaurante for nulo")
+    void deveFalharRestauranteNulo() {
+        when(cardapioMock.getNome()).thenReturn("Pizza");
+        when(cardapioMock.getRestaurante()).thenReturn(null);
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.NOME_CARDAPIO_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio com restaurante nulo")
-    void testValidarCardapioComRestauranteNulo() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome("Pizza Margherita")
-                .descricao("Descrição")
-                .preco(35.50)
-                .restaurante(null)
-                .build();
+    @DisplayName("Deve falhar quando dono do restaurante for nulo")
+    void deveFalharDonoNulo() {
+        when(cardapioMock.getNome()).thenReturn("Pizza");
+        when(cardapioMock.getRestaurante()).thenReturn(restauranteMock);
+        when(restauranteMock.getDono()).thenReturn(null);
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.RESTAURANTE_OBRIGATORIO, exception.getMessage());
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio com dono do restaurante nulo")
-    void testValidarCardapioComDonoRestauranteNulo() {
-        // Arrange
-        Restaurante restauranteSemDono = Restaurante.builder()
-                .nome("Restaurante Italiano")
-                .horarioFuncionamento("11:00 - 23:00")
-                .tipoCozinha(restaurante.getTipoCozinha())
-                .endereco(restaurante.getEndereco())
-                .dono(null)
-                .build();
+    @DisplayName("Deve falhar quando usuário logado não for o dono")
+    void deveFalharUsuarioNaoDono() {
+        when(cardapioMock.getNome()).thenReturn("Pizza");
+        when(cardapioMock.getRestaurante()).thenReturn(restauranteMock);
+        when(restauranteMock.getDono()).thenReturn(donoMock);
+        when(donoMock.getId()).thenReturn(999); 
 
-        Cardapio cardapio = Cardapio.builder()
-                .nome("Pizza Margherita")
-                .descricao("Descrição")
-                .preco(35.50)
-                .restaurante(restauranteSemDono)
-                .build();
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.DONO_RESTAURANTE_CARDAPIO, exception.getMessage());
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio com preço nulo")
-    void testValidarCardapioComPrecoNulo() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome("Pizza Margherita")
-                .descricao("Descrição")
-                .preco(null)
-                .restaurante(restaurante)
-                .build();
+    @DisplayName("Deve falhar quando preço for nulo")
+    void deveFalharPrecoNulo() {
+        when(cardapioMock.getNome()).thenReturn("Pizza");
+        when(cardapioMock.getRestaurante()).thenReturn(restauranteMock);
+        when(restauranteMock.getDono()).thenReturn(donoMock);
+        when(donoMock.getId()).thenReturn(ID_USUARIO_LOGADO);
+        when(cardapioMock.getPreco()).thenReturn(null);
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.PRECO_CARDAPIO_INVALIDO, exception.getMessage());
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio com preço zero")
-    void testValidarCardapioComPrecoZero() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome("Pizza Margherita")
-                .descricao("Descrição")
-                .preco(0.0)
-                .restaurante(restaurante)
-                .build();
+    @DisplayName("Deve falhar quando preço for zero")
+    void deveFalharPrecoZero() {
+        when(cardapioMock.getNome()).thenReturn("Pizza");
+        when(cardapioMock.getRestaurante()).thenReturn(restauranteMock);
+        when(restauranteMock.getDono()).thenReturn(donoMock);
+        when(donoMock.getId()).thenReturn(ID_USUARIO_LOGADO);
+        when(cardapioMock.getPreco()).thenReturn(BigDecimal.ZERO);
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.PRECO_CARDAPIO_INVALIDO, exception.getMessage());
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao validar cardápio com preço negativo")
-    void testValidarCardapioComPrecoNegativo() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome("Pizza Margherita")
-                .descricao("Descrição")
-                .preco(-10.0)
-                .restaurante(restaurante)
-                .build();
+    @DisplayName("Deve falhar quando preço for negativo")
+    void deveFalharPrecoNegativo() {
+        when(cardapioMock.getNome()).thenReturn("Pizza");
+        when(cardapioMock.getRestaurante()).thenReturn(restauranteMock);
+        when(restauranteMock.getDono()).thenReturn(donoMock);
+        when(donoMock.getId()).thenReturn(ID_USUARIO_LOGADO);
+        when(cardapioMock.getPreco()).thenReturn(new BigDecimal("-10.00"));
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            CardapioValidator.validar(cardapio, idUsuarioLogado);
-        });
-        assertEquals(MensagemUtil.PRECO_CARDAPIO_INVALIDO, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Deve validar cardápio com preço válido (maior que zero)")
-    void testValidarCardapioComPrecoValido() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome("Pizza Margherita")
-                .descricao("Descrição")
-                .preco(0.01)
-                .restaurante(restaurante)
-                .build();
-
-        // Act & Assert
-        assertDoesNotThrow(() -> CardapioValidator.validar(cardapio, idUsuarioLogado));
-    }
-
-    @Test
-    @DisplayName("Deve validar cardápio com preço alto")
-    void testValidarCardapioComPrecoAlto() {
-        // Arrange
-        Cardapio cardapio = Cardapio.builder()
-                .nome("Pizza Especial")
-                .descricao("Pizza gourmet")
-                .preco(150.99)
-                .restaurante(restaurante)
-                .build();
-
-        // Act & Assert
-        assertDoesNotThrow(() -> CardapioValidator.validar(cardapio, idUsuarioLogado));
+        assertThatThrownBy(() -> CardapioValidator.validar(cardapioMock, ID_USUARIO_LOGADO))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

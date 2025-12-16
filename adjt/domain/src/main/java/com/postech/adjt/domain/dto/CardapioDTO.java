@@ -1,13 +1,13 @@
 package com.postech.adjt.domain.dto;
 
-import com.postech.adjt.domain.entidade.Restaurante;
+import java.math.BigDecimal;
 
 public record CardapioDTO(Integer id,
     String nome,
     String descricao,
-    Double preco,
+    BigDecimal preco,
     String foto,
     Boolean disponivel,
-    Restaurante restaurante,
+    RestauranteDTO restaurante,
     Integer idUsuarioLogado) {
 }

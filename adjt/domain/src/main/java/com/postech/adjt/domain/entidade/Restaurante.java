@@ -1,5 +1,7 @@
 package com.postech.adjt.domain.entidade;
 
+import java.util.List;
+
 import com.postech.adjt.domain.enums.TipoCozinhaEnum;
 
 import lombok.Getter;
@@ -15,4 +17,5 @@ public class Restaurante extends Base {
     protected TipoCozinhaEnum tipoCozinha;
     protected Endereco endereco;
     protected Usuario dono;
+    protected List<Cardapio> cardapios;
 }
