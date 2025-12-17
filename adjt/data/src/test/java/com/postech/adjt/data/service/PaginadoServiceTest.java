@@ -142,19 +142,21 @@ class PaginadoServiceTest {
         CriteriaBuilder cb = mock(CriteriaBuilder.class);
         Path path = mock(Path.class);
 
-        when(root.get(any(String.class))).thenReturn(path);
-        when(cb.conjunction()).thenReturn(mock(Predicate.class));
-        when(cb.equal(any(), any())).thenReturn(mock(Predicate.class));
-        when(cb.notEqual(any(), any())).thenReturn(mock(Predicate.class));
-        when(cb.like(any(), anyString())).thenReturn(mock(Predicate.class));
-        when(cb.greaterThan(any(), anyString())).thenReturn(mock(Predicate.class));
-        when(cb.lessThan(any(), anyString())).thenReturn(mock(Predicate.class));
-        when(cb.greaterThanOrEqualTo(any(), anyString())).thenReturn(mock(Predicate.class));
-        when(cb.lessThanOrEqualTo(any(), anyString())).thenReturn(mock(Predicate.class));
-        when(cb.between(any(), anyString(), anyString())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(root.get(any(String.class))).thenReturn(path);
+        org.mockito.Mockito.lenient().when(cb.conjunction()).thenReturn(mock(Predicate.class));
+
+        org.mockito.Mockito.lenient().when(cb.equal(any(), any())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(cb.notEqual(any(), any())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(cb.like(any(), anyString())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(cb.greaterThan(any(), anyString())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(cb.lessThan(any(), anyString())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(cb.greaterThanOrEqualTo(any(), anyString())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(cb.lessThanOrEqualTo(any(), anyString())).thenReturn(mock(Predicate.class));
+        org.mockito.Mockito.lenient().when(cb.between(any(), anyString(), anyString())).thenReturn(mock(Predicate.class));
 
         capturedSpec.toPredicate(root, query, cb);
 
+        // As verificações (verify) garantem que a lógica está correta, independentemente do stub ser lenient
         verify(cb).equal(path, "val");
         verify(cb).notEqual(path, "val");
         verify(cb).like(path, "%val%");

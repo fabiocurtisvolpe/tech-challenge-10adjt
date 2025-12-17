@@ -1,8 +1,6 @@
 package com.postech.adjt.data.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -78,7 +76,7 @@ class UsuarioMapperTest {
             assertNotNull(entidade.getEnderecos());
             assertEquals(1, entidade.getEnderecos().size());
 
-            EnderecoEntidade endEntidade = entidade.getEnderecos().get(0);
+            EnderecoEntidade endEntidade = entidade.getEnderecos().getFirst();
             assertEquals(endereco.getId(), endEntidade.getId());
             assertEquals(endereco.getLogradouro(), endEntidade.getLogradouro());
             assertEquals(endereco.getCep(), endEntidade.getCep());
@@ -101,7 +99,9 @@ class UsuarioMapperTest {
         try (MockedStatic<TipoUsuarioMapper> tipoMapperMock = mockStatic(TipoUsuarioMapper.class)) {
             UsuarioEntidade entidade = UsuarioMapper.toEntity(usuario);
             assertNotNull(entidade);
-            assertNull(entidade.getEnderecos());
+
+            assertNotNull(entidade.getEnderecos());
+            assertTrue(entidade.getEnderecos().isEmpty());
         }
     }
 
@@ -146,10 +146,10 @@ class UsuarioMapperTest {
             assertEquals(usuarioEntidade.getNome(), domain.getNome());
             assertEquals(usuarioEntidade.getEmail(), domain.getEmail());
             assertEquals(tipoUsuario, domain.getTipoUsuario());
-            
+
             assertNotNull(domain.getEnderecos());
             assertEquals(1, domain.getEnderecos().size());
-            
+
             Endereco endDomain = domain.getEnderecos().get(0);
             assertEquals(enderecoEntidade.getId(), endDomain.getId());
             assertEquals(enderecoEntidade.getLogradouro(), endDomain.getLogradouro());
