@@ -1,16 +1,5 @@
 package com.postech.adjt.api.controller;
 
-import java.util.Optional;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.postech.adjt.api.dto.UsuarioRespostaDTO;
 import com.postech.adjt.api.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.api.mapper.UsuarioMapperApi;
@@ -23,36 +12,16 @@ import com.postech.adjt.domain.dto.TrocarSenhaUsuarioDTO;
 import com.postech.adjt.domain.dto.UsuarioDTO;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.usecase.PaginadoUseCase;
-import com.postech.adjt.domain.usecase.usuario.AtivarInativarUsuarioUseCase;
-import com.postech.adjt.domain.usecase.usuario.AtualizarSenhaUsuarioUseCase;
-import com.postech.adjt.domain.usecase.usuario.AtualizarUsuarioUseCase;
-import com.postech.adjt.domain.usecase.usuario.CadastrarUsuarioUseCase;
-import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorEmailUseCase;
-import com.postech.adjt.domain.usecase.usuario.ObterUsuarioPorIdUseCase;
-
+import com.postech.adjt.domain.usecase.usuario.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
-/**
- * Controlador REST responsável pelas operações relacionadas aos usuários.
- * 
- * <p>
- * Expõe endpoints para criação, atualização, busca, listagem, paginação e
- * ativação/inativação
- * de registros de {@link UsuarioDTO}.
- * </p>
- * 
- * <p>
- * Todos os métodos delegam a lógica de negócio para o {@link UsuarioService}.
- * </p>
- * 
- * @author Fabio
- * @since 2025-11-26
- */
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
@@ -145,8 +114,8 @@ public class UsuarioController {
         })
         @GetMapping("/{id}")
         public UsuarioRespostaDTO buscar(@PathVariable Integer id) {
-                Optional<Usuario> usuario = this.obterUsuarioPorIdUseCase.run(id, UsuarioLogadoUtil.getUsuarioLogado());
-                return usuario.map(UsuarioMapperApi::toUsuarioRespostaDTO).orElse(null);
+                Usuario usuario = this.obterUsuarioPorIdUseCase.run(id, UsuarioLogadoUtil.getUsuarioLogado());
+                return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
         @Operation(summary = "Usuario", description = "Realiza busca usuario logado")
@@ -157,8 +126,8 @@ public class UsuarioController {
         })
         @GetMapping("/info")
         public UsuarioRespostaDTO buscarLogado() {
-                Optional<Usuario> usuario = this.obterUsuarioPorEmailUseCase.run(UsuarioLogadoUtil.getUsuarioLogado());
-                return usuario.map(UsuarioMapperApi::toUsuarioRespostaDTO).orElse(null);
+                Usuario usuario = this.obterUsuarioPorEmailUseCase.run(UsuarioLogadoUtil.getUsuarioLogado());
+                return UsuarioMapperApi.toUsuarioRespostaDTO(usuario);
         }
 
         @Operation(summary = "Usuario", description = "Realiza busca paginada de usuário")

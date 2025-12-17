@@ -24,7 +24,7 @@ public class AtivarInativarCardapioUseCase {
         return new AtivarInativarCardapioUseCase(cardapioRepositoryPort, usuarioRepository);
     }
 
-    public Cardapio run(Integer id, Boolean ativo, String usuarioLogado) throws IllegalArgumentException {
+    public Cardapio run(Boolean ativo, Integer id, String usuarioLogado) throws IllegalArgumentException {
 
         final Cardapio cardapio = this.cardapioRepositoryPort.obterPorId(id)
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.CARDAPIO_NAO_ENCONTRADO));

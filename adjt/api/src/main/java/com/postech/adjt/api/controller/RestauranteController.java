@@ -1,15 +1,5 @@
 package com.postech.adjt.api.controller;
 
-import java.util.Optional;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.postech.adjt.api.dto.RestauranteRespostaDTO;
 import com.postech.adjt.api.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.api.mapper.RestauranteMapperApi;
@@ -24,13 +14,13 @@ import com.postech.adjt.domain.usecase.restaurante.AtivarInativarRestauranteUseC
 import com.postech.adjt.domain.usecase.restaurante.AtualizarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.CadastrarRestauranteUseCase;
 import com.postech.adjt.domain.usecase.restaurante.ObterRestaurantePorIdUseCase;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/restaurante")
@@ -97,8 +87,8 @@ public class RestauranteController {
         })
         @GetMapping("/{id}")
         public RestauranteRespostaDTO buscar(@PathVariable Integer id) {
-                Optional<Restaurante> restaurante = this.obterRestaurantePorIdUseCase.run(id);
-                return restaurante.map(RestauranteMapperApi::toRestauranteRespostaGeralDTO).orElse(null);
+                Restaurante restaurante = this.obterRestaurantePorIdUseCase.run(id);
+                return RestauranteMapperApi.toRestauranteRespostaGeralDTO(restaurante);
         }
 
         @Operation(summary = "Restaurante", description = "Realiza busca o proprio restaurante através do id")
@@ -109,8 +99,8 @@ public class RestauranteController {
         })
         @GetMapping("/dono/{id}")
         public RestauranteRespostaDTO buscarProprio(@PathVariable Integer id) {
-                Optional<Restaurante> restaurante = this.obterRestaurantePorIdUseCase.run(id);
-                return restaurante.map(RestauranteMapperApi::toRestauranteRespostaDTO).orElse(null);
+                Restaurante restaurante = this.obterRestaurantePorIdUseCase.run(id);
+                return RestauranteMapperApi.toRestauranteRespostaDTO(restaurante);
         }
 
         @Operation(summary = "Restaurante", description = "Realiza busca paginada de restaurante")

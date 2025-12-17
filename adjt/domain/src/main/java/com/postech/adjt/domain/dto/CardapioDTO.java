@@ -8,6 +8,5 @@ public record CardapioDTO(Integer id,
     BigDecimal preco,
     String foto,
     Boolean disponivel,
-    RestauranteDTO restaurante,
-    Integer idUsuarioLogado) {
+    RestauranteDTO restaurante) {
 }

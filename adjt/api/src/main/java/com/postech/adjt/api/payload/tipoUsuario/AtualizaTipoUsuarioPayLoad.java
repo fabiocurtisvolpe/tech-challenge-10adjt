@@ -12,6 +12,7 @@ import lombok.Setter;
 public class AtualizaTipoUsuarioPayLoad {
 
     @NotNull(message = "O id do tipo de usuário não pode estar vazio")
+    @Positive(message = "O id deve ser maior que zero")
     private Integer id;
 
     @NotBlank(message = "O nome não pode estar em branco")

@@ -1,13 +1,5 @@
 package com.postech.adjt.api.dto;
 
-/**
- * DTO de resposta para Endereco que oculta informações sensíveis
- * 
- * Não inclui: id, dataCriacao, ativo, usuario
- * 
- * @author Fabio
- * @since 2025-12-01
- */
 public class EnderecoRespostaDTO {
 
     private String logradouro;

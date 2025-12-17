@@ -7,15 +7,6 @@ import com.postech.adjt.domain.entidade.TipoUsuario;
 
 import lombok.Getter;
 
-/**
- * DTO de resposta para Usuario que oculta informações sensíveis
- * 
- * Não inclui: id, senha, dataCriacao, ativo
- * 
- * @author Fabio
- * @since 2025-12-01
- */
-
 @Getter
 public class UsuarioRespostaDTO {
 

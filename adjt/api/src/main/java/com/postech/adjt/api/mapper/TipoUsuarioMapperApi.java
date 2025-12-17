@@ -44,7 +44,7 @@ public class TipoUsuarioMapperApi {
                         return null;
                 }
 
-                Boolean isDono = tipoUsuario instanceof TipoUsuarioDonoRestaurante ? true : false;
+                Boolean isDono = tipoUsuario instanceof TipoUsuarioDonoRestaurante;
 
                 return new TipoUsuarioRespostaDTO(
                                 tipoUsuario.getId(),

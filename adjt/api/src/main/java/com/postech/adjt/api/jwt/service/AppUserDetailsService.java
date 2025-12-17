@@ -31,14 +31,14 @@ public class AppUserDetailsService implements UserDetailsService {
         @Override
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-                Optional<Usuario> usuario = this.obterUsuarioPorEmail.run(email);
+                Usuario usuario = this.obterUsuarioPorEmail.run(email);
 
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
-                                "ROLE_" + usuario.get().getTipoUsuario().toString());
+                                "ROLE_" + usuario.getTipoUsuario().toString());
 
                 return new User(
-                                usuario.get().getEmail(),
-                                usuario.get().getSenha(),
+                                usuario.getEmail(),
+                                usuario.getSenha(),
                                 Collections.singletonList(authority));
         }
 }

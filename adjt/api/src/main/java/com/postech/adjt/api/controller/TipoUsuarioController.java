@@ -1,15 +1,5 @@
 package com.postech.adjt.api.controller;
 
-import java.util.Optional;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.postech.adjt.api.dto.TipoUsuarioRespostaDTO;
 import com.postech.adjt.api.jwt.util.UsuarioLogadoUtil;
 import com.postech.adjt.api.mapper.TipoUsuarioMapperApi;
@@ -24,13 +14,13 @@ import com.postech.adjt.domain.usecase.tipoUsuario.AtivarInativarTipoUsuarioUseC
 import com.postech.adjt.domain.usecase.tipoUsuario.AtualizarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.CadastrarTipoUsuarioUseCase;
 import com.postech.adjt.domain.usecase.tipoUsuario.ObterTipoUsuarioPorIdUseCase;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/tipo-usuario")
@@ -99,9 +89,9 @@ public class TipoUsuarioController {
         public TipoUsuarioRespostaDTO buscar(@PathVariable Integer id) {
 
                 String ursLogado = UsuarioLogadoUtil.getUsuarioLogado();
-                Optional<TipoUsuario> tipoUsuario = this.obterTipoUsuarioPorIdUseCase.run(id, ursLogado);
+                TipoUsuario tipoUsuario = this.obterTipoUsuarioPorIdUseCase.run(id, ursLogado);
 
-                return tipoUsuario.map(TipoUsuarioMapperApi::toTipoUsuarioRespostaDTO).orElse(null);
+                return TipoUsuarioMapperApi.toTipoUsuarioRespostaDTO(tipoUsuario);
         }
 
         @Operation(summary = "TipoUsuario", description = "Realiza busca paginada de tipo de usuários")

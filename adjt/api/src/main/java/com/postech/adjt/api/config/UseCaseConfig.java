@@ -1,5 +1,6 @@
 package com.postech.adjt.api.config;
 
+import com.postech.adjt.domain.usecase.cardapio.AtivarInativarCardapioUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,13 +38,13 @@ public class UseCaseConfig {
 
     @Bean
     public AtualizarUsuarioUseCase atualizarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+                                                           GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return AtualizarUsuarioUseCase.create(usuarioRepository, tipoUsuarioRepository);
     }
 
     @Bean
     public CadastrarUsuarioUseCase cadastrarUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
+                                                           GenericRepositoryPort<TipoUsuario> tipoUsuarioRepository) {
         return CadastrarUsuarioUseCase.create(usuarioRepository, tipoUsuarioRepository);
     }
 
@@ -106,14 +107,21 @@ public class UseCaseConfig {
     /*************************************************************************************************************/
 
     @Bean
+    public AtivarInativarCardapioUseCase ativarInativarCardapioUseCase(
+            GenericRepositoryPort<Cardapio> cardapioRepository,
+            GenericRepositoryPort<Usuario> usuarioRepository) {
+        return AtivarInativarCardapioUseCase.create(cardapioRepository, usuarioRepository);
+    }
+
+    @Bean
     public AtualizarCardapioUseCase atualizarCardapioUseCase(GenericRepositoryPort<Cardapio> cardapioRepository,
-        GenericRepositoryPort<Usuario> usuarioRepository) {
+                                                             GenericRepositoryPort<Usuario> usuarioRepository) {
         return AtualizarCardapioUseCase.create(cardapioRepository, usuarioRepository);
     }
 
     @Bean
     public CadastrarCardapioUseCase cadastrarCardapioUseCase(GenericRepositoryPort<Cardapio> cardapioRepository,
-        GenericRepositoryPort<Usuario> usuarioRepository, GenericRepositoryPort<Restaurante> restauranteRepository) {
+                                                             GenericRepositoryPort<Usuario> usuarioRepository, GenericRepositoryPort<Restaurante> restauranteRepository) {
         return CadastrarCardapioUseCase.create(cardapioRepository, usuarioRepository, restauranteRepository);
     }
 
