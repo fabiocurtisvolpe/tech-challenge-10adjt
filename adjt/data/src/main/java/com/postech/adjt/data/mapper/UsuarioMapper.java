@@ -57,20 +57,7 @@ public class UsuarioMapper {
     }
 
     private static EnderecoEntidade toEntityEndereco(Endereco endereco, UsuarioEntidade usuarioEntidade) {
-        EnderecoEntidade entidade = new EnderecoEntidade();
-        entidade.setId(endereco.getId());
-        entidade.setLogradouro(endereco.getLogradouro());
-        entidade.setNumero(endereco.getNumero());
-        entidade.setComplemento(endereco.getComplemento());
-        entidade.setBairro(endereco.getBairro());
-        entidade.setPontoReferencia(endereco.getPontoReferencia());
-        entidade.setCep(endereco.getCep());
-        entidade.setMunicipio(endereco.getMunicipio());
-        entidade.setUf(endereco.getUf());
-        entidade.setPrincipal(endereco.getPrincipal());
-        entidade.setAtivo(endereco.getAtivo());
-        entidade.setDataCriacao(endereco.getDataCriacao());
-        entidade.setDataAlteracao(endereco.getDataAlteracao());
+        EnderecoEntidade entidade = EnderecoMapper.toEntity(endereco);
 
         // vínculo obrigatório
         entidade.setUsuario(usuarioEntidade);
@@ -82,7 +69,7 @@ public class UsuarioMapper {
         if (entidade == null)
             return null;
 
-        Usuario usuario = Usuario.builder()
+        return Usuario.builder()
                 .id(entidade.getId())
                 .nome(entidade.getNome())
                 .email(entidade.getEmail())
@@ -97,8 +84,6 @@ public class UsuarioMapper {
                 .dataCriacao(entidade.getDataCriacao())
                 .dataAlteracao(entidade.getDataAlteracao())
                 .build();
-
-        return usuario;
     }
 
     private static Endereco toDomainEndereco(EnderecoEntidade entidade) {

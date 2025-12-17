@@ -33,6 +33,7 @@ public class RestauranteMapper {
 
         RestauranteEntidade entidade = new RestauranteEntidade();
         entidade.setId(restaurante.getId());
+        entidade.setAtivo(restaurante.getAtivo());
         entidade.setNome(restaurante.getNome());
         entidade.setDescricao(restaurante.getDescricao());
         entidade.setHorarioFuncionamento(restaurante.getHorarioFuncionamento());

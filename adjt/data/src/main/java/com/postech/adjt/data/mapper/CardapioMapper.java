@@ -33,6 +33,7 @@ public class CardapioMapper {
 
         CardapioEntidade entidade = new CardapioEntidade();
         entidade.setId(cardapio.getId());
+        entidade.setAtivo(cardapio.getAtivo());
         entidade.setNome(cardapio.getNome());
         entidade.setDescricao(cardapio.getDescricao());
         entidade.setPreco(cardapio.getPreco());
