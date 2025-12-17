@@ -21,22 +21,19 @@ public class AtivarInativarUsuarioUseCase {
 
     public Usuario run(Boolean ativar, Integer id, String usuarioLogado) {
 
-        final Usuario usuarioExistente = this.usuarioRepository.obterPorId(id).orElse(null);
+        final Usuario usuario = this.usuarioRepository.obterPorId(id)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
 
-        if (usuarioExistente == null) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
-
-        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
+        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.CARDAPIO_NAO_ENCONTRADO));
 
         if ((usrLogado.getTipoUsuario() instanceof TipoUsuarioDonoRestaurante)
-                || (usuarioExistente.getId().equals(id))) {
+                || (usuario.getId().equals(id))) {
+            ;
 
-            final Usuario usuario = UsuarioFactory.usuario(usuarioExistente.getId(), usuarioExistente.getNome(),
-                    usuarioExistente.getEmail(), usuarioExistente.getSenha(),
-                    usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), ativar);
-
-            return usuarioRepository.atualizar(usuario);
+            return usuarioRepository.atualizar(UsuarioFactory.usuario(usuario.getId(), usuario.getNome(),
+                    usuario.getEmail(), usuario.getSenha(),
+                    usuario.getTipoUsuario(), usuario.getEnderecos(), ativar));
         }
 
         throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);

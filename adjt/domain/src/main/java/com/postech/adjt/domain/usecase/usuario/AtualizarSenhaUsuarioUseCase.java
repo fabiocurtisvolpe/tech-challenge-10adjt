@@ -10,7 +10,7 @@ import com.postech.adjt.domain.ports.GenericRepositoryPort;
 public class AtualizarSenhaUsuarioUseCase {
 
     private final GenericRepositoryPort<Usuario> usuarioRepository;
-    
+
     private AtualizarSenhaUsuarioUseCase(GenericRepositoryPort<Usuario> usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
@@ -20,18 +20,12 @@ public class AtualizarSenhaUsuarioUseCase {
     }
 
     public Usuario run(TrocarSenhaUsuarioDTO dto) {
-        
-        final Usuario usuarioExistente = this.usuarioRepository.obterPorEmail(dto.email()).orElse(null);
-        
-        if (usuarioExistente == null) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
 
-        final Usuario usuario = UsuarioFactory.usuario(usuarioExistente.getId(), usuarioExistente.getNome(), 
-        usuarioExistente.getEmail(),  dto.senhaCodificada(), 
-        usuarioExistente.getTipoUsuario(), usuarioExistente.getEnderecos(), true);
+        final Usuario usuario = this.usuarioRepository.obterPorEmail(dto.email())
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
 
-        return usuarioRepository.atualizar(usuario);
+        return usuarioRepository.atualizar(UsuarioFactory.usuario(usuario.getId(), usuario.getNome(),
+                usuario.getEmail(), dto.senhaCodificada(),
+                usuario.getTipoUsuario(), usuario.getEnderecos(), true));
     }
- 
 }

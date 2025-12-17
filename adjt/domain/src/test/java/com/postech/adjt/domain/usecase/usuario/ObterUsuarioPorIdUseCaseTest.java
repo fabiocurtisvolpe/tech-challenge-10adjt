@@ -56,11 +56,11 @@ class ObterUsuarioPorIdUseCaseTest {
         when(usuarioRepository.obterPorEmail(emailLogado)).thenReturn(Optional.of(usuarioDono));
         when(usuarioRepository.obterPorId(idAlvo)).thenReturn(Optional.of(usuarioAlvo));
 
-        Optional<Usuario> resultado = useCase.run(idAlvo, emailLogado);
+        Usuario resultado = useCase.run(idAlvo, emailLogado);
 
         assertThat(resultado).isNotNull();
-        assertThat(resultado.get().getId()).isEqualTo(idAlvo);
-        assertThat(resultado.get().getNome()).isEqualTo("Usuario Alvo");
+        assertThat(resultado.getId()).isEqualTo(idAlvo);
+        assertThat(resultado.getNome()).isEqualTo("Usuario Alvo");
     }
 
     @Test

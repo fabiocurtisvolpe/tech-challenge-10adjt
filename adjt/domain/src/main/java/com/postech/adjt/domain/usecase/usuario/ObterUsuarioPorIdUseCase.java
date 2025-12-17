@@ -1,7 +1,5 @@
 package com.postech.adjt.domain.usecase.usuario;
 
-import java.util.Optional;
-
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -20,23 +18,23 @@ public class ObterUsuarioPorIdUseCase {
         return new ObterUsuarioPorIdUseCase(usuarioRepository);
     }
 
-    public Optional<Usuario> run(Integer id, String usuarioLogado) {
+    public Usuario run(Integer id, String usuarioLogado) {
 
         if (id == null || id <= 0) {
             throw new NotificacaoException(MensagemUtil.ID_NULO);
         }
 
-        Usuario usuarioDono = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
+        Usuario usuarioDono = this.usuarioRepository.obterPorEmail(usuarioLogado)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
+        ;
         if (!(usuarioDono.getTipoUsuario() instanceof TipoUsuarioDonoRestaurante)) {
             throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
         }
-        
-        Optional<Usuario> usuarioExistente = this.usuarioRepository.obterPorId(id);
-        
-        if (usuarioExistente.isEmpty()) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
 
-        return usuarioExistente;
+        Usuario usuario = this.usuarioRepository.obterPorId(id)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
+        ;
+
+        return usuario;
     }
 }

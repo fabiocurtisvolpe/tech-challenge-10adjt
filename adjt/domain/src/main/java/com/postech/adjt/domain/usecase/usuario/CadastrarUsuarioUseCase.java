@@ -30,25 +30,17 @@ public class CadastrarUsuarioUseCase {
 
     public Usuario run(UsuarioDTO dto) {
 
-        final Usuario usuarioExistente = this.usuarioRepository.obterPorEmail(dto.email()).orElse(null);
+        this.usuarioRepository.obterPorEmail(dto.email())
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
 
-        if (usuarioExistente != null) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_EXISTENTE);
-        }
-
-        final TipoUsuario tipoUsuario = this.tipoUsuarioRepository.obterPorId(dto.tipoUsuario().id()).orElse(null);
-
-        if (tipoUsuario == null) {
-            throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO);
-        }
+        final TipoUsuario tipoUsuario = this.tipoUsuarioRepository.obterPorId(dto.tipoUsuario().id())
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO));
 
         List<Endereco> enderecos = EnderecoFactory.toEnderecoList(dto.enderecos());
 
-        final Usuario usuario = UsuarioFactory.novo(dto.nome(),
+        return usuarioRepository.criar(UsuarioFactory.novo(dto.nome(),
                 dto.email(), dto.senha(),
-                tipoUsuario, enderecos);
-
-        return usuarioRepository.criar(usuario);
+                tipoUsuario, enderecos));
     }
 
 }

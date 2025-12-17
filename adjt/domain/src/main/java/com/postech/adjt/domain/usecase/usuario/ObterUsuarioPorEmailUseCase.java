@@ -1,7 +1,5 @@
 package com.postech.adjt.domain.usecase.usuario;
 
-import java.util.Optional;
-
 import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
@@ -19,19 +17,16 @@ public class ObterUsuarioPorEmailUseCase {
         return new ObterUsuarioPorEmailUseCase(usuarioRepository);
     }
 
-    public Optional<Usuario> run(String email) {
+    public Usuario run(String email) {
 
         if (email == null || email.trim().isEmpty()) {
             throw new NotificacaoException(MensagemUtil.EMAIL_NULO);
         }
-        
-        Optional<Usuario> usuarioExistente = this.usuarioRepository.obterPorEmail(email);
-        
-        if (usuarioExistente.isEmpty()) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
 
-        return usuarioExistente;
+        Usuario usuario = this.usuarioRepository.obterPorEmail(email)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
+
+        return usuario;
     }
- 
+
 }

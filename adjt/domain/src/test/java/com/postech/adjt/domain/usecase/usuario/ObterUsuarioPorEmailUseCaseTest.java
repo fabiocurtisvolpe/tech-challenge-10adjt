@@ -37,10 +37,10 @@ class ObterUsuarioPorEmailUseCaseTest {
 
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioMock));
 
-        Optional<Usuario> resultado = useCase.run(email);
+        Usuario resultado = useCase.run(email);
 
         assertThat(resultado).isNotNull();
-        assertThat(resultado.get().getEmail()).isEqualTo(email);
+        assertThat(resultado.getEmail()).isEqualTo(email);
         verify(usuarioRepository, times(1)).obterPorEmail(email);
     }
 

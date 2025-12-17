@@ -25,16 +25,11 @@ public class AtivarInativarCardapioUseCase {
 
     public Cardapio run(Integer id, Boolean ativo, String usuarioLogado) throws IllegalArgumentException {
 
-        final Cardapio cardapio = this.repositoryPort.obterPorId(id).orElse(null);
+        final Cardapio cardapio = this.repositoryPort.obterPorId(id)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.CARDAPIO_NAO_ENCONTRADO));
 
-        if (cardapio == null) {
-            throw new NotificacaoException(MensagemUtil.CARDAPIO_NAO_ENCONTRADO);
-        }
-
-        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
-        if (usrLogado == null) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
+        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
 
         return repositoryPort.atualizar(CardapioFactory.cardapio(id, cardapio.getNome(),
                 cardapio.getDescricao(), cardapio.getPreco(), cardapio.getFoto(),
