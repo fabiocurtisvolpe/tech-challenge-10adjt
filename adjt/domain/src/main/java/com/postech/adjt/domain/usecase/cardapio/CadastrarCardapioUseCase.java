@@ -10,6 +10,8 @@ import com.postech.adjt.domain.factory.CardapioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.usecase.util.UsuarioLogadoUtil;
 
+import java.util.Objects;
+
 public class CadastrarCardapioUseCase {
 
     private final GenericRepositoryPort<Cardapio> cardapioRepositoryPort;
@@ -31,6 +33,10 @@ public class CadastrarCardapioUseCase {
     }
 
     public Cardapio run(CardapioDTO dto, String usuarioLogado) {
+
+        if (Objects.isNull(dto.restaurante()) || Objects.isNull(dto.restaurante().id())) {
+            throw new NotificacaoException(MensagemUtil.RESTAURANTE_OBRIGATORIO);
+        }
 
         final Cardapio cardapio = this.cardapioRepositoryPort.obterPorNome(dto.nome()).orElse(null);
         final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);

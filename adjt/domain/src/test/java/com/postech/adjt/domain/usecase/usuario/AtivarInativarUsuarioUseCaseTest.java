@@ -138,8 +138,7 @@ class AtivarInativarUsuarioUseCaseTest {
         String emailLogado = "comum@teste.com";
 
         Usuario usuarioAlvo = Usuario.builder().id(idAlvo).tipoUsuario(tipoComumMock).build();
-        
-        // Usuário logado é comum (não é dono) e tem ID diferente do alvo
+
         Usuario usuarioLogado = Usuario.builder().id(1).email(emailLogado).tipoUsuario(tipoComumMock).build();
 
         when(usuarioRepository.obterPorId(idAlvo)).thenReturn(Optional.of(usuarioAlvo));

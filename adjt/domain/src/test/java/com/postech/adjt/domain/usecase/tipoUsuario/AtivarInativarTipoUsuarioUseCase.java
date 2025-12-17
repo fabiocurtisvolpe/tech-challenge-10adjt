@@ -1,5 +1,6 @@
 package com.postech.adjt.domain.usecase.tipoUsuario;
 
+import com.postech.adjt.domain.constants.MensagemUtil;
 import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoUsuario;
 import com.postech.adjt.domain.entidade.Usuario;
@@ -113,10 +114,14 @@ class AtivarInativarTipoUsuarioUseCaseTest {
         String email = "inexistente@teste.com";
 
         when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
+
+        when(tipoUsuarioMock.getIsEditavel()).thenReturn(true);
+
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(true, idTipo, email))
-                .isInstanceOf(NotificacaoException.class);
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessage(MensagemUtil.USUARIO_NAO_ENCONTRADO); // É bom validar a mensagem
 
         verify(tipoUsuariorepository, never()).atualizar(any());
     }
@@ -128,11 +133,12 @@ class AtivarInativarTipoUsuarioUseCaseTest {
         String email = "admin@teste.com";
 
         when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
-        when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
+
         when(tipoUsuarioMock.getIsEditavel()).thenReturn(false);
 
         assertThatThrownBy(() -> useCase.run(true, idTipo, email))
-                .isInstanceOf(NotificacaoException.class);
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessage(MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
         verify(tipoUsuariorepository, never()).atualizar(any());
     }

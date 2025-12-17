@@ -28,12 +28,19 @@ public class AtivarInativarUsuarioUseCase {
         final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
 
         if ((usrLogado.getTipoUsuario() instanceof TipoUsuarioDonoRestaurante)
-                || (usuario.getId().equals(id))) {
-            ;
+                || (usrLogado.getId().equals(usuario.getId()))) {
 
-            return usuarioRepository.atualizar(UsuarioFactory.usuario(usuario.getId(), usuario.getNome(),
-                    usuario.getEmail(), usuario.getSenha(),
-                    usuario.getTipoUsuario(), usuario.getEnderecos(), ativar));
+            final Usuario usuarioAtualizado = UsuarioFactory.usuario(
+                    usuario.getId(),
+                    usuario.getNome(),
+                    usuario.getEmail(),
+                    usuario.getSenha(),
+                    usuario.getTipoUsuario(),
+                    usuario.getEnderecos(),
+                    ativar
+            );
+
+            return usuarioRepository.atualizar(usuarioAtualizado);
         }
 
         throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);

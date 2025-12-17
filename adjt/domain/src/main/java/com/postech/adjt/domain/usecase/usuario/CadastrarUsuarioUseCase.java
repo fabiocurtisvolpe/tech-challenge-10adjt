@@ -30,8 +30,9 @@ public class CadastrarUsuarioUseCase {
 
     public Usuario run(UsuarioDTO dto) {
 
-        this.usuarioRepository.obterPorEmail(dto.email())
-                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
+        if (this.usuarioRepository.obterPorEmail(dto.email()).isPresent()) {
+            throw new NotificacaoException(MensagemUtil.USUARIO_EXISTENTE);
+        }
 
         final TipoUsuario tipoUsuario = this.tipoUsuarioRepository.obterPorId(dto.tipoUsuario().id())
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO));

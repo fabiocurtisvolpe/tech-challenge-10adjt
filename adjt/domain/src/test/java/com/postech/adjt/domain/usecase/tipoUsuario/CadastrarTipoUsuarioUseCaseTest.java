@@ -103,17 +103,34 @@ class CadastrarTipoUsuarioUseCaseTest {
     }
 
     @Test
-    @DisplayName("Deve falhar quando TipoUsuario já existe")
+    @DisplayName("Deve falhar quando TipoUsuario já existe no mesmo restaurante")
     void deveFalharTipoUsuarioJaExistente() {
+
         String nomeTipo = "Gerente";
+        String email = "email@teste.com";
+        Integer idRestaurante = 1;
+
+        RestauranteDTO restauranteDtoMock = mock(RestauranteDTO.class);
         when(dtoMock.nome()).thenReturn(nomeTipo);
+        when(dtoMock.restaurante()).thenReturn(restauranteDtoMock);
+        when(restauranteDtoMock.id()).thenReturn(idRestaurante);
 
         when(tipoUsuariorepository.obterPorNome(nomeTipo)).thenReturn(Optional.of(tipoUsuarioCriadoMock));
 
-        assertThatThrownBy(() -> useCase.run(dtoMock, "email@teste.com"))
-                .isInstanceOf(NotificacaoException.class);
+        when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
 
-        verify(usuarioRepository, never()).obterPorEmail(anyString());
+        when(restauranteRepository.obterPorId(idRestaurante)).thenReturn(Optional.of(restauranteMock));
+        when(restauranteMock.getId()).thenReturn(idRestaurante);
+
+        Restaurante restauranteDoTipoExistente = mock(Restaurante.class);
+        when(tipoUsuarioCriadoMock.getRestaurante()).thenReturn(restauranteDoTipoExistente);
+        when(restauranteDoTipoExistente.getId()).thenReturn(idRestaurante);
+
+        assertThatThrownBy(() -> useCase.run(dtoMock, email))
+                .isInstanceOf(NotificacaoException.class)
+                .hasMessage(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
+
+        verify(usuarioRepository).obterPorEmail(email);
     }
 
     @Test
