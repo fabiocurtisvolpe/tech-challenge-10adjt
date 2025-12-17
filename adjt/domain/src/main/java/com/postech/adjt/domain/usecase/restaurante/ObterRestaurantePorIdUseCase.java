@@ -44,7 +44,7 @@ public class ObterRestaurantePorIdUseCase {
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO));
 
         if (!restaurante.getDono().getId().equals(usrLogado.getId())) {
-            throw new IllegalArgumentException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
+            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO);
         }
 
         return restaurante;

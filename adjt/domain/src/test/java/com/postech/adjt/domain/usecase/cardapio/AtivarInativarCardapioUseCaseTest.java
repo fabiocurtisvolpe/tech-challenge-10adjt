@@ -71,19 +71,23 @@ class AtivarInativarCardapioUseCaseTest {
         when(cardapioRepositoryPort.obterPorId(idCardapio)).thenReturn(Optional.of(cardapioExistenteMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
 
-        when(cardapioExistenteMock.getId()).thenReturn(idCardapio);
-        when(cardapioExistenteMock.getNome()).thenReturn("Prato");
-        when(cardapioExistenteMock.getRestaurante()).thenReturn(restauranteMock);
-        
         when(usuarioLogadoMock.getId()).thenReturn(idUsuario);
 
         factoryMockedStatic.when(() -> CardapioFactory.cardapio(
-                eq(idCardapio), anyString(), any(), any(), any(), eq(restauranteMock), any(), eq(novoStatus), eq(idUsuario)
+                eq(idCardapio),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                eq(novoStatus),
+                eq(idUsuario)
         )).thenReturn(cardapioAtualizadoMock);
 
         when(cardapioRepositoryPort.atualizar(cardapioAtualizadoMock)).thenReturn(cardapioAtualizadoMock);
 
-        Cardapio resultado = useCase.run(idCardapio, novoStatus, email);
+        Cardapio resultado = useCase.run(novoStatus, idCardapio, email);
 
         assertThat(resultado).isEqualTo(cardapioAtualizadoMock);
         verify(cardapioRepositoryPort).atualizar(cardapioAtualizadoMock);
@@ -97,7 +101,7 @@ class AtivarInativarCardapioUseCaseTest {
 
         when(cardapioRepositoryPort.obterPorId(idCardapio)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> useCase.run(idCardapio, true, email))
+        assertThatThrownBy(() -> useCase.run(true, idCardapio, email))
                 .isInstanceOf(NotificacaoException.class);
 
         verify(usuarioRepository, never()).obterPorEmail(anyString());
@@ -112,32 +116,30 @@ class AtivarInativarCardapioUseCaseTest {
         when(cardapioRepositoryPort.obterPorId(idCardapio)).thenReturn(Optional.of(cardapioExistenteMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> useCase.run(idCardapio, true, email))
+        assertThatThrownBy(() -> useCase.run(true, idCardapio, email))
                 .isInstanceOf(NotificacaoException.class);
 
         verify(cardapioRepositoryPort, never()).atualizar(any());
     }
 
     @Test
-    @DisplayName("Deve propagar exceção da Factory se usuário não for dono (validado pelo CardapioValidator)")
+    @DisplayName("Deve propagar exceção da Factory se usuário não for dono")
     void deveFalharQuandoFactoryRejeitarUsuario() {
         Integer idCardapio = 1;
-        Integer idUsuario = 99; 
+        Integer idUsuario = 99;
         String email = "naodono@teste.com";
         Boolean status = true;
 
         when(cardapioRepositoryPort.obterPorId(idCardapio)).thenReturn(Optional.of(cardapioExistenteMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
-        
-        when(cardapioExistenteMock.getId()).thenReturn(idCardapio);
-        when(cardapioExistenteMock.getRestaurante()).thenReturn(restauranteMock);
+
         when(usuarioLogadoMock.getId()).thenReturn(idUsuario);
 
         factoryMockedStatic.when(() -> CardapioFactory.cardapio(
-                anyInt(), any(), any(), any(), any(), any(), any(), anyBoolean(), eq(idUsuario)
+                any(), any(), any(), any(), any(), any(), any(), anyBoolean(), eq(idUsuario)
         )).thenThrow(new IllegalArgumentException("Usuário não é dono"));
 
-        assertThatThrownBy(() -> useCase.run(idCardapio, status, email))
+        assertThatThrownBy(() -> useCase.run(status, idCardapio, email))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Usuário não é dono");
 

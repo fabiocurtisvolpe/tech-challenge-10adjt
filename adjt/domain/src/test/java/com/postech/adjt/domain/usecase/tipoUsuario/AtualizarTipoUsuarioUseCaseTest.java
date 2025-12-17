@@ -188,21 +188,30 @@ class AtualizarTipoUsuarioUseCaseTest {
         String nomeDuplicado = "Gerente";
         String email = "admin@teste.com";
 
+        RestauranteDTO restauranteDtoMock = mock(RestauranteDTO.class);
+        when(dtoMock.restaurante()).thenReturn(restauranteDtoMock);
+        when(restauranteDtoMock.id()).thenReturn(idRestaurante);
+
         when(dtoMock.id()).thenReturn(idTipo);
         when(dtoMock.nome()).thenReturn(nomeDuplicado);
+
+        when(restauranteRepository.obterPorId(idRestaurante)).thenReturn(Optional.of(restauranteMock));
 
         when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
         when(tipoUsuarioExistenteMock.getId()).thenReturn(idTipo);
         when(tipoUsuarioExistenteMock.getRestaurante()).thenReturn(restauranteMock);
+
+        when(tipoUsuarioExistenteMock.getIsEditavel()).thenReturn(true);
+
         when(restauranteMock.getId()).thenReturn(idRestaurante);
 
         TipoUsuario tipoUsuarioEncontradoMock = mock(TipoUsuario.class);
         Restaurante restauranteEncontradoMock = mock(Restaurante.class);
-        
+
         when(tipoUsuariorepository.obterPorNome(nomeDuplicado)).thenReturn(Optional.of(tipoUsuarioEncontradoMock));
-        when(tipoUsuarioEncontradoMock.getId()).thenReturn(idOutroTipo); // ID diferente = outro registro
+        when(tipoUsuarioEncontradoMock.getId()).thenReturn(idOutroTipo);
         when(tipoUsuarioEncontradoMock.getRestaurante()).thenReturn(restauranteEncontradoMock);
-        when(restauranteEncontradoMock.getId()).thenReturn(idRestaurante); // Mesmo restaurante
+        when(restauranteEncontradoMock.getId()).thenReturn(idRestaurante);
 
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
 

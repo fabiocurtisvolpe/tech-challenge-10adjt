@@ -10,6 +10,8 @@ import com.postech.adjt.domain.factory.TipoUsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
 import com.postech.adjt.domain.usecase.util.UsuarioLogadoUtil;
 
+import java.util.Objects;
+
 public class AtualizarTipoUsuarioUseCase {
 
     private final GenericRepositoryPort<TipoUsuario> tipoUsuariorepository;
@@ -17,25 +19,33 @@ public class AtualizarTipoUsuarioUseCase {
     private final GenericRepositoryPort<Usuario> usuarioRepository;
 
     private AtualizarTipoUsuarioUseCase(GenericRepositoryPort<TipoUsuario> tipoUsuariorepository,
-            GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<Restaurante> restauranteRepository) {
+                                        GenericRepositoryPort<Usuario> usuarioRepository,
+                                        GenericRepositoryPort<Restaurante> restauranteRepository) {
         this.tipoUsuariorepository = tipoUsuariorepository;
         this.usuarioRepository = usuarioRepository;
         this.restauranteRepository = restauranteRepository;
     }
 
     public static AtualizarTipoUsuarioUseCase create(GenericRepositoryPort<TipoUsuario> tipoUsuariorepository,
-            GenericRepositoryPort<Usuario> usuarioRepository,
-            GenericRepositoryPort<Restaurante> restauranteRepository) {
+                                                     GenericRepositoryPort<Usuario> usuarioRepository,
+                                                     GenericRepositoryPort<Restaurante> restauranteRepository) {
         return new AtualizarTipoUsuarioUseCase(tipoUsuariorepository, usuarioRepository, restauranteRepository);
     }
 
     public TipoUsuario run(TipoUsuarioDTO dto, String usuarioLogado) {
 
+        if (Objects.isNull(dto.id())) {
+            throw new NotificacaoException(MensagemUtil.ID_NULO);
+        }
+
         final TipoUsuario tipoUsuario = this.tipoUsuariorepository.obterPorId(dto.id())
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO));
 
         final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
+
+        if (Objects.isNull(dto.restaurante()) || Objects.isNull(dto.restaurante().id())) {
+            throw new NotificacaoException(MensagemUtil.RESTAURANTE_OBRIGATORIO);
+        }
 
         final Restaurante restaurante = this.restauranteRepository.obterPorId(dto.restaurante().id())
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO));
@@ -46,9 +56,8 @@ public class AtualizarTipoUsuarioUseCase {
 
         final TipoUsuario tipoUsuarioNome = this.tipoUsuariorepository.obterPorNome(dto.nome()).orElse(null);
         if (tipoUsuarioNome != null
-                && !tipoUsuarioNome.getId().equals(tipoUsuario.getId()) // Garante que não é o próprio registro
-                && tipoUsuario.getRestaurante().getId().equals(tipoUsuarioNome.getRestaurante().getId())) { // Mesmo
-                                                                                                            // restaurante
+                && !tipoUsuarioNome.getId().equals(tipoUsuario.getId())
+                && tipoUsuario.getRestaurante().getId().equals(tipoUsuarioNome.getRestaurante().getId())) {
 
             throw new NotificacaoException(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
         }
@@ -58,5 +67,4 @@ public class AtualizarTipoUsuarioUseCase {
                         tipoUsuario.getNome(), tipoUsuario.getDescricao(),
                         true, dto.isDono(), restaurante, usrLogado.getId()));
     }
-
 }
