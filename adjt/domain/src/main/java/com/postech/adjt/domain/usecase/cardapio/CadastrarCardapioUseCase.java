@@ -35,7 +35,7 @@ public class CadastrarCardapioUseCase {
         final Cardapio cardapio = this.cardapioRepositoryPort.obterPorNome(dto.nome()).orElse(null);
         final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
 
-        final Restaurante restaurante = this.restauranteRepository.obterPorId(dto.id())
+        final Restaurante restaurante = this.restauranteRepository.obterPorId(dto.restaurante().id())
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO));
 
         if (cardapio != null && cardapio.getRestaurante().getId().equals(restaurante.getId())) {

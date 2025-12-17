@@ -100,10 +100,10 @@ public class CardapioController {
         public ResultadoPaginacaoDTO<CardapioRespostaDTO> paginado(@RequestBody @Valid PaginacaoPayLoad paginacao) {
 
                 ResultadoPaginacaoDTO<Cardapio> resultado = this.paginadoUseCase.run(
-                                paginacao.getPage(),
-                                paginacao.getSize(),
-                                paginacao.getFilters(),
-                                paginacao.getSorts());
+                                paginacao.getPagina(),
+                                paginacao.getQtdPagina(),
+                                paginacao.getFiltros(),
+                                paginacao.getOrdenacao());
 
                 return new ResultadoPaginacaoDTO<>(
                                 resultado.getContent().stream()

@@ -7,13 +7,13 @@ import lombok.Getter;
 @Getter
 public class FilterDTO {
 
-    private final String field;
-    private final String value;
+    private final String campo;
+    private final String valor;
     private final FiltroOperadorEnum operador;
 
-    public FilterDTO(String field, String value, FiltroOperadorEnum operador) {
-        this.field = field;
-        this.value = value;
+    public FilterDTO(String campo, String valor, FiltroOperadorEnum operador) {
+        this.campo = campo;
+        this.valor = valor;
         this.operador = operador;
     }
 }

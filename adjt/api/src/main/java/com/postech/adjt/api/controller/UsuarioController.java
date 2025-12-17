@@ -140,10 +140,10 @@ public class UsuarioController {
         public ResultadoPaginacaoDTO<UsuarioRespostaDTO> paginado(@RequestBody @Valid PaginacaoPayLoad paginacao) {
 
                 ResultadoPaginacaoDTO<Usuario> resultado = this.paginadoUsuarioUseCase.run(
-                                paginacao.getPage(),
-                                paginacao.getSize(),
-                                paginacao.getFilters(),
-                                paginacao.getSorts());
+                                paginacao.getPagina(),
+                                paginacao.getQtdPagina(),
+                                paginacao.getFiltros(),
+                                paginacao.getOrdenacao());
 
                 return new ResultadoPaginacaoDTO<>(
                                 resultado.getContent().stream()

@@ -1,22 +1,17 @@
 package com.postech.adjt.domain.dto.filtro;
 
+import lombok.Getter;
+
+@Getter
 public class SortDTO {
 
-    private final String field;
-    private final Direction direction;
+    private final String campo;
+    private final Direction ordem;
 
     public enum Direction { ASC, DESC }
 
-    public SortDTO(String field, Direction direction) {
-        this.field = field;
-        this.direction = direction;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public Direction getDirection() {
-        return direction;
+    public SortDTO(String campo, Direction ordem) {
+        this.campo = campo;
+        this.ordem = ordem;
     }
 }
