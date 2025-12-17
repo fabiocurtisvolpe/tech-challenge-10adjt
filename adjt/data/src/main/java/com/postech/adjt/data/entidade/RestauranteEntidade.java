@@ -26,7 +26,7 @@ import lombok.Setter;
 @Entity
 @Audited
 @Table(schema = "public", name = "restaurante")
-public class RestauranteEntirade extends BaseEntidade {
+public class RestauranteEntidade extends BaseEntidade {
 
     @Column(nullable = false, length = 50)
     private String nome;

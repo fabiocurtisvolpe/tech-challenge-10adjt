@@ -1,219 +1,185 @@
 package com.postech.adjt.data.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.postech.adjt.data.entidade.RestauranteEntidade;
 import com.postech.adjt.data.entidade.TipoUsuarioEntidade;
+import com.postech.adjt.domain.entidade.Restaurante;
 import com.postech.adjt.domain.entidade.TipoUsuario;
+import com.postech.adjt.domain.entidade.TipoUsuarioDonoRestaurante;
 import com.postech.adjt.domain.entidade.TipoUsuarioGenrico;
 
-/**
- * Testes unitários para TipoUsuarioMapper
- * 
- * @author Fabio
- * @since 2025-12-05
- */
-@DisplayName("TipoUsuarioMapper - Testes Unitários")
+@ExtendWith(MockitoExtension.class)
 class TipoUsuarioMapperTest {
 
-    private TipoUsuarioEntidade entidade;
-    private TipoUsuario dominio;
+    @Test
+    @DisplayName("toDomain: Deve retornar TipoUsuarioDonoRestaurante quando isDono for true")
+    void toDomain_DeveRetornarDonoRestaurante() {
+    
+        LocalDateTime agora = LocalDateTime.now();
+        Restaurante restauranteDomain = mock(Restaurante.class);
+        RestauranteEntidade restauranteEntidade = mock(RestauranteEntidade.class);
 
-    @BeforeEach
-    void setUp() {
-        entidade = new TipoUsuarioEntidade();
+        TipoUsuarioEntidade entidade = new TipoUsuarioEntidade();
         entidade.setId(1);
-        entidade.setNome("Cliente");
-        entidade.setDescricao("Usuário do tipo Cliente");
-        entidade.setDataCriacao(LocalDateTime.now());
-        entidade.setDataAlteracao(LocalDateTime.now());
+        entidade.setNome("Gerente");
+        entidade.setDescricao("Gerente do Local");
+        entidade.setDataCriacao(agora);
+        entidade.setDataAlteracao(agora);
+        entidade.setAtivo(true);
+        entidade.setIsEditavel(true);
+        entidade.setIsDono(true);
+        entidade.setRestaurante(restauranteEntidade);
 
-        dominio = TipoUsuarioGenrico.builder()
+        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
+            restauranteMapperMock.when(() -> RestauranteMapper.toDomain(restauranteEntidade))
+                    .thenReturn(restauranteDomain);
+
+            TipoUsuario domain = TipoUsuarioMapper.toDomain(entidade);
+
+            assertNotNull(domain);
+            assertInstanceOf(TipoUsuarioDonoRestaurante.class, domain);
+            
+            assertEquals(entidade.getId(), domain.getId());
+            assertEquals(entidade.getNome(), domain.getNome());
+            assertEquals(entidade.getDescricao(), domain.getDescricao());
+            assertTrue(domain.getIsDono());
+            assertEquals(restauranteDomain, domain.getRestaurante());
+        }
+    }
+
+    @Test
+    @DisplayName("toDomain: Deve retornar TipoUsuarioGenrico quando isDono for false")
+    void toDomain_DeveRetornarTipoGenerico() {
+
+        LocalDateTime agora = LocalDateTime.now();
+        Restaurante restauranteDomain = mock(Restaurante.class);
+        RestauranteEntidade restauranteEntidade = mock(RestauranteEntidade.class);
+
+        TipoUsuarioEntidade entidade = new TipoUsuarioEntidade();
+        entidade.setId(2);
+        entidade.setNome("Garçom");
+        entidade.setIsDono(false); 
+        entidade.setRestaurante(restauranteEntidade);
+        entidade.setDataCriacao(agora);
+        entidade.setDataAlteracao(agora);
+
+        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
+            restauranteMapperMock.when(() -> RestauranteMapper.toDomain(restauranteEntidade))
+                    .thenReturn(restauranteDomain);
+
+            TipoUsuario domain = TipoUsuarioMapper.toDomain(entidade);
+
+            assertNotNull(domain);
+            assertInstanceOf(TipoUsuarioGenrico.class, domain);
+            
+            assertEquals(entidade.getId(), domain.getId());
+            assertFalse(domain.getIsDono());
+            assertEquals(restauranteDomain, domain.getRestaurante());
+        }
+    }
+
+    @Test
+    @DisplayName("toDomain: Deve retornar null quando entrada for null")
+    void toDomain_DeveRetornarNull() {
+        assertNull(TipoUsuarioMapper.toDomain(null));
+    }
+
+    @Test
+    @DisplayName("toEntity: Deve mapear TipoUsuarioDonoRestaurante com isDono=true")
+    void toEntity_DeveMapearDonoCorretamente() {
+
+        Restaurante restauranteDomain = mock(Restaurante.class);
+        RestauranteEntidade restauranteEntidade = mock(RestauranteEntidade.class);
+
+        TipoUsuarioDonoRestaurante domain = TipoUsuarioDonoRestaurante.builder()
                 .id(1)
-                .nome("Cliente")
-                .descricao("Usuário do tipo Cliente")
-                .dataCriacao(LocalDateTime.now())
-                .dataAlteracao(LocalDateTime.now())
-                .build();
-    }
-
-    @Test
-    @DisplayName("Deve converter TipoUsuarioEntidade para TipoUsuario")
-    void testToDomain() {
-        // Act
-        TipoUsuario resultado = TipoUsuarioMapper.toDomain(entidade);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.getId());
-        assertEquals("Cliente", resultado.getNome());
-        assertEquals("Usuário do tipo Cliente", resultado.getDescricao());
-        assertNotNull(resultado.getDataCriacao());
-        assertNotNull(resultado.getDataAlteracao());
-    }
-
-    @Test
-    @DisplayName("Deve retornar null ao converter entidade nula")
-    void testToDomainComNull() {
-        // Act
-        TipoUsuario resultado = TipoUsuarioMapper.toDomain(null);
-
-        // Assert
-        assertNull(resultado);
-    }
-
-    @Test
-    @DisplayName("Deve converter TipoUsuario para TipoUsuarioEntidade")
-    void testToEntity() {
-        // Act
-        TipoUsuarioEntidade resultado = TipoUsuarioMapper.toEntity(dominio);
-
-        // Assert
-        assertNotNull(resultado);
-        assertEquals(1, resultado.getId());
-        assertEquals("Cliente", resultado.getNome());
-        assertEquals("Usuário do tipo Cliente", resultado.getDescricao());
-        assertNotNull(resultado.getDataCriacao());
-        assertNotNull(resultado.getDataAlteracao());
-    }
-
-    @Test
-    @DisplayName("Deve retornar null ao converter domínio nulo")
-    void testToEntityComNull() {
-        // Act
-        TipoUsuarioEntidade resultado = TipoUsuarioMapper.toEntity(null);
-
-        // Assert
-        assertNull(resultado);
-    }
-
-    @Test
-    @DisplayName("Deve manter todos os campos ao converter para domínio")
-    void testToDomainMantemCampos() {
-        // Act
-        TipoUsuario resultado = TipoUsuarioMapper.toDomain(entidade);
-
-        // Assert
-        assertEquals(entidade.getId(), resultado.getId());
-        assertEquals(entidade.getNome(), resultado.getNome());
-        assertEquals(entidade.getDescricao(), resultado.getDescricao());
-        assertEquals(entidade.getDataCriacao(), resultado.getDataCriacao());
-        assertEquals(entidade.getDataAlteracao(), resultado.getDataAlteracao());
-    }
-
-    @Test
-    @DisplayName("Deve manter todos os campos ao converter para entidade")
-    void testToEntityMantemCampos() {
-        // Act
-        TipoUsuarioEntidade resultado = TipoUsuarioMapper.toEntity(dominio);
-
-        // Assert
-        assertEquals(dominio.getId(), resultado.getId());
-        assertEquals(dominio.getNome(), resultado.getNome());
-        assertEquals(dominio.getDescricao(), resultado.getDescricao());
-        assertEquals(dominio.getDataCriacao(), resultado.getDataCriacao());
-        assertEquals(dominio.getDataAlteracao(), resultado.getDataAlteracao());
-    }
-
-    @Test
-    @DisplayName("Deve converter múltiplas entidades para domínio")
-    void testToDomainMultiplos() {
-        // Arrange
-        TipoUsuarioEntidade entidade1 = new TipoUsuarioEntidade();
-        entidade1.setId(1);
-        entidade1.setNome("Cliente");
-        entidade1.setDescricao("Tipo Cliente");
-
-        TipoUsuarioEntidade entidade2 = new TipoUsuarioEntidade();
-        entidade2.setId(2);
-        entidade2.setNome("Fornecedor");
-        entidade2.setDescricao("Tipo Fornecedor");
-
-        // Act
-        TipoUsuario resultado1 = TipoUsuarioMapper.toDomain(entidade1);
-        TipoUsuario resultado2 = TipoUsuarioMapper.toDomain(entidade2);
-
-        // Assert
-        assertNotNull(resultado1);
-        assertNotNull(resultado2);
-        assertEquals("Cliente", resultado1.getNome());
-        assertEquals("Fornecedor", resultado2.getNome());
-        assertNotEquals(resultado1.getId(), resultado2.getId());
-    }
-
-    @Test
-    @DisplayName("Deve converter entidade sem descrição")
-    void testToDomainSemDescricao() {
-        // Arrange
-        TipoUsuarioEntidade entidadeSemDescricao = new TipoUsuarioEntidade();
-        entidadeSemDescricao.setId(1);
-        entidadeSemDescricao.setNome("Tipo Teste");
-        entidadeSemDescricao.setDescricao(null);
-
-        // Act
-        TipoUsuario resultado = TipoUsuarioMapper.toDomain(entidadeSemDescricao);
-
-        // Assert
-        assertNotNull(resultado);
-        assertNull(resultado.getDescricao());
-        assertEquals("Tipo Teste", resultado.getNome());
-    }
-
-    @Test
-    @DisplayName("Deve converter domínio sem descrição")
-    void testToEntitySemDescricao() {
-        // Arrange
-        TipoUsuario dominioSemDescricao = TipoUsuarioGenrico.builder()
-                .id(1)
-                .nome("Tipo Teste")
-                .descricao(null)
+                .nome("Dono")
+                .ativo(true)
+                .restaurante(restauranteDomain)
                 .build();
 
-        // Act
-        TipoUsuarioEntidade resultado = TipoUsuarioMapper.toEntity(dominioSemDescricao);
+        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
+            restauranteMapperMock.when(() -> RestauranteMapper.toEntity(restauranteDomain))
+                    .thenReturn(restauranteEntidade);
 
-        // Assert
-        assertNotNull(resultado);
-        assertNull(resultado.getDescricao());
-        assertEquals("Tipo Teste", resultado.getNome());
+            TipoUsuarioEntidade entidade = TipoUsuarioMapper.toEntity(domain);
+
+            assertNotNull(entidade);
+            assertEquals(domain.getId(), entidade.getId());
+            assertEquals(domain.getNome(), entidade.getNome());
+            assertTrue(entidade.getIsDono()); 
+            assertTrue(entidade.getIsEditavel());
+            assertEquals(restauranteEntidade, entidade.getRestaurante());
+        }
     }
 
     @Test
-    @DisplayName("Deve manter ID ao converter para domínio")
-    void testToDomainMantemId() {
-        // Act
-        TipoUsuario resultado = TipoUsuarioMapper.toDomain(entidade);
+    @DisplayName("toEntity: Deve mapear TipoUsuarioGenrico com isDono=false")
+    void toEntity_DeveMapearGenericoCorretamente() {
 
-        // Assert
-        assertEquals(entidade.getId(), resultado.getId());
+        Restaurante restauranteDomain = mock(Restaurante.class);
+        RestauranteEntidade restauranteEntidade = mock(RestauranteEntidade.class);
+
+        TipoUsuarioGenrico domain = TipoUsuarioGenrico.builder()
+                .id(2)
+                .nome("Funcionario")
+                .ativo(false)
+                .restaurante(restauranteDomain)
+                .build();
+
+        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
+            restauranteMapperMock.when(() -> RestauranteMapper.toEntity(restauranteDomain))
+                    .thenReturn(restauranteEntidade);
+
+            TipoUsuarioEntidade entidade = TipoUsuarioMapper.toEntity(domain);
+
+            assertNotNull(entidade);
+            assertEquals(domain.getId(), entidade.getId());
+            assertFalse(entidade.getIsDono());
+            assertFalse(entidade.getAtivo());
+            assertEquals(restauranteEntidade, entidade.getRestaurante());
+        }
     }
 
     @Test
-    @DisplayName("Deve manter ID ao converter para entidade")
-    void testToEntityMantemId() {
-        // Act
-        TipoUsuarioEntidade resultado = TipoUsuarioMapper.toEntity(dominio);
+    @DisplayName("toEntity: Deve definir ativo como true se for nulo no domínio")
+    void toEntity_DeveDefinirAtivoDefault() {
+        
+        TipoUsuarioGenrico domain = TipoUsuarioGenrico.builder()
+                .id(3)
+                .ativo(null)
+                .build();
 
-        // Assert
-        assertEquals(dominio.getId(), resultado.getId());
+        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
+            restauranteMapperMock.when(() -> RestauranteMapper.toEntity(any())).thenReturn(null);
+
+            TipoUsuarioEntidade entidade = TipoUsuarioMapper.toEntity(domain);
+
+            assertNotNull(entidade);
+            assertTrue(entidade.getAtivo());
+        }
     }
 
     @Test
-    @DisplayName("Deve ser bidirecional - domínio para entidade e voltando")
-    void testBidirecional() {
-        // Act
-        TipoUsuarioEntidade entidadeConvertida = TipoUsuarioMapper.toEntity(dominio);
-        TipoUsuario dominioConvertiido = TipoUsuarioMapper.toDomain(entidadeConvertida);
-
-        // Assert
-        assertEquals(dominio.getId(), dominioConvertiido.getId());
-        assertEquals(dominio.getNome(), dominioConvertiido.getNome());
-        assertEquals(dominio.getDescricao(), dominioConvertiido.getDescricao());
+    @DisplayName("toEntity: Deve retornar null quando entrada for null")
+    void toEntity_DeveRetornarNull() {
+        assertNull(TipoUsuarioMapper.toEntity(null));
     }
-
 }

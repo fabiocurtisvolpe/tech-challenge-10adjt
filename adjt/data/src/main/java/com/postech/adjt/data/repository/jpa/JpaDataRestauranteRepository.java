@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.postech.adjt.data.entidade.RestauranteEntirade;
+import com.postech.adjt.data.entidade.RestauranteEntidade;
 
-public interface JpaDataRestauranteRepository extends JpaRepository<RestauranteEntirade, Integer>,
-                JpaSpecificationExecutor<RestauranteEntirade> {
+public interface JpaDataRestauranteRepository extends JpaRepository<RestauranteEntidade, Integer>,
+                JpaSpecificationExecutor<RestauranteEntidade> {
 
-        Optional<RestauranteEntirade> findByNome(String nome);
+        Optional<RestauranteEntidade> findByNome(String nome);
 }

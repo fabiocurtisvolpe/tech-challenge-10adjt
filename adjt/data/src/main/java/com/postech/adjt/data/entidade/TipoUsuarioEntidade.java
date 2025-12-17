@@ -39,5 +39,5 @@ public class TipoUsuarioEntidade extends BaseEntidade {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurante_id", nullable = false)
-    private RestauranteEntirade restaurante;
+    private RestauranteEntidade restaurante;
 }

@@ -1,160 +1,122 @@
 package com.postech.adjt.data.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
+import com.postech.adjt.data.entidade.CardapioEntidade;
+import com.postech.adjt.data.entidade.RestauranteEntidade;
+import com.postech.adjt.domain.entidade.Cardapio;
+import com.postech.adjt.domain.entidade.Restaurante;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
-import com.postech.adjt.data.entidade.CardapioEntidade;
-import com.postech.adjt.data.entidade.RestauranteEntirade;
-import com.postech.adjt.domain.entidade.Cardapio;
-import com.postech.adjt.domain.entidade.Restaurante;
-
+@ExtendWith(MockitoExtension.class)
 class CardapioMapperTest {
 
     @Test
-    void toDomain_DeveConverterEntidadeParaDominio_QuandoEntidadeValida() {
+    @DisplayName("Deve converter CardapioEntidade para Cardapio (Domain) corretamente")
+    void deveConverterEntidadeParaDominio() {
         // Arrange
         LocalDateTime agora = LocalDateTime.now();
         
-        // Mock das dependências
-        RestauranteEntirade restauranteEntidadeMock = mock(RestauranteEntirade.class);
-        Restaurante restauranteDomainMock = mock(Restaurante.class);
+        // Simulando a dependência do restaurante
+        RestauranteEntidade restauranteEntidade = new RestauranteEntidade();
+        restauranteEntidade.setId(1);
+        
+        Restaurante restauranteDomain = Restaurante.builder().id(1).build();
 
         CardapioEntidade entidade = new CardapioEntidade();
-        entidade.setId(1);
-        entidade.setNome("Pizza Margherita");
-        entidade.setDescricao("Molho, queijo e manjericão");
-        entidade.setPreco(new BigDecimal("45.50"));
-        entidade.setFoto("url_foto.jpg");
+        entidade.setId(10);
+        entidade.setNome("Pizza");
+        entidade.setDescricao("Queijo");
+        entidade.setPreco(BigDecimal.TEN);
+        entidade.setFoto("foto.jpg");
         entidade.setDisponivel(true);
         entidade.setDataCriacao(agora);
         entidade.setDataAlteracao(agora);
-        entidade.setRestaurante(restauranteEntidadeMock);
+        entidade.setRestaurante(restauranteEntidade);
 
-        // Usamos try-with-resources para garantir que o Mock Static seja fechado após o teste
-        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
-            // Definimos o comportamento do RestauranteMapper (não queremos testar ele aqui, apenas o CardapioMapper)
-            restauranteMapperMock.when(() -> RestauranteMapper.toDomain(any())).thenReturn(restauranteDomainMock);
+        // Mockando o RestauranteMapper estático para isolar o teste (Opcional, mas recomendado se quiser teste unitário puro)
+        try (MockedStatic<RestauranteMapper> restauranteMapperMock = Mockito.mockStatic(RestauranteMapper.class)) {
+            restauranteMapperMock.when(() -> RestauranteMapper.toDomain(any())).thenReturn(restauranteDomain);
 
             // Act
-            Cardapio dominio = CardapioMapper.toDomain(entidade);
+            Cardapio domain = CardapioMapper.toDomain(entidade);
 
             // Assert
-            assertNotNull(dominio);
-            assertEquals(entidade.getId(), dominio.getId());
-            assertEquals(entidade.getNome(), dominio.getNome());
-            assertEquals(entidade.getDescricao(), dominio.getDescricao());
-            assertEquals(45.50, dominio.getPreco()); // Verifica conversão BigDecimal -> Double
-            assertEquals(entidade.getFoto(), dominio.getFoto());
-            assertEquals(entidade.getDisponivel(), dominio.getDisponivel());
-            assertEquals(entidade.getDataCriacao(), dominio.getDataCriacao());
-            assertEquals(entidade.getDataAlteracao(), dominio.getDataAlteracao());
-            assertEquals(restauranteDomainMock, dominio.getRestaurante());
+            assertThat(domain).isNotNull();
+            assertThat(domain.getId()).isEqualTo(entidade.getId());
+            assertThat(domain.getNome()).isEqualTo(entidade.getNome());
+            assertThat(domain.getDescricao()).isEqualTo(entidade.getDescricao());
+            assertThat(domain.getPreco()).isEqualTo(entidade.getPreco());
+            assertThat(domain.getFoto()).isEqualTo(entidade.getFoto());
+            assertThat(domain.getDisponivel()).isEqualTo(entidade.getDisponivel());
+            assertThat(domain.getDataCriacao()).isEqualTo(entidade.getDataCriacao());
+            assertThat(domain.getDataAlteracao()).isEqualTo(entidade.getDataAlteracao());
+            assertThat(domain.getRestaurante()).isEqualTo(restauranteDomain);
         }
     }
 
     @Test
-    void toDomain_DeveRetornarNull_QuandoEntidadeForNull() {
-        // Act
-        Cardapio resultado = CardapioMapper.toDomain(null);
-
-        // Assert
-        assertNull(resultado);
-    }
-
-    @Test
-    void toDomain_DeveLidarComAtributosNulos() {
-        // Arrange - Entidade com preço nulo (para testar a lógica do ternário)
-        CardapioEntidade entidade = new CardapioEntidade();
-        entidade.setId(1);
-        entidade.setPreco(null); 
-        
-        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
-            restauranteMapperMock.when(() -> RestauranteMapper.toDomain(any())).thenReturn(null);
-
-            // Act
-            Cardapio dominio = CardapioMapper.toDomain(entidade);
-
-            // Assert
-            assertNotNull(dominio);
-            assertNull(dominio.getPreco()); // Deve ser null, não deve lançar NullPointerException
-        }
-    }
-
-    @Test
-    void toEntity_DeveConverterDominioParaEntidade_QuandoDominioValido() {
+    @DisplayName("Deve converter Cardapio (Domain) para CardapioEntidade corretamente")
+    void deveConverterDominioParaEntidade() {
         // Arrange
         LocalDateTime agora = LocalDateTime.now();
-        Restaurante restauranteDomainMock = mock(Restaurante.class);
-        RestauranteEntirade restauranteEntidadeMock = mock(RestauranteEntirade.class);
+        
+        Restaurante restauranteDomain = Restaurante.builder().id(1).build();
+        RestauranteEntidade restauranteEntidade = new RestauranteEntidade();
+        restauranteEntidade.setId(1);
 
-        Cardapio dominio = Cardapio.builder()
+        Cardapio domain = Cardapio.builder()
                 .id(10)
                 .nome("Hambúrguer")
-                .descricao("Pão, carne e queijo")
-                .preco(30.00)
-                .foto("burger.png")
+                .descricao("Carne")
+                .preco(BigDecimal.valueOf(20.0))
+                .foto("burger.jpg")
                 .disponivel(false)
                 .dataCriacao(agora)
                 .dataAlteracao(agora)
-                .restaurante(restauranteDomainMock)
+                .restaurante(restauranteDomain)
                 .build();
 
-        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
-            restauranteMapperMock.when(() -> RestauranteMapper.toEntity(any())).thenReturn(restauranteEntidadeMock);
+        try (MockedStatic<RestauranteMapper> restauranteMapperMock = Mockito.mockStatic(RestauranteMapper.class)) {
+            restauranteMapperMock.when(() -> RestauranteMapper.toEntity(any())).thenReturn(restauranteEntidade);
 
             // Act
-            CardapioEntidade entidade = CardapioMapper.toEntity(dominio);
+            CardapioEntidade entidade = CardapioMapper.toEntity(domain);
 
             // Assert
-            assertNotNull(entidade);
-            assertEquals(dominio.getId(), entidade.getId());
-            assertEquals(dominio.getNome(), entidade.getNome());
-            assertEquals(dominio.getDescricao(), entidade.getDescricao());
-            assertEquals(new BigDecimal("30.0"), entidade.getPreco()); // Verifica conversão Double -> BigDecimal
-            assertEquals(dominio.getFoto(), entidade.getFoto());
-            assertEquals(dominio.getDisponivel(), entidade.getDisponivel());
-            assertEquals(dominio.getDataCriacao(), entidade.getDataCriacao());
-            assertEquals(dominio.getDataAlteracao(), entidade.getDataAlteracao());
-            assertEquals(restauranteEntidadeMock, entidade.getRestaurante());
+            assertThat(entidade).isNotNull();
+            assertThat(entidade.getId()).isEqualTo(domain.getId());
+            assertThat(entidade.getNome()).isEqualTo(domain.getNome());
+            assertThat(entidade.getDescricao()).isEqualTo(domain.getDescricao());
+            assertThat(entidade.getPreco()).isEqualTo(domain.getPreco());
+            assertThat(entidade.getFoto()).isEqualTo(domain.getFoto());
+            assertThat(entidade.getDisponivel()).isEqualTo(domain.getDisponivel());
+            assertThat(entidade.getDataCriacao()).isEqualTo(domain.getDataCriacao());
+            assertThat(entidade.getDataAlteracao()).isEqualTo(domain.getDataAlteracao());
+            assertThat(entidade.getRestaurante()).isEqualTo(restauranteEntidade);
         }
     }
 
     @Test
-    void toEntity_DeveRetornarNull_QuandoDominioForNull() {
-        // Act
-        CardapioEntidade resultado = CardapioMapper.toEntity(null);
-
-        // Assert
-        assertNull(resultado);
+    @DisplayName("Deve retornar null quando a entrada para toDomain for nula")
+    void deveRetornarNullQuandoEntidadeNula() {
+        Cardapio result = CardapioMapper.toDomain(null);
+        assertThat(result).isNull();
     }
-    
+
     @Test
-    void toEntity_DeveLidarComAtributosNulos() {
-        // Arrange - Dominio com preço nulo
-        Cardapio dominio = Cardapio.builder()
-                .id(10)
-                .preco(null)
-                .build();
-
-        try (MockedStatic<RestauranteMapper> restauranteMapperMock = mockStatic(RestauranteMapper.class)) {
-            restauranteMapperMock.when(() -> RestauranteMapper.toEntity(any())).thenReturn(null);
-
-            // Act
-            CardapioEntidade entidade = CardapioMapper.toEntity(dominio);
-
-            // Assert
-            assertNotNull(entidade);
-            assertNull(entidade.getPreco()); // Deve ser null
-        }
+    @DisplayName("Deve retornar null quando a entrada para toEntity for nula")
+    void deveRetornarNullQuandoDominioNulo() {
+        CardapioEntidade result = CardapioMapper.toEntity(null);
+        assertThat(result).isNull();
     }
 }

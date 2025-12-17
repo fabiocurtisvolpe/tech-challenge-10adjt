@@ -1,30 +1,27 @@
 package com.postech.adjt.data.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.time.LocalDateTime;
-
+import com.postech.adjt.data.entidade.EnderecoEntidade;
+import com.postech.adjt.domain.entidade.Endereco;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.postech.adjt.data.entidade.EnderecoEntidade;
-import com.postech.adjt.domain.entidade.Endereco;
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class EnderecoMapperTest {
 
     @Test
-    @DisplayName("Deve converter EnderecoEntidade para Endereco (Domínio) corretamente")
-    void toDomain_DeveConverterEntidadeParaDominio_QuandoEntidadeValida() {
-        // Arrange
+    @DisplayName("Deve converter EnderecoEntidade para Endereco (Domain) corretamente")
+    void deveConverterEntidadeParaDominio() {
+
         LocalDateTime agora = LocalDateTime.now();
 
         EnderecoEntidade entidade = new EnderecoEntidade();
         entidade.setId(1);
-        entidade.setLogradouro("Avenida Paulista");
+        entidade.setLogradouro("Av. Paulista");
         entidade.setNumero("1000");
-        entidade.setComplemento("Apto 101");
+        entidade.setComplemento("Apto 10");
         entidade.setBairro("Bela Vista");
         entidade.setPontoReferencia("Perto do MASP");
         entidade.setCep("01310-100");
@@ -33,50 +30,44 @@ class EnderecoMapperTest {
         entidade.setPrincipal(true);
         entidade.setDataCriacao(agora);
         entidade.setDataAlteracao(agora);
-        // Nota: O Mapper atual ignora o campo 'usuario', então não precisamos setá-lo aqui.
 
-        // Act
-        Endereco dominio = EnderecoMapper.toDomain(entidade);
+        Endereco domain = EnderecoMapper.toDomain(entidade);
 
-        // Assert
-        assertNotNull(dominio);
-        assertEquals(entidade.getId(), dominio.getId());
-        assertEquals(entidade.getLogradouro(), dominio.getLogradouro());
-        assertEquals(entidade.getNumero(), dominio.getNumero());
-        assertEquals(entidade.getComplemento(), dominio.getComplemento());
-        assertEquals(entidade.getBairro(), dominio.getBairro());
-        assertEquals(entidade.getPontoReferencia(), dominio.getPontoReferencia());
-        assertEquals(entidade.getCep(), dominio.getCep());
-        assertEquals(entidade.getMunicipio(), dominio.getMunicipio());
-        assertEquals(entidade.getUf(), dominio.getUf());
-        assertEquals(entidade.getPrincipal(), dominio.getPrincipal());
-        assertEquals(entidade.getDataCriacao(), dominio.getDataCriacao());
-        assertEquals(entidade.getDataAlteracao(), dominio.getDataAlteracao());
+        assertThat(domain).isNotNull();
+        assertThat(domain.getId()).isEqualTo(entidade.getId());
+        assertThat(domain.getLogradouro()).isEqualTo(entidade.getLogradouro());
+        assertThat(domain.getNumero()).isEqualTo(entidade.getNumero());
+        assertThat(domain.getComplemento()).isEqualTo(entidade.getComplemento());
+        assertThat(domain.getBairro()).isEqualTo(entidade.getBairro());
+        assertThat(domain.getPontoReferencia()).isEqualTo(entidade.getPontoReferencia());
+        assertThat(domain.getCep()).isEqualTo(entidade.getCep());
+        assertThat(domain.getMunicipio()).isEqualTo(entidade.getMunicipio());
+        assertThat(domain.getUf()).isEqualTo(entidade.getUf());
+        assertThat(domain.getPrincipal()).isEqualTo(entidade.getPrincipal());
+        assertThat(domain.getDataCriacao()).isEqualTo(entidade.getDataCriacao());
+        assertThat(domain.getDataAlteracao()).isEqualTo(entidade.getDataAlteracao());
     }
 
     @Test
-    @DisplayName("toDomain deve retornar null quando a entrada for null")
-    void toDomain_DeveRetornarNull_QuandoEntidadeForNull() {
-        // Act
-        Endereco resultado = EnderecoMapper.toDomain(null);
-
-        // Assert
-        assertNull(resultado);
+    @DisplayName("Deve retornar null ao converter Entidade nula para Dominio")
+    void deveRetornarNullQuandoEntidadeNula() {
+        Endereco domain = EnderecoMapper.toDomain(null);
+        assertThat(domain).isNull();
     }
 
     @Test
-    @DisplayName("Deve converter Endereco (Domínio) para EnderecoEntidade corretamente")
-    void toEntity_DeveConverterDominioParaEntidade_QuandoDominioValido() {
-        // Arrange
+    @DisplayName("Deve converter Endereco (Domain) para EnderecoEntidade corretamente")
+    void deveConverterDominioParaEntidade() {
+        
         LocalDateTime agora = LocalDateTime.now();
 
-        Endereco dominio = Endereco.builder()
-                .id(10)
+        Endereco domain = Endereco.builder()
+                .id(2)
                 .logradouro("Rua das Flores")
                 .numero("50")
-                .complemento(null) // Testando campo opcional
+                .complemento("Casa")
                 .bairro("Jardim")
-                .pontoReferencia(null)
+                .pontoReferencia("Praça")
                 .cep("12345-678")
                 .municipio("Campinas")
                 .uf("SP")
@@ -85,32 +76,27 @@ class EnderecoMapperTest {
                 .dataAlteracao(agora)
                 .build();
 
-        // Act
-        EnderecoEntidade entidade = EnderecoMapper.toEntity(dominio);
+        EnderecoEntidade entidade = EnderecoMapper.toEntity(domain);
 
-        // Assert
-        assertNotNull(entidade);
-        assertEquals(dominio.getId(), entidade.getId());
-        assertEquals(dominio.getLogradouro(), entidade.getLogradouro());
-        assertEquals(dominio.getNumero(), entidade.getNumero());
-        assertNull(entidade.getComplemento()); // Verifica se manteve o null
-        assertEquals(dominio.getBairro(), entidade.getBairro());
-        assertNull(entidade.getPontoReferencia());
-        assertEquals(dominio.getCep(), entidade.getCep());
-        assertEquals(dominio.getMunicipio(), entidade.getMunicipio());
-        assertEquals(dominio.getUf(), entidade.getUf());
-        assertEquals(dominio.getPrincipal(), entidade.getPrincipal());
-        assertEquals(dominio.getDataCriacao(), entidade.getDataCriacao());
-        assertEquals(dominio.getDataAlteracao(), entidade.getDataAlteracao());
+        assertThat(entidade).isNotNull();
+        assertThat(entidade.getId()).isEqualTo(domain.getId());
+        assertThat(entidade.getLogradouro()).isEqualTo(domain.getLogradouro());
+        assertThat(entidade.getNumero()).isEqualTo(domain.getNumero());
+        assertThat(entidade.getComplemento()).isEqualTo(domain.getComplemento());
+        assertThat(entidade.getBairro()).isEqualTo(domain.getBairro());
+        assertThat(entidade.getPontoReferencia()).isEqualTo(domain.getPontoReferencia());
+        assertThat(entidade.getCep()).isEqualTo(domain.getCep());
+        assertThat(entidade.getMunicipio()).isEqualTo(domain.getMunicipio());
+        assertThat(entidade.getUf()).isEqualTo(domain.getUf());
+        assertThat(entidade.getPrincipal()).isEqualTo(domain.getPrincipal());
+        assertThat(entidade.getDataCriacao()).isEqualTo(domain.getDataCriacao());
+        assertThat(entidade.getDataAlteracao()).isEqualTo(domain.getDataAlteracao());
     }
 
     @Test
-    @DisplayName("toEntity deve retornar null quando a entrada for null")
-    void toEntity_DeveRetornarNull_QuandoDominioForNull() {
-        // Act
-        EnderecoEntidade resultado = EnderecoMapper.toEntity(null);
-
-        // Assert
-        assertNull(resultado);
+    @DisplayName("Deve retornar null ao converter Dominio nulo para Entidade")
+    void deveRetornarNullQuandoDominioNulo() {
+        EnderecoEntidade entidade = EnderecoMapper.toEntity(null);
+        assertThat(entidade).isNull();
     }
 }

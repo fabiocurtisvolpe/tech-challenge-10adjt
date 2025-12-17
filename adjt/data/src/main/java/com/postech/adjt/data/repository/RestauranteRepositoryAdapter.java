@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.postech.adjt.data.entidade.RestauranteEntirade;
+import com.postech.adjt.data.entidade.RestauranteEntidade;
 import com.postech.adjt.data.mapper.EntityMapper;
 import com.postech.adjt.data.mapper.RestauranteMapper;
 import com.postech.adjt.data.repository.jpa.JpaDataRestauranteRepository;
@@ -33,10 +33,10 @@ public class RestauranteRepositoryAdapter implements GenericRepositoryPort<Resta
     @Override
     @Transactional
     public Restaurante criar(Restaurante restaurante) {
-        RestauranteEntirade entidade = RestauranteMapper.toEntity(restaurante);
+        RestauranteEntidade entidade = RestauranteMapper.toEntity(restaurante);
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
-        RestauranteEntirade salvo = dataRestauranteRepository.save(entidade);
+        RestauranteEntidade salvo = dataRestauranteRepository.save(entidade);
         return RestauranteMapper.toDomain(salvo);
     }
 
@@ -57,12 +57,12 @@ public class RestauranteRepositoryAdapter implements GenericRepositoryPort<Resta
     @Override
     @Transactional
     public Restaurante atualizar(Restaurante restaurante) {
-        RestauranteEntirade entidade = RestauranteMapper.toEntity(restaurante);
+        RestauranteEntidade entidade = RestauranteMapper.toEntity(restaurante);
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
 
         entidade.setDataAlteracao(LocalDateTime.now());
 
-        RestauranteEntirade salvo = dataRestauranteRepository.save(entidade);
+        RestauranteEntidade salvo = dataRestauranteRepository.save(entidade);
         return RestauranteMapper.toDomain(salvo);
     }
 
@@ -71,16 +71,16 @@ public class RestauranteRepositoryAdapter implements GenericRepositoryPort<Resta
     public ResultadoPaginacaoDTO<Restaurante> listarPaginado(int page, int size, List<FilterDTO> filters,
             List<SortDTO> sorts) {
 
-         PaginadoService<RestauranteEntirade, Restaurante> paginadoService = new PaginadoService<>(
+         PaginadoService<RestauranteEntidade, Restaurante> paginadoService = new PaginadoService<>(
                 dataRestauranteRepository,
-                new EntityMapper<RestauranteEntirade, Restaurante>() {
+                new EntityMapper<RestauranteEntidade, Restaurante>() {
                     @Override
-                    public Restaurante toDomain(RestauranteEntirade e) {
+                    public Restaurante toDomain(RestauranteEntidade e) {
                         return RestauranteMapper.toDomain(e);
                     }
 
                     @Override
-                    public RestauranteEntirade toEntity(Restaurante d) {
+                    public RestauranteEntidade toEntity(Restaurante d) {
                         return RestauranteMapper.toEntity(d);
                     }
                 });
@@ -91,7 +91,7 @@ public class RestauranteRepositoryAdapter implements GenericRepositoryPort<Resta
     @Override
     @Transactional
     public Boolean ativarDesativar(Restaurante restaurante) {
-        RestauranteEntirade entidade = RestauranteMapper.toEntity(restaurante);
+        RestauranteEntidade entidade = RestauranteMapper.toEntity(restaurante);
         Objects.requireNonNull(entidade, MensagemUtil.NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO);
         dataRestauranteRepository.save(entidade);
         return true;
