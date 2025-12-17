@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class AtualizarTipoUsuarioUseCaseTest {
 
     @Mock
-    private GenericRepositoryPort<TipoUsuario> repositoryPort;
+    private GenericRepositoryPort<TipoUsuario> tipoUsuariorepository;
 
     @Mock
     private GenericRepositoryPort<Usuario> usuarioRepository;
@@ -62,7 +62,7 @@ class AtualizarTipoUsuarioUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = AtualizarTipoUsuarioUseCase.create(repositoryPort, usuarioRepository, restauranteRepository);
+        useCase = AtualizarTipoUsuarioUseCase.create(tipoUsuariorepository, usuarioRepository, restauranteRepository);
         factoryMockedStatic = mockStatic(TipoUsuarioFactory.class);
     }
 
@@ -86,7 +86,7 @@ class AtualizarTipoUsuarioUseCaseTest {
         when(dtoMock.isDono()).thenReturn(true);
         when(restauranteDtoMock.id()).thenReturn(idRestaurante);
 
-        when(repositoryPort.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
+        when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         when(restauranteRepository.obterPorId(idRestaurante)).thenReturn(Optional.of(restauranteMock));
 
@@ -101,19 +101,19 @@ class AtualizarTipoUsuarioUseCaseTest {
                 eq(idTipo), anyString(), anyString(), eq(true), eq(true), eq(restauranteMock), eq(idUsuario)
         )).thenReturn(tipoUsuarioAtualizadoMock);
 
-        when(repositoryPort.atualizar(tipoUsuarioAtualizadoMock)).thenReturn(tipoUsuarioAtualizadoMock);
+        when(tipoUsuariorepository.atualizar(tipoUsuarioAtualizadoMock)).thenReturn(tipoUsuarioAtualizadoMock);
 
         TipoUsuario resultado = useCase.run(dtoMock, email);
 
         assertThat(resultado).isEqualTo(tipoUsuarioAtualizadoMock);
-        verify(repositoryPort).atualizar(tipoUsuarioAtualizadoMock);
+        verify(tipoUsuariorepository).atualizar(tipoUsuarioAtualizadoMock);
     }
 
     @Test
     @DisplayName("Deve falhar quando TipoUsuario não encontrado")
     void deveFalharTipoUsuarioInexistente() {
         when(dtoMock.id()).thenReturn(1);
-        when(repositoryPort.obterPorId(1)).thenReturn(Optional.empty());
+        when(tipoUsuariorepository.obterPorId(1)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(dtoMock, "email@teste.com"))
                 .isInstanceOf(NotificacaoException.class);
@@ -123,7 +123,7 @@ class AtualizarTipoUsuarioUseCaseTest {
     @DisplayName("Deve falhar quando Usuario logado não encontrado")
     void deveFalharUsuarioLogadoInexistente() {
         when(dtoMock.id()).thenReturn(1);
-        when(repositoryPort.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
+        when(tipoUsuariorepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
         
         when(usuarioRepository.obterPorEmail("email@teste.com")).thenReturn(Optional.empty());
 
@@ -137,7 +137,7 @@ class AtualizarTipoUsuarioUseCaseTest {
         when(dtoMock.id()).thenReturn(1);
         when(dtoMock.restaurante()).thenReturn(null);
         
-        when(repositoryPort.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
+        when(tipoUsuariorepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
         when(usuarioRepository.obterPorEmail("email@teste.com")).thenReturn(Optional.of(usuarioLogadoMock));
 
         assertThatThrownBy(() -> useCase.run(dtoMock, "email@teste.com"))
@@ -151,7 +151,7 @@ class AtualizarTipoUsuarioUseCaseTest {
         when(dtoMock.restaurante()).thenReturn(restauranteDtoMock);
         when(restauranteDtoMock.id()).thenReturn(5);
 
-        when(repositoryPort.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
+        when(tipoUsuariorepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
         when(usuarioRepository.obterPorEmail("email@teste.com")).thenReturn(Optional.of(usuarioLogadoMock));
         when(restauranteRepository.obterPorId(5)).thenReturn(Optional.empty());
 
@@ -166,7 +166,7 @@ class AtualizarTipoUsuarioUseCaseTest {
         when(dtoMock.restaurante()).thenReturn(restauranteDtoMock);
         when(restauranteDtoMock.id()).thenReturn(5);
 
-        when(repositoryPort.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
+        when(tipoUsuariorepository.obterPorId(1)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
         when(usuarioRepository.obterPorEmail("email@teste.com")).thenReturn(Optional.of(usuarioLogadoMock));
         when(restauranteRepository.obterPorId(5)).thenReturn(Optional.of(restauranteMock));
         
@@ -175,7 +175,7 @@ class AtualizarTipoUsuarioUseCaseTest {
         assertThatThrownBy(() -> useCase.run(dtoMock, "email@teste.com"))
                 .isInstanceOf(NotificacaoException.class);
 
-        verify(repositoryPort, never()).atualizar(any());
+        verify(tipoUsuariorepository, never()).atualizar(any());
     }
 
     @Test
@@ -191,7 +191,7 @@ class AtualizarTipoUsuarioUseCaseTest {
         when(dtoMock.id()).thenReturn(idTipo);
         when(dtoMock.nome()).thenReturn(nomeDuplicado);
 
-        when(repositoryPort.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
+        when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
         when(tipoUsuarioExistenteMock.getId()).thenReturn(idTipo);
         when(tipoUsuarioExistenteMock.getRestaurante()).thenReturn(restauranteMock);
         when(restauranteMock.getId()).thenReturn(idRestaurante);
@@ -199,7 +199,7 @@ class AtualizarTipoUsuarioUseCaseTest {
         TipoUsuario tipoUsuarioEncontradoMock = mock(TipoUsuario.class);
         Restaurante restauranteEncontradoMock = mock(Restaurante.class);
         
-        when(repositoryPort.obterPorNome(nomeDuplicado)).thenReturn(Optional.of(tipoUsuarioEncontradoMock));
+        when(tipoUsuariorepository.obterPorNome(nomeDuplicado)).thenReturn(Optional.of(tipoUsuarioEncontradoMock));
         when(tipoUsuarioEncontradoMock.getId()).thenReturn(idOutroTipo); // ID diferente = outro registro
         when(tipoUsuarioEncontradoMock.getRestaurante()).thenReturn(restauranteEncontradoMock);
         when(restauranteEncontradoMock.getId()).thenReturn(idRestaurante); // Mesmo restaurante
@@ -210,6 +210,6 @@ class AtualizarTipoUsuarioUseCaseTest {
                 .isInstanceOf(NotificacaoException.class)
                 .hasMessage(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
 
-        verify(repositoryPort, never()).atualizar(any());
+        verify(tipoUsuariorepository, never()).atualizar(any());
     }
 }

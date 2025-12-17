@@ -9,6 +9,7 @@ import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.EnderecoFactory;
 import com.postech.adjt.domain.factory.RestauranteFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
+import com.postech.adjt.domain.usecase.util.UsuarioLogadoUtil;
 
 public class CadastrarRestauranteUseCase {
 
@@ -28,23 +29,18 @@ public class CadastrarRestauranteUseCase {
 
     public Restaurante run(RestauranteDTO dto, String usuarioLogado) {
 
-        final Restaurante restauranteExistente = this.restauranteRepository.obterPorNome(dto.nome()).orElse(null);
-        if (restauranteExistente != null) {
+        final Restaurante restaurante = this.restauranteRepository.obterPorNome(dto.nome()).orElse(null);
+        if (restaurante != null) {
             throw new NotificacaoException(MensagemUtil.RESTAURANTE_JA_CADASTRADO);
         }
 
-        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
-        if (usrLogado == null) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
+        final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
 
         final Endereco endereco = EnderecoFactory.toEndereco(dto.endereco());
 
-        final Restaurante restaurante = RestauranteFactory.criar(dto.nome(), dto.descricao(),
+        return restauranteRepository.criar(RestauranteFactory.criar(dto.nome(), dto.descricao(),
                 dto.horarioFuncionamento(),
                 dto.tipoCozinha(), endereco,
-                usrLogado);
-
-        return restauranteRepository.criar(restaurante);
+                usrLogado));
     }
 }

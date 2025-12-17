@@ -23,10 +23,8 @@ public class ObterUsuarioPorEmailUseCase {
             throw new NotificacaoException(MensagemUtil.EMAIL_NULO);
         }
 
-        Usuario usuario = this.usuarioRepository.obterPorEmail(email)
+        return this.usuarioRepository.obterPorEmail(email)
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
-
-        return usuario;
     }
 
 }

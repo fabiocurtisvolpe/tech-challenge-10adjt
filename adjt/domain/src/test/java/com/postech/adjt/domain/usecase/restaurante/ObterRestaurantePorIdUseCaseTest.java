@@ -50,9 +50,9 @@ class ObterRestaurantePorIdUseCaseTest {
         Integer id = 1;
         when(restauranteRepository.obterPorId(id)).thenReturn(Optional.of(restauranteMock));
 
-        Optional<Restaurante> resultado = useCase.run(id);
+        Restaurante resultado = useCase.run(id);
 
-        assertThat(resultado.get()).isEqualTo(restauranteMock);
+        assertThat(resultado).isEqualTo(restauranteMock);
         verify(restauranteRepository).obterPorId(id);
     }
 

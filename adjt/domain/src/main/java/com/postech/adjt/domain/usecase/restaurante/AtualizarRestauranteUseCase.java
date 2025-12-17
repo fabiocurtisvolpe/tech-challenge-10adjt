@@ -11,6 +11,7 @@ import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.EnderecoFactory;
 import com.postech.adjt.domain.factory.RestauranteFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
+import com.postech.adjt.domain.usecase.util.UsuarioLogadoUtil;
 
 public class AtualizarRestauranteUseCase {
 
@@ -34,30 +35,22 @@ public class AtualizarRestauranteUseCase {
             throw new NotificacaoException(MensagemUtil.ID_NULO);
         }
 
-        final Restaurante restauranteExistente = this.restauranteRepository.obterPorId(dto.id()).orElse(null);
-        if (restauranteExistente == null) {
-            throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
-        }
+        final Restaurante restauranteExistente = this.restauranteRepository.obterPorId(dto.id())
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO));
 
         final Restaurante restauranteNome = this.restauranteRepository.obterPorNome(dto.nome()).orElse(null);
         if ((restauranteNome != null) && (!restauranteExistente.getId().equals(restauranteNome.getId()))) {
             throw new NotificacaoException(MensagemUtil.RESTAURANTE_JA_CADASTRADO);
         }
 
-        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
-        if (usrLogado == null) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
-
+        final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
         final Endereco endereco = EnderecoFactory.toEndereco(dto.endereco());
 
-        final Restaurante restaurante = RestauranteFactory.restaurante(restauranteExistente.getId(),
+        return restauranteRepository.atualizar(RestauranteFactory.restaurante(restauranteExistente.getId(),
                 dto.nome(), dto.descricao(), dto.horarioFuncionamento(),
                 dto.tipoCozinha(), endereco,
                 restauranteExistente.getDono(),
-                true, usrLogado.getId());
-
-        return restauranteRepository.atualizar(restaurante);
+                true, usrLogado.getId()));
     }
 
 }

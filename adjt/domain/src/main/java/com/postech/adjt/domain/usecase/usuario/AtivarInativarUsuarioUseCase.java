@@ -6,6 +6,7 @@ import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
+import com.postech.adjt.domain.usecase.util.UsuarioLogadoUtil;
 
 public class AtivarInativarUsuarioUseCase {
 
@@ -24,8 +25,7 @@ public class AtivarInativarUsuarioUseCase {
         final Usuario usuario = this.usuarioRepository.obterPorId(id)
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
 
-        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado)
-                .orElseThrow(() -> new NotificacaoException(MensagemUtil.CARDAPIO_NAO_ENCONTRADO));
+        final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
 
         if ((usrLogado.getTipoUsuario() instanceof TipoUsuarioDonoRestaurante)
                 || (usuario.getId().equals(id))) {

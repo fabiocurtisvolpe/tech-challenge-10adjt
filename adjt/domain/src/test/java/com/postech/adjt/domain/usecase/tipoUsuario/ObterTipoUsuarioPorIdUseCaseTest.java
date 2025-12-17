@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class ObterTipoUsuarioPorIdUseCaseTest {
 
     @Mock
-    private GenericRepositoryPort<TipoUsuario> repositoryPort;
+    private GenericRepositoryPort<TipoUsuario> tipoUsuariorepository;
 
     @Mock
     private GenericRepositoryPort<Usuario> usuarioRepository;
@@ -44,7 +44,7 @@ class ObterTipoUsuarioPorIdUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = ObterTipoUsuarioPorIdUseCase.create(repositoryPort, usuarioRepository);
+        useCase = ObterTipoUsuarioPorIdUseCase.create(tipoUsuariorepository, usuarioRepository);
     }
 
     @Test
@@ -53,14 +53,14 @@ class ObterTipoUsuarioPorIdUseCaseTest {
         Integer id = 1;
         String email = "user@teste.com";
 
-        when(repositoryPort.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
+        when(tipoUsuariorepository.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         when(tipoUsuarioMock.getRestaurante()).thenReturn(null);
 
-        Optional<TipoUsuario> resultado = useCase.run(id, email);
+        TipoUsuario resultado = useCase.run(id, email);
 
-        assertThat(resultado.get()).isEqualTo(tipoUsuarioMock);
-        verify(repositoryPort).obterPorId(id);
+        assertThat(resultado).isEqualTo(tipoUsuarioMock);
+        verify(tipoUsuariorepository).obterPorId(id);
     }
 
     @Test
@@ -70,7 +70,7 @@ class ObterTipoUsuarioPorIdUseCaseTest {
         String email = "dono@teste.com";
         Integer idUsuario = 10;
 
-        when(repositoryPort.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
+        when(tipoUsuariorepository.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         
         when(tipoUsuarioMock.getRestaurante()).thenReturn(restauranteMock);
@@ -79,9 +79,9 @@ class ObterTipoUsuarioPorIdUseCaseTest {
         when(usuarioLogadoMock.getId()).thenReturn(idUsuario);
         when(donoRestauranteMock.getId()).thenReturn(idUsuario);
 
-        Optional<TipoUsuario> resultado = useCase.run(id, email);
+        TipoUsuario resultado = useCase.run(id, email);
 
-        assertThat(resultado.get()).isEqualTo(tipoUsuarioMock);
+        assertThat(resultado).isEqualTo(tipoUsuarioMock);
     }
 
     @Test
@@ -90,7 +90,7 @@ class ObterTipoUsuarioPorIdUseCaseTest {
         assertThatThrownBy(() -> useCase.run(null, "email"))
                 .isInstanceOf(NotificacaoException.class);
         
-        verify(repositoryPort, never()).obterPorId(any());
+        verify(tipoUsuariorepository, never()).obterPorId(any());
     }
 
     @Test
@@ -99,14 +99,14 @@ class ObterTipoUsuarioPorIdUseCaseTest {
         assertThatThrownBy(() -> useCase.run(0, "email"))
                 .isInstanceOf(NotificacaoException.class);
         
-        verify(repositoryPort, never()).obterPorId(any());
+        verify(tipoUsuariorepository, never()).obterPorId(any());
     }
 
     @Test
     @DisplayName("Deve falhar quando TipoUsuario não encontrado")
     void deveFalharTipoUsuarioNaoEncontrado() {
         Integer id = 1;
-        when(repositoryPort.obterPorId(id)).thenReturn(Optional.empty());
+        when(tipoUsuariorepository.obterPorId(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(id, "email"))
                 .isInstanceOf(NotificacaoException.class);
@@ -120,7 +120,7 @@ class ObterTipoUsuarioPorIdUseCaseTest {
         Integer id = 1;
         String email = "inexistente@teste.com";
 
-        when(repositoryPort.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
+        when(tipoUsuariorepository.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(id, email))
@@ -135,7 +135,7 @@ class ObterTipoUsuarioPorIdUseCaseTest {
         Integer idIntruso = 99;
         Integer idDono = 50;
 
-        when(repositoryPort.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
+        when(tipoUsuariorepository.obterPorId(id)).thenReturn(Optional.of(tipoUsuarioMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
 
         when(tipoUsuarioMock.getRestaurante()).thenReturn(restauranteMock);

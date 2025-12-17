@@ -6,6 +6,7 @@ import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.RestauranteFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
+import com.postech.adjt.domain.usecase.util.UsuarioLogadoUtil;
 
 public class AtivarInativarRestauranteUseCase {
 
@@ -25,16 +26,10 @@ public class AtivarInativarRestauranteUseCase {
 
     public Restaurante run(Boolean ativar, Integer id, String usuarioLogado) {
 
-        final Restaurante restaurante = this.restauranteRepository.obterPorId(id).orElse(null);
+        final Restaurante restaurante = this.restauranteRepository.obterPorId(id)
+                .orElseThrow(() -> new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO));
 
-        if (restaurante == null) {
-            throw new NotificacaoException(MensagemUtil.RESTAURANTE_NAO_ENCONTRADO);
-        }
-
-        final Usuario usrLogado = this.usuarioRepository.obterPorEmail(usuarioLogado).orElse(null);
-        if (usrLogado == null) {
-            throw new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO);
-        }
+        final Usuario usrLogado = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
 
         return restauranteRepository.atualizar(RestauranteFactory.restaurante(restaurante.getId(),
                 restaurante.getNome(), restaurante.getDescricao(),

@@ -11,6 +11,7 @@ import com.postech.adjt.domain.exception.NotificacaoException;
 import com.postech.adjt.domain.factory.EnderecoFactory;
 import com.postech.adjt.domain.factory.UsuarioFactory;
 import com.postech.adjt.domain.ports.GenericRepositoryPort;
+import com.postech.adjt.domain.usecase.util.UsuarioLogadoUtil;
 
 public class AtualizarUsuarioUseCase {
 
@@ -30,23 +31,20 @@ public class AtualizarUsuarioUseCase {
 
     public Usuario run(UsuarioDTO dto, String usuarioLogado) {
 
-        final Usuario usuarioExistente = this.usuarioRepository.obterPorEmail(usuarioLogado)
-                .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_ENCONTRADO));
+        final Usuario usuarioExistente = UsuarioLogadoUtil.usuarioLogado(usuarioRepository, usuarioLogado);
 
         final TipoUsuario tipoUsuario = this.tipoUsuarioRepository.obterPorId(dto.tipoUsuario().id())
                 .orElseThrow(() -> new NotificacaoException(MensagemUtil.TIPO_USUARIO_NAO_ENCONTRADO));
 
         if (!dto.email().equals(usuarioLogado)) {
             this.usuarioRepository.obterPorEmail(dto.email())
-                    .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_EXISTENTE));
+                    .orElseThrow(() -> new NotificacaoException(MensagemUtil.USUARIO_NAO_PERMITE_OPERACAO));
         }
 
         List<Endereco> enderecos = EnderecoFactory.toEnderecoList(dto.enderecos());
 
-        final Usuario usuario = UsuarioFactory.usuario(usuarioExistente.getId(), dto.nome(),
+        return usuarioRepository.atualizar(UsuarioFactory.usuario(usuarioExistente.getId(), dto.nome(),
                 dto.email(), usuarioExistente.getSenha(),
-                tipoUsuario, enderecos, dto.ativo());
-
-        return usuarioRepository.atualizar(usuario);
+                tipoUsuario, enderecos, dto.ativo()));
     }
 }

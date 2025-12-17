@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 class AtivarInativarTipoUsuarioUseCaseTest {
 
     @Mock
-    private GenericRepositoryPort<TipoUsuario> repositoryPort;
+    private GenericRepositoryPort<TipoUsuario> tipoUsuariorepository;
 
     @Mock
     private GenericRepositoryPort<Usuario> usuarioRepository;
@@ -49,7 +49,7 @@ class AtivarInativarTipoUsuarioUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = AtivarInativarTipoUsuarioUseCase.create(repositoryPort, usuarioRepository);
+        useCase = AtivarInativarTipoUsuarioUseCase.create(tipoUsuariorepository, usuarioRepository);
         factoryMockedStatic = mockStatic(TipoUsuarioFactory.class);
     }
 
@@ -68,7 +68,7 @@ class AtivarInativarTipoUsuarioUseCaseTest {
         String email = "admin@teste.com";
         Boolean novoStatus = true;
 
-        when(repositoryPort.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
+        when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         
         when(usuarioLogadoMock.getId()).thenReturn(idUsuario);
@@ -84,12 +84,12 @@ class AtivarInativarTipoUsuarioUseCaseTest {
                 eq(idTipo), anyString(), anyString(), eq(novoStatus), anyBoolean(), any(), eq(idUsuario)
         )).thenReturn(tipoUsuarioAtualizadoMock);
 
-        when(repositoryPort.atualizar(tipoUsuarioAtualizadoMock)).thenReturn(tipoUsuarioAtualizadoMock);
+        when(tipoUsuariorepository.atualizar(tipoUsuarioAtualizadoMock)).thenReturn(tipoUsuarioAtualizadoMock);
 
         TipoUsuario resultado = useCase.run(novoStatus, idTipo, email);
 
         assertThat(resultado).isEqualTo(tipoUsuarioAtualizadoMock);
-        verify(repositoryPort).atualizar(tipoUsuarioAtualizadoMock);
+        verify(tipoUsuariorepository).atualizar(tipoUsuarioAtualizadoMock);
     }
 
     @Test
@@ -98,7 +98,7 @@ class AtivarInativarTipoUsuarioUseCaseTest {
         Integer idTipo = 1;
         String email = "email@teste.com";
 
-        when(repositoryPort.obterPorId(idTipo)).thenReturn(Optional.empty());
+        when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(true, idTipo, email))
                 .isInstanceOf(NotificacaoException.class);
@@ -112,13 +112,13 @@ class AtivarInativarTipoUsuarioUseCaseTest {
         Integer idTipo = 1;
         String email = "inexistente@teste.com";
 
-        when(repositoryPort.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
+        when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(true, idTipo, email))
                 .isInstanceOf(NotificacaoException.class);
 
-        verify(repositoryPort, never()).atualizar(any());
+        verify(tipoUsuariorepository, never()).atualizar(any());
     }
 
     @Test
@@ -127,13 +127,13 @@ class AtivarInativarTipoUsuarioUseCaseTest {
         Integer idTipo = 1;
         String email = "admin@teste.com";
 
-        when(repositoryPort.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
+        when(tipoUsuariorepository.obterPorId(idTipo)).thenReturn(Optional.of(tipoUsuarioMock));
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         when(tipoUsuarioMock.getIsEditavel()).thenReturn(false);
 
         assertThatThrownBy(() -> useCase.run(true, idTipo, email))
                 .isInstanceOf(NotificacaoException.class);
 
-        verify(repositoryPort, never()).atualizar(any());
+        verify(tipoUsuariorepository, never()).atualizar(any());
     }
 }

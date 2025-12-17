@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 class CadastrarTipoUsuarioUseCaseTest {
 
     @Mock
-    private GenericRepositoryPort<TipoUsuario> repositoryPort;
+    private GenericRepositoryPort<TipoUsuario> tipoUsuariorepository;
 
     @Mock
     private GenericRepositoryPort<Usuario> usuarioRepository;
@@ -60,7 +60,7 @@ class CadastrarTipoUsuarioUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = CadastrarTipoUsuarioUseCase.create(repositoryPort, usuarioRepository, restauranteRepository);
+        useCase = CadastrarTipoUsuarioUseCase.create(tipoUsuariorepository, usuarioRepository, restauranteRepository);
         factoryMockedStatic = mockStatic(TipoUsuarioFactory.class);
     }
 
@@ -85,7 +85,7 @@ class CadastrarTipoUsuarioUseCaseTest {
         when(dtoMock.restaurante()).thenReturn(restauranteDtoMock);
         when(restauranteDtoMock.id()).thenReturn(idRestaurante);
 
-        when(repositoryPort.obterPorNome(nomeTipo)).thenReturn(Optional.empty());
+        when(tipoUsuariorepository.obterPorNome(nomeTipo)).thenReturn(Optional.empty());
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         when(restauranteRepository.obterPorId(idRestaurante)).thenReturn(Optional.of(restauranteMock));
         when(usuarioLogadoMock.getId()).thenReturn(idUsuario);
@@ -94,12 +94,12 @@ class CadastrarTipoUsuarioUseCaseTest {
                 eq(nomeTipo), anyString(), eq(true), eq(restauranteMock), eq(idUsuario)
         )).thenReturn(tipoUsuarioCriadoMock);
 
-        when(repositoryPort.criar(tipoUsuarioCriadoMock)).thenReturn(tipoUsuarioCriadoMock);
+        when(tipoUsuariorepository.criar(tipoUsuarioCriadoMock)).thenReturn(tipoUsuarioCriadoMock);
 
         TipoUsuario resultado = useCase.run(dtoMock, email);
 
         assertThat(resultado).isEqualTo(tipoUsuarioCriadoMock);
-        verify(repositoryPort).criar(tipoUsuarioCriadoMock);
+        verify(tipoUsuariorepository).criar(tipoUsuarioCriadoMock);
     }
 
     @Test
@@ -108,7 +108,7 @@ class CadastrarTipoUsuarioUseCaseTest {
         String nomeTipo = "Gerente";
         when(dtoMock.nome()).thenReturn(nomeTipo);
 
-        when(repositoryPort.obterPorNome(nomeTipo)).thenReturn(Optional.of(tipoUsuarioCriadoMock));
+        when(tipoUsuariorepository.obterPorNome(nomeTipo)).thenReturn(Optional.of(tipoUsuarioCriadoMock));
 
         assertThatThrownBy(() -> useCase.run(dtoMock, "email@teste.com"))
                 .isInstanceOf(NotificacaoException.class);
@@ -123,7 +123,7 @@ class CadastrarTipoUsuarioUseCaseTest {
         String nomeTipo = "Novo";
         
         when(dtoMock.nome()).thenReturn(nomeTipo);
-        when(repositoryPort.obterPorNome(nomeTipo)).thenReturn(Optional.empty());
+        when(tipoUsuariorepository.obterPorNome(nomeTipo)).thenReturn(Optional.empty());
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(dtoMock, email))
@@ -143,14 +143,14 @@ class CadastrarTipoUsuarioUseCaseTest {
         when(dtoMock.restaurante()).thenReturn(restauranteDtoMock);
         when(restauranteDtoMock.id()).thenReturn(idRestaurante);
 
-        when(repositoryPort.obterPorNome(nomeTipo)).thenReturn(Optional.empty());
+        when(tipoUsuariorepository.obterPorNome(nomeTipo)).thenReturn(Optional.empty());
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         when(restauranteRepository.obterPorId(idRestaurante)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> useCase.run(dtoMock, email))
                 .isInstanceOf(NotificacaoException.class);
 
-        verify(repositoryPort, never()).criar(any());
+        verify(tipoUsuariorepository, never()).criar(any());
     }
 
     @Test
@@ -166,7 +166,7 @@ class CadastrarTipoUsuarioUseCaseTest {
         when(restauranteDtoMock.id()).thenReturn(idRestaurante);
 
         TipoUsuario tipoUsuarioExistenteMock = mock(TipoUsuario.class);
-        when(repositoryPort.obterPorNome(nomeTipo)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
+        when(tipoUsuariorepository.obterPorNome(nomeTipo)).thenReturn(Optional.of(tipoUsuarioExistenteMock));
 
         when(usuarioRepository.obterPorEmail(email)).thenReturn(Optional.of(usuarioLogadoMock));
         when(restauranteRepository.obterPorId(idRestaurante)).thenReturn(Optional.of(restauranteMock));
@@ -181,6 +181,6 @@ class CadastrarTipoUsuarioUseCaseTest {
                 .isInstanceOf(NotificacaoException.class)
                 .hasMessage(MensagemUtil.TIPO_USUARIO_JA_CADASTRADO);
 
-        verify(repositoryPort, never()).criar(any());
+        verify(tipoUsuariorepository, never()).criar(any());
     }
 }
