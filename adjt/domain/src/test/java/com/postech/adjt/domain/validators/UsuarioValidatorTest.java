@@ -16,11 +16,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ExtendWith(MockitoExtension.class)
 class UsuarioValidatorTest {
 
-    // Mockamos o TipoUsuario pois é uma classe abstrata
     @Mock
     private TipoUsuario tipoUsuarioMock;
 
-    // Constantes baseadas na lógica comum (ajuste conforme seu TamanhoUtil real)
     private static final String NOME_VALIDO = "João da Silva";
     private static final String EMAIL_VALIDO = "joao@email.com";
     private static final String SENHA_VALIDA = "123456"; // Assumindo min 6
