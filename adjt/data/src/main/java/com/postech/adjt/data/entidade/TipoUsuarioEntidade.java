@@ -38,6 +38,6 @@ public class TipoUsuarioEntidade extends BaseEntidade {
     private Boolean isEditavel;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurante_id", nullable = false)
+    @JoinColumn(name = "restaurante_id", nullable = true)
     private RestauranteEntidade restaurante;
 }

@@ -2,6 +2,7 @@ package com.postech.adjt.data.service;
 
 import java.util.List;
 
+import com.postech.adjt.domain.enums.FiltroOperadorEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,10 +27,17 @@ public class PaginadoService<E, D> {
     }
 
     @Transactional
-
     public ResultadoPaginacaoDTO<D> listarPaginado(int page, int size, List<FilterDTO> filters,
             List<SortDTO> sorts) {
 
+        for (FilterDTO f : filters) {
+            if (f.getOperador() == FiltroOperadorEnum.BETWEEN) {
+                String[] valores = f.getValor().split(",");
+                if (valores.length != 2) {
+                    throw new IllegalArgumentException("Valor inválido para BETWEEN: " + f.getValor());
+                }
+            }
+        }
 
         Specification<E> spec = (root, query, cb) -> cb.conjunction();
 
@@ -53,11 +61,7 @@ public class PaginadoService<E, D> {
                         return cb.lessThanOrEqualTo(root.get(f.getCampo()), f.getValor());
                     case BETWEEN:
                         String[] valores = f.getValor().split(",");
-                        if (valores.length == 2) {
-                            return cb.between(root.get(f.getCampo()), valores[0], valores[1]);
-                        } else {
-                            throw new IllegalArgumentException("Valor inválido para BETWEEN: " + f.getValor());
-                        }
+                        return cb.between(root.get(f.getCampo()), valores[0], valores[1]);
                     default:
                         throw new UnsupportedOperationException("Operador não suportado: " + f.getOperador());
                 }

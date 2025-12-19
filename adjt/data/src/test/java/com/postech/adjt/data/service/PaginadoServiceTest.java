@@ -174,23 +174,8 @@ class PaginadoServiceTest {
                 new FilterDTO("campo", "10", FiltroOperadorEnum.BETWEEN)
         );
 
-        when(repository.findAll(any(Specification.class), any(Pageable.class)))
-                .thenReturn(new PageImpl<>(Collections.emptyList()));
-
-        service.listarPaginado(0, 10, filters, Collections.emptyList());
-
-        ArgumentCaptor<Specification<TestEntity>> specCaptor = ArgumentCaptor.forClass(Specification.class);
-        verify(repository).findAll(specCaptor.capture(), any(Pageable.class));
-        Specification<TestEntity> spec = specCaptor.getValue();
-
-        Root<TestEntity> root = mock(Root.class);
-        CriteriaQuery<?> query = mock(CriteriaQuery.class);
-        CriteriaBuilder cb = mock(CriteriaBuilder.class);
-
-        when(cb.conjunction()).thenReturn(mock(Predicate.class));
-
         assertThrows(IllegalArgumentException.class, () -> {
-            spec.toPredicate(root, query, cb);
+            service.listarPaginado(0, 10, filters, Collections.emptyList());
         });
     }
 }
