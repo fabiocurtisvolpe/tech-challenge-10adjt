@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("Testes de Integração - PaginadoService")
-public class PaginadoServiceIT {
+public class PaginadoServiceIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
