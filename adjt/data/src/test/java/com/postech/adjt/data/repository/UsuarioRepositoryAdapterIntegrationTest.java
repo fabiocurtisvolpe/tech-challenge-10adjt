@@ -10,6 +10,7 @@ import com.postech.adjt.domain.dto.filtro.SortDTO;
 import com.postech.adjt.domain.entidade.TipoUsuarioGenrico;
 import com.postech.adjt.domain.entidade.Usuario;
 import com.postech.adjt.domain.enums.FiltroOperadorEnum;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,18 +73,7 @@ public class UsuarioRepositoryAdapterIntegrationTest {
 
         LocalDateTime agora = LocalDateTime.now();
 
-        EnderecoEntidade endereco = new EnderecoEntidade();
-        endereco.setLogradouro("Av. Paulista");
-        endereco.setNumero("1000");
-        endereco.setComplemento("Apto 10");
-        endereco.setBairro("Bela Vista");
-        endereco.setPontoReferencia("Perto do MASP");
-        endereco.setCep("01310-100");
-        endereco.setMunicipio("São Paulo");
-        endereco.setUf("SP");
-        endereco.setPrincipal(true);
-        endereco.setDataCriacao(agora);
-        endereco.setDataAlteracao(agora);
+        EnderecoEntidade endereco = getEnderecoEntidade(agora);
 
         List<EnderecoEntidade> enderecos = new ArrayList<>();
         enderecos.add(endereco);
@@ -98,6 +88,22 @@ public class UsuarioRepositoryAdapterIntegrationTest {
         usuario.setDataAlteracao(LocalDateTime.now());
         usuario.setEnderecos(enderecos);
         return usuario;
+    }
+
+    private static @NonNull EnderecoEntidade getEnderecoEntidade(LocalDateTime agora) {
+        EnderecoEntidade endereco = new EnderecoEntidade();
+        endereco.setLogradouro("Av. Paulista");
+        endereco.setNumero("1000");
+        endereco.setComplemento("Apto 10");
+        endereco.setBairro("Bela Vista");
+        endereco.setPontoReferencia("Perto do MASP");
+        endereco.setCep("01310-100");
+        endereco.setMunicipio("São Paulo");
+        endereco.setUf("SP");
+        endereco.setPrincipal(true);
+        endereco.setDataCriacao(agora);
+        endereco.setDataAlteracao(agora);
+        return endereco;
     }
 
     @Test

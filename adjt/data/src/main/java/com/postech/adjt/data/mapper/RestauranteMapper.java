@@ -23,6 +23,7 @@ public class RestauranteMapper {
                 .dono(UsuarioMapper.toDomain(entidade.getDono()))
                 .dataCriacao(entidade.getDataCriacao())
                 .dataAlteracao(entidade.getDataAlteracao())
+                .ativo(entidade.getAtivo())
                 .build();
     }
 
