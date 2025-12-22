@@ -66,17 +66,17 @@ public class TipoUsuarioRepositoryAdapter implements GenericRepositoryPort<TipoU
 
          PaginadoService<TipoUsuarioEntidade, TipoUsuario> paginadoService = new PaginadoService<>(
                 dataTipoUsuarioRepository,
-                new EntityMapper<TipoUsuarioEntidade, TipoUsuario>() {
-                    @Override
-                    public TipoUsuario toDomain(TipoUsuarioEntidade e) {
-                        return TipoUsuarioMapper.toDomain(e);
-                    }
+                 new EntityMapper<>() {
+                     @Override
+                     public TipoUsuario toDomain(TipoUsuarioEntidade e) {
+                         return TipoUsuarioMapper.toDomain(e);
+                     }
 
-                    @Override
-                    public TipoUsuarioEntidade toEntity(TipoUsuario d) {
-                        return TipoUsuarioMapper.toEntity(d);
-                    }
-                });
+                     @Override
+                     public TipoUsuarioEntidade toEntity(TipoUsuario d) {
+                         return TipoUsuarioMapper.toEntity(d);
+                     }
+                 });
 
         return paginadoService.listarPaginado(page, size, filters, sorts);
     }

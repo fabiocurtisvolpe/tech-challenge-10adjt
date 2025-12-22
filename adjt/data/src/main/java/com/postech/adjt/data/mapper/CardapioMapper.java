@@ -23,6 +23,7 @@ public class CardapioMapper {
                 .restaurante(RestauranteMapper.toDomain(entidade.getRestaurante()))
                 .dataCriacao(entidade.getDataCriacao())
                 .dataAlteracao(entidade.getDataAlteracao())
+                .ativo(entidade.getAtivo())
                 .build();
     }
 

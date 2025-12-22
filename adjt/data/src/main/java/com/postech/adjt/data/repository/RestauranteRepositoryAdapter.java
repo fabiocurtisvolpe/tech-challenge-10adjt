@@ -73,17 +73,17 @@ public class RestauranteRepositoryAdapter implements GenericRepositoryPort<Resta
 
          PaginadoService<RestauranteEntidade, Restaurante> paginadoService = new PaginadoService<>(
                 dataRestauranteRepository,
-                new EntityMapper<RestauranteEntidade, Restaurante>() {
-                    @Override
-                    public Restaurante toDomain(RestauranteEntidade e) {
-                        return RestauranteMapper.toDomain(e);
-                    }
+                 new EntityMapper<>() {
+                     @Override
+                     public Restaurante toDomain(RestauranteEntidade e) {
+                         return RestauranteMapper.toDomain(e);
+                     }
 
-                    @Override
-                    public RestauranteEntidade toEntity(Restaurante d) {
-                        return RestauranteMapper.toEntity(d);
-                    }
-                });
+                     @Override
+                     public RestauranteEntidade toEntity(Restaurante d) {
+                         return RestauranteMapper.toEntity(d);
+                     }
+                 });
 
         return paginadoService.listarPaginado(page, size, filters, sorts);
     }

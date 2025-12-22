@@ -73,17 +73,17 @@ public class CardapioRepositoryAdapter implements GenericRepositoryPort<Cardapio
 
          PaginadoService<CardapioEntidade, Cardapio> paginadoService = new PaginadoService<>(
                 dataCardapioRepository,
-                new EntityMapper<CardapioEntidade, Cardapio>() {
-                    @Override
-                    public Cardapio toDomain(CardapioEntidade e) {
-                        return CardapioMapper   .toDomain(e);
-                    }
+                 new EntityMapper<>() {
+                     @Override
+                     public Cardapio toDomain(CardapioEntidade e) {
+                         return CardapioMapper.toDomain(e);
+                     }
 
-                    @Override
-                    public CardapioEntidade toEntity(Cardapio d) {
-                        return CardapioMapper.toEntity(d);
-                    }
-                });
+                     @Override
+                     public CardapioEntidade toEntity(Cardapio d) {
+                         return CardapioMapper.toEntity(d);
+                     }
+                 });
 
         return paginadoService.listarPaginado(page, size, filters, sorts);
     }

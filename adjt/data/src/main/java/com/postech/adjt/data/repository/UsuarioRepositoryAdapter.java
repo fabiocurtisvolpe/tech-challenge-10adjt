@@ -73,7 +73,7 @@ public class UsuarioRepositoryAdapter implements GenericRepositoryPort<Usuario> 
 
         PaginadoService<UsuarioEntidade, Usuario> paginadoService = new PaginadoService<>(
                 dataUsuarioRepository,
-                new EntityMapper<UsuarioEntidade, Usuario>() {
+                new EntityMapper<>() {
                     @Override
                     public Usuario toDomain(UsuarioEntidade e) {
                         return UsuarioMapper.toDomain(e);
