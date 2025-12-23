@@ -10,7 +10,7 @@ import com.postech.adjt.domain.exception.NotificacaoException;
 
 /**
  * Validador de regras de negócio para usuários
- * 
+ * <p>
  * Centraliza todas as validações de usuário para
  * facilitar reutilização e testes
  * 

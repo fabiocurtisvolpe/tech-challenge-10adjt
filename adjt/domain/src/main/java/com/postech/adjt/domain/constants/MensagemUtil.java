@@ -11,7 +11,6 @@ public class MensagemUtil {
     public static final String EMAIL_INVALIDO = "Formato de email inválido.";
     public static final String EMAIL_NULO = "Email não pode estar vazio.";
     public static final String ENDERECO_EM_BRANCO = "Endereço do usuário é obrigatório.";
-    public static final String ENDERECO_OBRIGATORIO = "Endereço é obrigatório";
     public static final String HORARIO_FUNCIONAMENTO_OBRIGATORIO = "Horário de funcionamento é obrigatório";
     public static final String ID_NULO = "ID não pode ser nulo.";
     public static final String NAO_FOI_POSSIVEL_EXECUTAR_OPERACAO = "Não foi possível executar a operação.";
@@ -26,12 +25,8 @@ public class MensagemUtil {
     public static final String RESTAURANTE_NAO_ENCONTRADO = "Restaurante não encontrado.";
     public static final String RESTAURANTE_NULO = "Restaurante não pode ser nulo";
     public static final String RESTAURANTE_OBRIGATORIO = "Restaurante é obrigatório";
-    public static final String SENHA_ATUAL_INVALIDA = "Senha atual inválida.";
     public static final String SENHA_EM_BRANCO = "A senha não pode estar em branco.";
     public static final String SENHA_MINIMO_CARACTERES = "Senha deve ter no mínimo 6 caracteres";
-    public static final String TIPO_COZINHA_NAO_ENCONTRADO = "Tipo de cozinha não encontrado.";
-    public static final String TIPO_COZINHA_NULO = "Tipo de cozinha não pode ser nulo";
-    public static final String TIPO_COZINHA_NULO_VALIDACAO = "Tipo Cozinha não pode ser nulo";
     public static final String TIPO_COZINHA_OBRIGATORIO = "Tipo de cozinha é obrigatório";
     public static final String TIPO_USUARIO_JA_CADASTRADO = "Tipo de Usuário já está cadastrado.";
     public static final String TIPO_USUARIO_NAO_ENCONTRADO = "Tipo de Usuário não encontrado.";
