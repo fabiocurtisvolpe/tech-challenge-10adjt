@@ -1,17 +1,11 @@
 package com.postech.adjt.data.entidade;
 
-import java.math.BigDecimal;
-
-import org.hibernate.envers.Audited;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -38,4 +32,17 @@ public class CardapioEntidade extends BaseEntidade {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurante_id", nullable = false)
     private RestauranteEntidade restaurante;
+
+    @Override
+    protected void onCreate() {
+        super.onCreate();
+        this.ajustarPreco();
+    }
+
+    @PreUpdate
+    protected void ajustarPreco() {
+        if (this.preco != null) {
+            this.preco = this.preco.setScale(2, java.math.RoundingMode.HALF_UP);
+        }
+    }
 }
