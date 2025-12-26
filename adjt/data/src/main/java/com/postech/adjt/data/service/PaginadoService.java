@@ -39,34 +39,7 @@ public class PaginadoService<E, D> {
             }
         }
 
-        Specification<E> spec = (root, query, cb) -> cb.conjunction();
-
-        for (FilterDTO f : filters) {
-            spec = spec.and((root, query, cb) -> {
-
-                switch (f.getOperador()) {
-                    case EQUALS:
-                        return cb.equal(root.get(f.getCampo()), f.getValor());
-                    case NOT_EQUALS:
-                        return cb.notEqual(root.get(f.getCampo()), f.getValor());
-                    case LIKE:
-                        return cb.like(root.get(f.getCampo()), "%" + f.getValor() + "%");
-                    case GREATER_THAN:
-                        return cb.greaterThan(root.get(f.getCampo()), f.getValor());
-                    case LESS_THAN:
-                        return cb.lessThan(root.get(f.getCampo()), f.getValor());
-                    case GREATER_EQUAL:
-                        return cb.greaterThanOrEqualTo(root.get(f.getCampo()), f.getValor());
-                    case LESS_EQUAL:
-                        return cb.lessThanOrEqualTo(root.get(f.getCampo()), f.getValor());
-                    case BETWEEN:
-                        String[] valores = f.getValor().split(",");
-                        return cb.between(root.get(f.getCampo()), valores[0], valores[1]);
-                    default:
-                        throw new UnsupportedOperationException("Operador não suportado: " + f.getOperador());
-                }
-            });
-        }
+        Specification<E> spec = getESpecification(filters);
 
         Sort springSort = Sort.unsorted();
         for (SortDTO s : sorts) {
@@ -84,5 +57,26 @@ public class PaginadoService<E, D> {
 
         return new ResultadoPaginacaoDTO<>(content, result.getNumber(), result.getSize(),
                 result.getTotalElements());
+    }
+
+    private static <E> Specification<E> getESpecification(List<FilterDTO> filters) {
+        Specification<E> spec = (_, _, cb) -> cb.conjunction();
+
+        for (FilterDTO f : filters) {
+            spec = spec.and((root, _, cb) -> switch (f.getOperador()) {
+                case EQUALS -> cb.equal(root.get(f.getCampo()), f.getValor());
+                case NOT_EQUALS -> cb.notEqual(root.get(f.getCampo()), f.getValor());
+                case LIKE -> cb.like(root.get(f.getCampo()), "%" + f.getValor() + "%");
+                case GREATER_THAN -> cb.greaterThan(root.get(f.getCampo()), f.getValor());
+                case LESS_THAN -> cb.lessThan(root.get(f.getCampo()), f.getValor());
+                case GREATER_EQUAL -> cb.greaterThanOrEqualTo(root.get(f.getCampo()), f.getValor());
+                case LESS_EQUAL -> cb.lessThanOrEqualTo(root.get(f.getCampo()), f.getValor());
+                case BETWEEN -> {
+                    String[] valores = f.getValor().split(",");
+                    yield cb.between(root.get(f.getCampo()), valores[0], valores[1]);
+                }
+            });
+        }
+        return spec;
     }
 }
