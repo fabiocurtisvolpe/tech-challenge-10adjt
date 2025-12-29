@@ -19,50 +19,6 @@ A divisão em fases possibilitará uma implementação gradual e
 controlada, permitindo ajustes e melhorias contínuas conforme o sistema for 
 sendo utilizado e avaliado tanto pelos restaurantes quanto pelos clientes. 
 
-## ADJT - Coleção de Requisições API (ADJT.postman_collection.json)
-
-Esta coleção Postman contém endpoints organizados para testes e integração com a API ADJT. Inclui operações de autenticação, gerenciamento de usuários e tipos de usuários, como criação, atualização, busca, paginação e ativação/inativação. Ideal para desenvolvedores que desejam validar funcionalidades e automatizar testes em ambiente de desenvolvimento.
-
-🔐 Autenticação via token Bearer  
-📦 Estrutura organizada por módulos (login, usuário, tipo-usuario)  
-🧪 Exemplos de requisições válidas e inválidas para facilitar testes
-
-Ao fazer a busca paginada os filtros disponíveis são:
-
-Filtros 
-* EQUALS = "eq" 
-* NOT_EQUALS = "ne" 
-* LIKE = "like" 
-* GREATER_THAN = "gt" 
-* LESS_THAN = "lt" 
-* GREATER_EQUAL = "ge" 
-* LESS_EQUAL = "le" 
-* BETWEEN = "bt" 
-
-e os tipos de dados suportados são:
-* string: filtro do tipo string, caractere
-* number: filtro do tipo numérico, inteiro 
-* boolean: filtro do tipo booleano, verdadeiro, falso 
-* date: filtro do tipo data, no formato yyyy-MM-dd 
-
-Exemplo de como fazer a busca paginado
-
-{
-    "pagina": 0,
-    "tamanho": 10,
-    "filtros": [
-        {
-            "campo": "nome",
-            "operador": "like",
-            "valor": "João",
-            "tipo": "string"
-        }
-    ]
-}
-
-## docker-compose (adjt/local/docker-compose.yml)
-
-Este projeto utiliza o PostgreSQL como banco de dados, configurado via docker-compose.yml para facilitar o setup em ambiente local.
 
 ✅ Requisitos
 
@@ -90,12 +46,6 @@ Exemplo adjt/local/> docker-compose up -d
 
 Para parar os serviços: docker-compose down
 
-🔍 Verificação de saúde
-O container possui um healthcheck que verifica se o banco está pronto para conexões usando pg_isready. Isso garante que o serviço só seja considerado "saudável" quando estiver realmente disponível.
-
-📦 Persistência de dados
-Os dados do banco são armazenados no volume nomeado pg_data, garantindo que não sejam perdidos ao reiniciar o container.
-
 ## Documentação da API - Swagger
 
 Esta API está documentada utilizando o Swagger, uma ferramenta interativa que facilita a visualização, teste e compreensão dos endpoints disponíveis.
@@ -104,14 +54,3 @@ Esta API está documentada utilizando o Swagger, uma ferramenta interativa que f
 Após iniciar o projeto, acesse a documentação Swagger através do navegador:
 
 http://localhost:8080/swagger-ui/index.html
-
-📌 Funcionalidades disponíveis
-A documentação inclui:
-
-📄 Descrição dos endpoints
-
-🔐 Autenticação via token Bearer
-
-📥 Exemplos de requisições e respostas
-
-🧪 Testes interativos diretamente pelo navegador
