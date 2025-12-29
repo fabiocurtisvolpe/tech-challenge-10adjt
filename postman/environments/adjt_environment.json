@@ -1,0 +1,19 @@
+{
+  "id": "52a0fb8a-863f-46e5-aafd-1f0579189fc8",
+  "name": "ADJT",
+  "values": [
+    {
+      "key": "URL_API",
+      "value": "",
+      "enabled": true,
+      "type": "default"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "enabled": true,
+      "type": "default"
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

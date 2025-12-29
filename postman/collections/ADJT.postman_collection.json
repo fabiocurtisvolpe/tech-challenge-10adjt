@@ -1,0 +1,970 @@
+{
+  "info": {
+    "_postman_id": "92225f7f-1b9c-44a0-9d9f-3d029b55aad3",
+    "name": "ADJT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "usuario",
+      "item": [
+        {
+          "name": "criar",
+          "id": "6cedfd38-466e-4000-b5d8-1db6898fa6b4",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": " {\r\n    \"nome\": \"Fabio Volpe - CLIENTE\",\r\n    \"email\": \"clienteA.fabio0@email.com\", \r\n    \"senha\": \"1234567890A\",\r\n    \"tipoUsuario\": {\r\n        \"id\": 2\r\n    },\r\n    \"enderecos\": [\r\n      {\r\n        \"logradouro\": \"Rua das Flores, 123\",\r\n        \"numero\": \"123\",\r\n        \"complemento\": \"Apartamento 45\",\r\n        \"bairro\": \"Centro\",\r\n        \"pontoReferencia\": \"Próximo ao shopping\",\r\n        \"cep\": \"12345-678\",\r\n        \"municipio\": \"São Paulo\",\r\n        \"uf\": \"SP\",\r\n        \"principal\": true,\r\n        \"ativo\": true\r\n      },\r\n      {\r\n        \"logradouro\": \"Avenida Paulista, 1000\",\r\n        \"numero\": \"1000\",\r\n        \"complemento\": \"Sala 102\",\r\n        \"bairro\": \"Bela Vista\",\r\n        \"pontoReferencia\": \"Em frente ao MASP\",\r\n        \"cep\": \"01310-100\",\r\n        \"municipio\": \"São Paulo\", \r\n        \"uf\": \"SP\",\r\n        \"principal\": false,\r\n        \"ativo\": true\r\n      }\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/usuario/criar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "criar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "atualizar",
+          "id": "1fd9441a-9e2d-401d-a737-8b628237478a",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": " {\r\n    \"nome\": \"Fabio Volpe - CLIENTE\",\r\n    \"email\": \"cliente.fabio0@email.com\", \r\n    \"senha\": \"1234567890\",\r\n    \"tipoUsuario\": {\r\n        \"id\": 2\r\n    },\r\n    \"enderecos\": [\r\n      {\r\n        \"logradouro\": \"Rua das Flores, 123\",\r\n        \"numero\": \"123\",\r\n        \"complemento\": \"Apartamento 45\",\r\n        \"bairro\": \"Centro\",\r\n        \"pontoReferencia\": \"Próximo ao shopping\",\r\n        \"cep\": \"12345-678\",\r\n        \"municipio\": \"São Paulo\",\r\n        \"uf\": \"SP\",\r\n        \"principal\": true,\r\n        \"ativo\": true\r\n      }\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/usuario/atualizar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "atualizar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "atualizar senha",
+          "id": "643bd99d-94c3-4a45-b815-8763d25b73e3",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"senha\": \"1234567890A\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/usuario/alterar-senha",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "alterar-senha"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar",
+          "id": "bfc3cf91-4f4c-4393-b079-6e3062157e69",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/usuario/6",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar-usuario-logado",
+          "id": "43908777-d8df-4d7c-98d8-6f46e7deb694",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/usuario/info",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "info"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "desativar",
+          "id": "65180524-9e9f-4b50-b33e-4de706aec2ec",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/usuario/5/desativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "5",
+                "desativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ativar",
+          "id": "bbe30d13-0192-441c-8836-a4dcf5a384cf",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/usuario/5/ativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "5",
+                "ativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado com filtro",
+          "id": "848e0f6d-cea9-498d-b9c1-24e3b5635450",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"valor\": \"Fabio Curtis Volpe Teste\",\r\n            \"operador\": \"EQUALS\"\r\n        }\r\n    ],\r\n    \"ordenacao\": []\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/usuario/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado",
+          "id": "d0b964a4-e455-4ad4-a3ad-ddb66904f3d8",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [],\r\n    \"ordenacao\": []\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/usuario/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "usuario",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "963f9af4-d861-4743-afeb-1d939488f324",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "const token = pm.globals.get('token');\r",
+              "\r",
+              "if (token) {\r",
+              "    pm.request.headers.add({\r",
+              "        key: 'Authorization',\r",
+              "        value: 'Bearer ' + token // Adicione 'Bearer ' apenas se sua API exigir\r",
+              "    });\r",
+              "}"
+            ],
+            "id": "ea0e10d4-9f65-4b76-8f2c-70f85db31a81"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ],
+            "id": "47b168ca-2e95-4165-83e9-390f849d3b81"
+          }
+        }
+      ]
+    },
+    {
+      "name": "restaurante",
+      "item": [
+        {
+          "name": "criar",
+          "id": "0e6dc740-244a-4155-abcd-dc2e73877467",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nome\": \"Restaurante Teste 2\",\r\n    \"descricao\": \"Descrição 1\",\r\n    \"horarioFuncionamento\": {\r\n        \"seg\": {\r\n            \"aberto\": true,\r\n            \"inicio\": \"08:00\",\r\n            \"fim\": \"18:00\"\r\n        }\r\n    },\r\n    \"tipoCozinha\": \"VEGETARIANA\",\r\n    \"endereco\": {\r\n        \"logradouro\": \"Rua das Flores, 123\",\r\n        \"numero\": \"123\",\r\n        \"complemento\": \"Apartamento 45\",\r\n        \"bairro\": \"Centro\",\r\n        \"pontoReferencia\": \"Próximo ao shopping\",\r\n        \"cep\": \"12345-678\",\r\n        \"municipio\": \"São Paulo\",\r\n        \"uf\": \"SP\",\r\n        \"principal\": true,\r\n        \"ativo\": true\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/restaurante/criar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "criar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "atualizar",
+          "id": "4b5a9b3e-b24a-4f97-be2a-cfe5c641ce8f",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 1,\r\n    \"nome\": \"Restaurante Teste 2\",\r\n    \"descricao\": \"Descrição 1\",\r\n    \"horarioFuncionamento\": {\r\n        \"seg\": {\r\n            \"aberto\": true,\r\n            \"inicio\": \"08:00\",\r\n            \"fim\": \"18:00\"\r\n        }\r\n    },\r\n    \"tipoCozinha\": \"VEGETARIANA\",\r\n    \"endereco\": {\r\n        \"logradouro\": \"Rua das Flores, 123\",\r\n        \"numero\": \"123\",\r\n        \"complemento\": \"Apartamento 45\",\r\n        \"bairro\": \"Centro\",\r\n        \"pontoReferencia\": \"Próximo ao shopping\",\r\n        \"cep\": \"12345-678\",\r\n        \"municipio\": \"São Paulo\",\r\n        \"uf\": \"SP\",\r\n        \"principal\": true,\r\n        \"ativo\": true\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/restaurante/atualizar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "atualizar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar",
+          "id": "8f625c3e-8e01-4a88-b4a9-3a7d6e87a948",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/restaurante/1",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar dono",
+          "id": "9ee4ec76-a504-4cdb-9147-b65c340ea9c7",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/restaurante/dono/1",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "dono",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "desativar",
+          "id": "ae00c2c4-f1ca-4c56-aee9-f6b9ddc11ec0",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/restaurante/1/desativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "1",
+                "desativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ativar",
+          "id": "06727dc8-ae20-4820-ba06-e50ed5405973",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/restaurante/1/ativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "1",
+                "ativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado com filtro",
+          "id": "f0f6e5ae-fa56-4c10-82c0-58c860e7c8d6",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"valor\": \"Fabio Curtis Volpe Teste\",\r\n            \"operador\": \"EQUALS\"\r\n        }\r\n    ],\r\n    \"ordenacao\": []\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/restaurante/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado",
+          "id": "6fbe4418-ebf8-4114-9006-f833e6e403b4",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [],\r\n    \"ordenacao\": []\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/restaurante/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "restaurante",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "82cc7c14-8a0e-4a3e-b963-e4d2b941ccbf"
+    },
+    {
+      "name": "cardapio",
+      "item": [
+        {
+          "name": "criar",
+          "id": "ffd06f06-6ce1-48f1-afe4-12821c4b5d90",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nome\": \"Cardapio Restaurante 2\",\r\n    \"descricao\": \"Descrição 2\",\r\n    \"preco\": 10.00,\r\n    \"foto\": \"1.png\",\r\n    \"disponivel\": false,\r\n    \"idRestaurante\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/cardapio/criar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "cardapio",
+                "criar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "atualizar",
+          "id": "30febe8c-1bc7-49b5-b09d-bc9135e68de4",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 1,\r\n    \"nome\": \"Novo Cardapio Restaurante 1\",\r\n    \"descricao\": \"Descrição 1\",\r\n    \"preco\": 10.00,\r\n    \"foto\": \"1.png\",\r\n    \"disponivel\": true,\r\n    \"idRestaurante\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/cardapio/atualizar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "cardapio",
+                "atualizar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar",
+          "id": "5980fbd8-3bcc-47a9-adc1-18c6a1b8c861",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/cardapio/1",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "cardapio",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "desativar",
+          "id": "177a9734-65ff-4209-9c97-6a7e3da7414a",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/cardapio/1/desativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "cardapio",
+                "1",
+                "desativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ativar",
+          "id": "213b7839-cd24-472e-9a2e-ee41b807ecf8",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/cardapio/1/ativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "cardapio",
+                "1",
+                "ativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado com filtro",
+          "id": "74033463-a35a-4bfd-922a-71775480ea2f",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"valor\": \"Fabio Curtis Volpe Teste\",\r\n            \"operador\": \"EQUALS\"\r\n        }\r\n    ],\r\n    \"ordenacao\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"ordem\": \"ASC\"\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/cardapio/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "cardapio",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado",
+          "id": "bbec70d3-8839-4396-893f-c4e76b720456",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [],\r\n    \"ordenacao\": []\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/cardapio/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "cardapio",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "f8c6bba7-8cd6-4763-ad58-eae73d703192"
+    },
+    {
+      "name": "tipoUsuario",
+      "item": [
+        {
+          "name": "criar",
+          "id": "8481beaf-007a-49d9-9971-493a1a8b7c40",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nome\": \"Teste Usuario 2\",\r\n    \"descricao\": \"Teste Usuario Descrição 2\",\r\n    \"isDono\": false,\r\n    \"idRestaurante\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/tipo-usuario/criar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "tipo-usuario",
+                "criar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "atualizar",
+          "id": "167241bf-4c50-45ee-8eab-bbe63796e40d",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 3,\r\n    \"nome\": \"Teste Usuario 1\",\r\n    \"descricao\": \"Teste Usuario Descrição 1\",\r\n    \"isDono\": false,\r\n    \"idRestaurante\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/tipo-usuario/atualizar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "tipo-usuario",
+                "atualizar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar",
+          "id": "192de450-d0ac-44b0-9422-43112f2441b0",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/tipo-usuario/3",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "tipo-usuario",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "desativar",
+          "id": "1e3ff783-b52e-4f44-b13b-4440446d51b4",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/tipo-usuario/1/desativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "tipo-usuario",
+                "1",
+                "desativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ativar",
+          "id": "32fa169b-aea7-4e26-bbd4-f17a22da120f",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URL_API}}/tipo-usuario/3/ativar",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "tipo-usuario",
+                "3",
+                "ativar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado com filtro",
+          "id": "b566e127-97ad-4781-9d47-d1ffccb2554a",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"valor\": \"Fabio Curtis Volpe Teste\",\r\n            \"operador\": \"EQUALS\"\r\n        }\r\n    ],\r\n    \"ordenacao\": []\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/tipo-usuario/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "tipo-usuario",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "paginado",
+          "id": "0e0d8e6e-a81d-4182-a5c6-2a3b00021d4c",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [],\r\n    \"ordenacao\": []\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_API}}/tipo-usuario/paginado",
+              "host": [
+                "{{URL_API}}"
+              ],
+              "path": [
+                "tipo-usuario",
+                "paginado"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "90f62c31-bb99-4923-ba34-58a19fa2d48e"
+    },
+    {
+      "name": "login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "0d3b1657-8f23-478c-bd60-3dc6feb67d33",
+            "exec": [
+              "const resposta = pm.response.json();\r",
+              "\r",
+              "// Verifique se o caminho 'token.valor' está correto conforme o JSON recebido\r",
+              "if (resposta.token && resposta.token.valor) {\r",
+              "    pm.globals.set('token', resposta.token.valor);\r",
+              "    console.log(\"Token salvo com sucesso!\");\r",
+              "} else {\r",
+              "    console.error(\"Token não encontrado na resposta\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "3753fa7a-56a1-45e5-9053-7d965c121342",
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "id": "cae8aec2-de99-4a45-a2f8-210429f9daf7",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"login\": \"dono.fabio0@email.com\",\r\n    \"senha\": \"1234567890\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL_API}}/login",
+          "host": [
+            "{{URL_API}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token\n}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "id": "b2cb6f97-1700-49b5-889d-5beb683cba26",
+      "key": "token\n",
+      "value": ""
+    }
+  ]
+}

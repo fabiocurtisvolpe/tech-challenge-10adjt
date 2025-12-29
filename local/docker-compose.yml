@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: my_restaurante_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      POSTGRES_DB: ${POSTGRES_DB:-myrestaurante}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-myrestaurante}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # SERVIÇO DA APLICAÇÃO JAVA
+  app:
+    build:
+      context: ..                   # Indica que a raiz do projeto é a pasta pai
+      dockerfile: local/Dockerfile  # Indica onde o Dockerfile está em relação ao context
+    container_name: adjt_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/myrestaurante
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: secret
+
+# DECLARAÇÃO DOS VOLUMES NOMEADOS
+volumes:
+  pg_data:
+    driver: local
