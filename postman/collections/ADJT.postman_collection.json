@@ -16,7 +16,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": " {\r\n    \"nome\": \"Fabio Volpe - CLIENTE\",\r\n    \"email\": \"cliente.fabio0@email.com\", \r\n    \"senha\": \"1234567890\",\r\n    \"tipoUsuario\": {\r\n        \"id\": 2\r\n    },\r\n    \"enderecos\": [\r\n      {\r\n        \"logradouro\": \"Rua das Flores, 123\",\r\n        \"numero\": \"123\",\r\n        \"complemento\": \"Apartamento 45\",\r\n        \"bairro\": \"Centro\",\r\n        \"pontoReferencia\": \"Próximo ao shopping\",\r\n        \"cep\": \"12345-678\",\r\n        \"municipio\": \"São Paulo\",\r\n        \"uf\": \"SP\",\r\n        \"principal\": true,\r\n        \"ativo\": true\r\n      },\r\n      {\r\n        \"logradouro\": \"Avenida Paulista, 1000\",\r\n        \"numero\": \"1000\",\r\n        \"complemento\": \"Sala 102\",\r\n        \"bairro\": \"Bela Vista\",\r\n        \"pontoReferencia\": \"Em frente ao MASP\",\r\n        \"cep\": \"01310-100\",\r\n        \"municipio\": \"São Paulo\", \r\n        \"uf\": \"SP\",\r\n        \"principal\": false,\r\n        \"ativo\": true\r\n      }\r\n    ]\r\n  }",
+              "raw": " {\r\n    \"nome\": \"Fabio Volpe - CLIENTE\",\r\n    \"email\": \"clienteA.fabio0@email.com\", \r\n    \"senha\": \"1234567890A\",\r\n    \"tipoUsuario\": {\r\n        \"id\": 2\r\n    },\r\n    \"enderecos\": [\r\n      {\r\n        \"logradouro\": \"Rua das Flores, 123\",\r\n        \"numero\": \"123\",\r\n        \"complemento\": \"Apartamento 45\",\r\n        \"bairro\": \"Centro\",\r\n        \"pontoReferencia\": \"Próximo ao shopping\",\r\n        \"cep\": \"12345-678\",\r\n        \"municipio\": \"São Paulo\",\r\n        \"uf\": \"SP\",\r\n        \"principal\": true,\r\n        \"ativo\": true\r\n      },\r\n      {\r\n        \"logradouro\": \"Avenida Paulista, 1000\",\r\n        \"numero\": \"1000\",\r\n        \"complemento\": \"Sala 102\",\r\n        \"bairro\": \"Bela Vista\",\r\n        \"pontoReferencia\": \"Em frente ao MASP\",\r\n        \"cep\": \"01310-100\",\r\n        \"municipio\": \"São Paulo\", \r\n        \"uf\": \"SP\",\r\n        \"principal\": false,\r\n        \"ativo\": true\r\n      }\r\n    ]\r\n  }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -645,7 +645,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"valor\": \"Fabio Curtis Volpe Teste\",\r\n            \"operador\": \"EQUALS\"\r\n        }\r\n    ],\r\n    \"ordenacao\": []\r\n}",
+              "raw": "{\r\n    \"pagina\": \"0\",\r\n    \"qtdPagina\": \"5\" ,\r\n    \"filtros\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"valor\": \"Fabio Curtis Volpe Teste\",\r\n            \"operador\": \"EQUALS\"\r\n        }\r\n    ],\r\n    \"ordenacao\": [\r\n        {\r\n            \"campo\": \"nome\",\r\n            \"ordem\": \"ASC\"\r\n        }\r\n    ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -930,7 +930,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"login\": \"cliente.fabio0@email.com\",\r\n    \"senha\": \"1234567890A\"\r\n}",
+          "raw": "{\r\n    \"login\": \"dono.fabio0@email.com\",\r\n    \"senha\": \"1234567890\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
