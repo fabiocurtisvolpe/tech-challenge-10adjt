@@ -22,7 +22,7 @@ public class NovoRestaurantePayLoad {
     @Size(max = 1000, message = "A descrição deve ter até 1000 caracteres")
     protected String descricao;
 
-    @NotBlank(message = "O horário de funcionamento não pode estar em branco")
+    @NotNull(message = "O horário de funcionamento não pode estar em branco")
     protected Map<String, DiaFuncionamentoPayload> horarioFuncionamento;
 
     @NotNull(message = "O tipo de cozinha não pode ser nulo")
